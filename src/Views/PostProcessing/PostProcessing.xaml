@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.PostProcessing"
+             Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged">
+    <Grid>
+        <Grid x:Name="Column" RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="18" HorizontalOptions="Center">
+            <!-- Title and the New process button. -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label Style="{StaticResource PageTitle}" Text="Post Processing"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource PageSubtitle}"
+                           Text="Run dictated text through local language models. Processes that share a shortcut run together, in order." />
+                </VerticalStackLayout>
+                <components:IconButton x:Name="NewButton" Grid.Column="1" Glyph="{x:Static components:Icons.Plus}"
+                                       GlyphSize="14" Text="New process" IsPrimary="True" VerticalOptions="Start"
+                                       AccessibleName="New process" AutomationId="NewProcess" Clicked="OnNewClicked" />
+            </Grid>
+
+            <components:SearchField x:Name="Search" Grid.Row="1" Placeholder="Search processes…"
+                                    AccessibleName="Search processes" AutomationId="ProcessSearch" />
+
+            <!-- Filters: the model a process uses, and processes that cannot run yet. -->
+            <Grid Grid.Row="2" ColumnDefinitions="220,Auto,*" ColumnSpacing="12" HeightRequest="32">
+                <components:SelectInput x:Name="ModelFilter" IsCompact="True" Glyph="{x:Static components:Icons.Brain}"
+                                        AccessibleName="Filter by model" AutomationId="ProcessModelFilter"
+                                        SelectedIndexChanged="OnModelFilterChanged" />
+                <components:FilterToggle x:Name="AttentionToggle" Grid.Column="1"
+                                         Glyph="{x:Static components:Icons.TriangleAlert}" Text="Needs attention"
+                                         AutomationId="ProcessNeedsAttention" CheckedChanged="OnAttentionChanged" />
+                <Label x:Name="CountLabel" Grid.Column="2" Style="{StaticResource SettingHelp}" HorizontalOptions="End"
+                       VerticalOptions="Center" AutomationId="ProcessCount" />
+            </Grid>
+
+            <!-- How the groups work, only while there are processes. -->
+            <Grid x:Name="HintRow" Grid.Row="3" ColumnDefinitions="Auto,*" ColumnSpacing="8" IsVisible="False">
+                <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Start" Margin="0,2,0,0"
+                       Text="{x:Static components:Icons.Info}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                <Label x:Name="HintLabel" Grid.Column="1" Style="{StaticResource StatusText}" LineBreakMode="WordWrap"
+                       VerticalOptions="Start"
+                       Text="Processes that share a shortcut run together, top to bottom, each on the result of the one before. Drag the grip or use the arrows to reorder. To move a process to another group, change its shortcut." />
+            </Grid>
+
+            <Grid Grid.Row="4">
+                <ScrollView>
+                    <VerticalStackLayout x:Name="List" Spacing="24" />
+                </ScrollView>
+                <Label x:Name="MessageLabel" IsVisible="False" Style="{StaticResource PageSubtitle}" VerticalOptions="Start"
+                       AutomationId="ProcessMessage" />
+            </Grid>
+        </Grid>
+
+        <!-- The edit layer takes the place of the list; Post Processing stays selected in the sidebar. -->
+        <ContentView x:Name="EditorHost" IsVisible="False" />
+    </Grid>
+</ContentView>

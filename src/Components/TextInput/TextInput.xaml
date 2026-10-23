@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.TextInput"
+             HeightRequest="36">
+    <!-- A single-line text field drawn as a bordered, rounded frame, like SelectInput and SearchField. -->
+    <Border x:Name="Outline" StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="12,0"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <Entry x:Name="Input" FontFamily="Inter" FontSize="13" MinimumHeightRequest="0"
+               VerticalOptions="Center" BackgroundColor="Transparent"
+               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+               PlaceholderColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+               TextChanged="OnTextChanged" Focused="OnFocusChanged" Unfocused="OnFocusChanged" />
+    </Border>
+</ContentView>

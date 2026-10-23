@@ -1,0 +1,273 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+		<TargetFramework Condition="$([MSBuild]::IsOSPlatform('osx'))">net10.0-maccatalyst</TargetFramework>
+
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Rambl</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<MauiVersion>10.0.71</MauiVersion>
+
+		<!-- Enable XAML source generation for faster build times and improved performance.
+		     This generates C# code from XAML at compile time instead of runtime inflation.
+		     To disable, remove this line.
+		     For individual files, you can override by setting Inflator metadata:
+		       <MauiXaml Update="MyPage.xaml" Inflator="Default" /> (reverts to defaults: Runtime for Debug, XamlC for Release)
+		       <MauiXaml Update="MyPage.xaml" Inflator="Runtime" /> (force runtime inflation) -->
+		<MauiXamlInflator>SourceGen</MauiXamlInflator>
+
+		<!-- Display name -->
+		<ApplicationTitle>Rambl</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>jam.rambl</ApplicationId>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+	</PropertyGroup>
+
+	<!-- sherpa-onnx (Features/Stt/Sherpa) is not tied to Windows, but its NuGet package has no Mac Catalyst native library
+	     yet. Set this to true for a target once the library has been checked to load there. -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<UseSherpaOnnx>true</UseSherpaOnnx>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UseSherpaOnnx)' == 'true'">
+		<DefineConstants>$(DefineConstants);SHERPA_ONNX</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(UseSherpaOnnx)' == 'true'">
+		<PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.8" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UseSherpaOnnx)' != 'true'">
+		<Compile Remove="Features\Stt\Sherpa\**" />
+	</ItemGroup>
+
+	<!-- ONNX Runtime (Features/Decisions/Laya) runs the Laya decision models for voice commands. The native onnxruntime.dll
+	     is the one sherpa-onnx ships, so only the managed API is referenced, and only where sherpa-onnx is. The Windows App
+	     SDK brings a Windows ML build of the same assembly; this package's newer version wins. -->
+	<PropertyGroup Condition="'$(UseSherpaOnnx)' == 'true'">
+		<UseOnnxRuntime>true</UseOnnxRuntime>
+		<DefineConstants>$(DefineConstants);ONNX_RUNTIME</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(UseOnnxRuntime)' == 'true'">
+		<PackageReference Include="Microsoft.ML.OnnxRuntime.Managed" Version="1.28.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UseOnnxRuntime)' != 'true'">
+		<Compile Remove="Features\Decisions\Laya\LayaModel.cs;Features\Decisions\Laya\LayaRuntime.cs" />
+	</ItemGroup>
+
+	<!-- Silero VAD (Features/Stt/Sherpa/SileroSpeechDetector), which finds the speech in a recording before a model that
+	     transcribes whole recordings runs, is one small ONNX file from sherpa-onnx's model release. The build fetches it,
+	     checks it against the pinned SHA-256 (the release tag is not versioned, so the hash is what pins it) and copies it
+	     into a vad folder next to the app. -->
+	<PropertyGroup Condition="'$(UseSherpaOnnx)' == 'true'">
+		<SileroVadSha256>9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6</SileroVadSha256>
+		<SileroVadCacheDir>$(MSBuildProjectDirectory)\..\.native\silero-vad\$(SileroVadSha256.Substring(0, 12))\</SileroVadCacheDir>
+	</PropertyGroup>
+
+	<Target Name="FetchSileroVad" BeforeTargets="AssignTargetPaths" Condition="'$(UseSherpaOnnx)' == 'true'">
+		<PropertyGroup>
+			<SileroVadFile>$(SileroVadCacheDir)silero_vad.onnx</SileroVadFile>
+			<SileroVadChecked>$(SileroVadCacheDir)checked</SileroVadChecked>
+		</PropertyGroup>
+
+		<DownloadFile Condition="!Exists('$(SileroVadChecked)')"
+		              SourceUrl="https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx"
+		              DestinationFolder="$(SileroVadCacheDir)" SkipUnchangedFiles="true" />
+		<GetFileHash Condition="!Exists('$(SileroVadChecked)')" Files="$(SileroVadFile)" Algorithm="SHA256">
+			<Output TaskParameter="Items" ItemName="SileroVadHash" />
+		</GetFileHash>
+		<Error Condition="!Exists('$(SileroVadChecked)') And '%(SileroVadHash.FileHash)' != '$(SileroVadSha256)'"
+		       Text="The downloaded Silero VAD model does not match the pinned SHA-256. Delete $(SileroVadCacheDir) and build again, or update SileroVadSha256 after checking the file." />
+		<Touch Condition="!Exists('$(SileroVadChecked)')" Files="$(SileroVadChecked)" AlwaysCreate="true" />
+
+		<ItemGroup>
+			<None Include="$(SileroVadFile)" Link="vad\silero_vad.onnx" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+		</ItemGroup>
+	</Target>
+
+	<!-- parakeet.cpp (Features/Stt/ParakeetCpp) is one prebuilt native library, parakeet.dll, which is fetched from its
+	     GitHub release at build time and checked against a pinned hash. Only the Windows x64 CPU build is wired up;
+	     set this for another target once its library has been checked to load there. -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<UseParakeetCpp>true</UseParakeetCpp>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UseParakeetCpp)' == 'true'">
+		<DefineConstants>$(DefineConstants);PARAKEET_CPP</DefineConstants>
+		<ParakeetCppVersion>0.6.1</ParakeetCppVersion>
+		<ParakeetCppZipName>parakeet-v$(ParakeetCppVersion)-lib-win-cpu-x64</ParakeetCppZipName>
+		<ParakeetCppZipSha256>95b41515efeab246094d1793a1c0a12d727bc1cc01e4c28fe37a16a994b26774</ParakeetCppZipSha256>
+		<ParakeetCppCacheDir>$(MSBuildProjectDirectory)\..\.native\parakeet.cpp\$(ParakeetCppVersion)\</ParakeetCppCacheDir>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(UseParakeetCpp)' != 'true'">
+		<Compile Remove="Features\Stt\ParakeetCpp\**" />
+	</ItemGroup>
+
+	<Target Name="FetchParakeetCpp" BeforeTargets="AssignTargetPaths" Condition="'$(UseParakeetCpp)' == 'true'">
+		<PropertyGroup>
+			<ParakeetCppZip>$(ParakeetCppCacheDir)$(ParakeetCppZipName).zip</ParakeetCppZip>
+			<ParakeetCppDll>$(ParakeetCppCacheDir)$(ParakeetCppZipName)\parakeet.dll</ParakeetCppDll>
+		</PropertyGroup>
+
+		<DownloadFile Condition="!Exists('$(ParakeetCppDll)')"
+		              SourceUrl="https://github.com/mudler/parakeet.cpp/releases/download/v$(ParakeetCppVersion)/$(ParakeetCppZipName).zip"
+		              DestinationFolder="$(ParakeetCppCacheDir)" SkipUnchangedFiles="true" />
+		<GetFileHash Condition="!Exists('$(ParakeetCppDll)')" Files="$(ParakeetCppZip)" Algorithm="SHA256">
+			<Output TaskParameter="Items" ItemName="ParakeetCppZipHash" />
+		</GetFileHash>
+		<Error Condition="!Exists('$(ParakeetCppDll)') And '%(ParakeetCppZipHash.FileHash)' != '$(ParakeetCppZipSha256)'"
+		       Text="The downloaded parakeet.cpp release does not match the pinned SHA-256. Delete $(ParakeetCppCacheDir) and build again, or update ParakeetCppZipSha256 after checking the release." />
+		<Unzip Condition="!Exists('$(ParakeetCppDll)')" SourceFiles="$(ParakeetCppZip)" DestinationFolder="$(ParakeetCppCacheDir)" />
+
+		<ItemGroup>
+			<None Include="$(ParakeetCppDll)" Link="parakeet.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+		</ItemGroup>
+	</Target>
+
+	<!-- transcribe.cpp (Features/Stt/TranscribeCpp) runs GGUF speech models of many families through its C API. Its release is
+	     a tarball of transcribe.dll with ggml as separate libraries (ggml.dll, ggml-base.dll and one ggml-cpu-*.dll per CPU
+	     generation, which the library picks at run time), so they go into a transcribe.cpp folder next to the app, where
+	     no other ggml can be found by mistake. The Vulkan backend is left out: Rambl runs speech on the CPU only for now.
+	     The tarball is unpacked with Windows' own tar.exe, named by its full path because Git's GNU tar, if it comes first
+	     on PATH, reads "C:" as a remote host. Only the Windows x64 CPU build is wired up. -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<UseTranscribeCpp>true</UseTranscribeCpp>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UseTranscribeCpp)' == 'true'">
+		<DefineConstants>$(DefineConstants);TRANSCRIBE_CPP</DefineConstants>
+		<TranscribeCppVersion>0.4.0</TranscribeCppVersion>
+		<TranscribeCppArchiveName>transcribe-native-$(TranscribeCppVersion)-windows-x86_64-cpu-vulkan</TranscribeCppArchiveName>
+		<TranscribeCppArchiveSha256>9d5bd89f720d7979323e73f5220fe50fad5e38a7b0c2525225d453bd09adf2b0</TranscribeCppArchiveSha256>
+		<TranscribeCppCacheDir>$(MSBuildProjectDirectory)\..\.native\transcribe.cpp\$(TranscribeCppVersion)\</TranscribeCppCacheDir>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(UseTranscribeCpp)' != 'true'">
+		<Compile Remove="Features\Stt\TranscribeCpp\**" />
+	</ItemGroup>
+
+	<Target Name="FetchTranscribeCpp" BeforeTargets="AssignTargetPaths" Condition="'$(UseTranscribeCpp)' == 'true'">
+		<PropertyGroup>
+			<TranscribeCppArchive>$(TranscribeCppCacheDir)$(TranscribeCppArchiveName).tar.gz</TranscribeCppArchive>
+			<TranscribeCppBinDir>$(TranscribeCppCacheDir)transcribe-native-windows-x86_64-cpu-vulkan\</TranscribeCppBinDir>
+			<TranscribeCppDll>$(TranscribeCppBinDir)transcribe.dll</TranscribeCppDll>
+		</PropertyGroup>
+
+		<DownloadFile Condition="!Exists('$(TranscribeCppDll)')"
+		              SourceUrl="https://github.com/handy-computer/transcribe.cpp/releases/download/v$(TranscribeCppVersion)/$(TranscribeCppArchiveName).tar.gz"
+		              DestinationFolder="$(TranscribeCppCacheDir)" SkipUnchangedFiles="true" />
+		<GetFileHash Condition="!Exists('$(TranscribeCppDll)')" Files="$(TranscribeCppArchive)" Algorithm="SHA256">
+			<Output TaskParameter="Items" ItemName="TranscribeCppArchiveHash" />
+		</GetFileHash>
+		<Error Condition="!Exists('$(TranscribeCppDll)') And '%(TranscribeCppArchiveHash.FileHash)' != '$(TranscribeCppArchiveSha256)'"
+		       Text="The downloaded transcribe.cpp release does not match the pinned SHA-256. Delete $(TranscribeCppCacheDir) and build again, or update TranscribeCppArchiveSha256 after checking the release." />
+		<Exec Condition="!Exists('$(TranscribeCppDll)')"
+		      Command="&quot;$(SystemRoot)\System32\tar.exe&quot; -xzf &quot;$(TranscribeCppArchive)&quot; -C &quot;$(TranscribeCppCacheDir.TrimEnd('\'))&quot;" />
+
+		<ItemGroup>
+			<TranscribeCppFile Include="$(TranscribeCppBinDir)transcribe.dll;$(TranscribeCppBinDir)ggml.dll;$(TranscribeCppBinDir)ggml-base.dll;$(TranscribeCppBinDir)ggml-cpu-*.dll" />
+			<None Include="@(TranscribeCppFile)" Link="transcribe.cpp\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<TranscribeCppLicense Include="$(TranscribeCppBinDir)licenses\**\*" />
+			<None Include="@(TranscribeCppLicense)" Link="transcribe.cpp\licenses\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+		</ItemGroup>
+	</Target>
+
+	<!-- llama.cpp (Features/LanguageModels/LlamaCpp) runs GGUF language models in a server process of its own, from one pinned
+	     release of the official prebuilt binaries. The build fetches the zip, checks it against the pinned SHA-256 and puts
+	     the server and its libraries into a llama.cpp folder next to the app. A new model architecture is supported by
+	     moving the pin. Only the Windows x64 CPU build is wired up; set this for another target once its release has been
+	     checked. -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<UseLlamaCpp>true</UseLlamaCpp>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UseLlamaCpp)' == 'true'">
+		<DefineConstants>$(DefineConstants);LLAMA_CPP</DefineConstants>
+		<LlamaCppVersion>b11580</LlamaCppVersion>
+		<LlamaCppZipName>llama-$(LlamaCppVersion)-bin-win-cpu-x64</LlamaCppZipName>
+		<LlamaCppZipSha256>430efe5b4f10db617ae0f5732f7e9360fa7be4344d1d97688e09bbd3b5b084da</LlamaCppZipSha256>
+		<LlamaCppCacheDir>$(MSBuildProjectDirectory)\..\.native\llama.cpp\$(LlamaCppVersion)\</LlamaCppCacheDir>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(UseLlamaCpp)' != 'true'">
+		<Compile Remove="Features\LanguageModels\LlamaCpp\**" />
+	</ItemGroup>
+
+	<Target Name="FetchLlamaCpp" BeforeTargets="AssignTargetPaths" Condition="'$(UseLlamaCpp)' == 'true'">
+		<PropertyGroup>
+			<LlamaCppZip>$(LlamaCppCacheDir)$(LlamaCppZipName).zip</LlamaCppZip>
+			<LlamaCppBinDir>$(LlamaCppCacheDir)$(LlamaCppZipName)\</LlamaCppBinDir>
+			<LlamaCppServer>$(LlamaCppBinDir)llama-server.exe</LlamaCppServer>
+		</PropertyGroup>
+
+		<DownloadFile Condition="!Exists('$(LlamaCppServer)')"
+		              SourceUrl="https://github.com/ggml-org/llama.cpp/releases/download/$(LlamaCppVersion)/$(LlamaCppZipName).zip"
+		              DestinationFolder="$(LlamaCppCacheDir)" SkipUnchangedFiles="true" />
+		<GetFileHash Condition="!Exists('$(LlamaCppServer)')" Files="$(LlamaCppZip)" Algorithm="SHA256">
+			<Output TaskParameter="Items" ItemName="LlamaCppZipHash" />
+		</GetFileHash>
+		<Error Condition="!Exists('$(LlamaCppServer)') And '%(LlamaCppZipHash.FileHash)' != '$(LlamaCppZipSha256)'"
+		       Text="The downloaded llama.cpp release does not match the pinned SHA-256. Delete $(LlamaCppCacheDir) and build again, or update LlamaCppZipSha256 after checking the release." />
+		<Unzip Condition="!Exists('$(LlamaCppServer)')" SourceFiles="$(LlamaCppZip)" DestinationFolder="$(LlamaCppBinDir)" />
+
+		<!-- Only the server and what it loads; the release also has command line tools Rambl does not use. -->
+		<ItemGroup>
+			<LlamaCppFile Include="$(LlamaCppBinDir)llama-server.exe;$(LlamaCppBinDir)llama-server-impl.dll;$(LlamaCppBinDir)llama-common.dll;$(LlamaCppBinDir)llama.dll;$(LlamaCppBinDir)ggml*.dll;$(LlamaCppBinDir)mtmd.dll;$(LlamaCppBinDir)libomp.dll;$(LlamaCppBinDir)LICENSE*" />
+			<None Include="@(LlamaCppFile)" Link="llama.cpp\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+		</ItemGroup>
+	</Target>
+
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<WindowsPackageType>None</WindowsPackageType>
+		<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.png" BaseSize="256,256" Resize="true" />
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		<MauiAsset Include="..\README.md" LogicalName="README.md" />
+		<MauiAsset Include="..\CHANGELOG.md" LogicalName="CHANGELOG.md" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Indiko.Maui.Controls.Markdown" Version="1.10.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+		<PackageReference Include="Tomlyn" Version="2.10.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
+		<PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
+	</ItemGroup>
+
+</Project>

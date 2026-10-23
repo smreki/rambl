@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.RecordingCard">
+    <Border x:Name="Outline" StrokeShape="RoundRectangle 8" StrokeThickness="1" Padding="16"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <VerticalStackLayout Spacing="12">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="10">
+                    <Label x:Name="TranscriptLabel" FontSize="13" MaxLines="2" LineBreakMode="TailTruncation"
+                           LineHeight="1.35"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                    <!-- Shown instead of text when there is none, and why a transcription failed. -->
+                    <Label x:Name="NoteLabel" IsVisible="False" FontSize="13" FontAttributes="Italic"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                    <Label x:Name="ErrorLabel" IsVisible="False" Style="{StaticResource SettingHelp}"
+                           TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
+
+                    <!-- When the last process was a decision model, the action that ran replaces the text. -->
+                    <Border x:Name="ActionBlock" IsVisible="False" StrokeThickness="0" StrokeShape="RoundRectangle 6" Padding="12,10"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource ProcessingSoftLight}, Dark={StaticResource ProcessingSoftDark}}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Border WidthRequest="28" HeightRequest="28" StrokeThickness="0" StrokeShape="RoundRectangle 14"
+                                    VerticalOptions="Center"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+                                <Label Style="{StaticResource Icon}" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center"
+                                       Text="{x:Static components:Icons.Zap}"
+                                       TextColor="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                <Label Text="ACTION EXECUTED" FontFamily="InterSemiBold" FontSize="11" CharacterSpacing="0.5"
+                                       TextColor="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
+                                <Label x:Name="ActionTitleLabel" FontFamily="InterSemiBold" FontSize="13"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                <Label x:Name="ActionDetailLabel" Style="{StaticResource SettingHelp}" IsVisible="False" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- Dictations that were post-processed: Show original, or why post-processing did not finish. -->
+                    <HorizontalStackLayout x:Name="ProcessingRow" IsVisible="False" Spacing="8">
+                        <Label x:Name="ProcessingGlyph" Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.WandSparkles}" />
+                        <Label x:Name="ProcessingNoteLabel" IsVisible="False" Style="{StaticResource SettingHelp}"
+                               VerticalOptions="Center" />
+                        <Grid x:Name="OriginalToggle" VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="4">
+                                <Label x:Name="OriginalChevron" Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
+                                       Text="{x:Static components:Icons.ChevronDown}"
+                                       TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                <Label x:Name="OriginalToggleLabel" FontFamily="InterMedium" FontSize="12" Text="Show original"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                            </HorizontalStackLayout>
+                            <Button x:Name="OriginalToggleButton" Style="{StaticResource GhostButton}" HeightRequest="-1"
+                                    MinimumHeightRequest="0" Padding="0" Clicked="OnToggleOriginalClicked" />
+                        </Grid>
+                    </HorizontalStackLayout>
+
+                    <!-- What the speech model heard, before any process changed it. -->
+                    <Border x:Name="OriginalBlock" IsVisible="False" StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="12,10"
+                            Stroke="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="ORIGINAL TRANSCRIPT" FontFamily="InterSemiBold" FontSize="11" CharacterSpacing="0.5"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                <Grid Grid.Column="1">
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
+                                               Text="{x:Static components:Icons.Copy}"
+                                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                        <Label x:Name="CopyOriginalLabel" FontFamily="InterMedium" FontSize="12" Text="Copy original"
+                                               VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                    </HorizontalStackLayout>
+                                    <Button x:Name="CopyOriginalButton" Style="{StaticResource GhostButton}" HeightRequest="-1"
+                                            MinimumHeightRequest="0" Padding="0" Clicked="OnCopyOriginalClicked" />
+                                </Grid>
+                            </Grid>
+                            <Label x:Name="OriginalLabel" FontSize="13" LineHeight="1.35"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <HorizontalStackLayout Spacing="18">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.CalendarClock}" />
+                            <Label x:Name="TimeLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Timer}" />
+                            <Label x:Name="DurationLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Start">
+                    <components:IconButton x:Name="CopyButton" WidthRequest="32" GlyphSize="14"
+                                           Glyph="{x:Static components:Icons.Copy}" Clicked="OnCopyClicked" />
+                    <components:IconButton x:Name="RetranscribeButton" WidthRequest="32" GlyphSize="14"
+                                           Glyph="{x:Static components:Icons.RefreshCw}" Clicked="OnRetranscribeClicked" />
+                    <components:IconButton x:Name="DeleteButton" WidthRequest="32" GlyphSize="14" IsDestructive="True"
+                                           Glyph="{x:Static components:Icons.Trash2}" Clicked="OnDeleteClicked" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <Grid ColumnDefinitions="Auto,34,*,34" ColumnSpacing="12" HeightRequest="32">
+                <!-- A round play/pause button: the glyph sits on an accent-soft disc and a real transparent button is on top. -->
+                <Grid WidthRequest="32" HeightRequest="32">
+                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 16"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}" />
+                    <Label x:Name="PlayGlyph" Style="{StaticResource Icon}" FontSize="14" HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    <Button x:Name="PlayButton" Style="{StaticResource GhostButton}" WidthRequest="32" HeightRequest="32"
+                            MinimumWidthRequest="32" Padding="0" CornerRadius="16" Clicked="OnPlayClicked" />
+                </Grid>
+                <Label x:Name="ElapsedLabel" Grid.Column="1" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                       Text="0:00" />
+                <Slider x:Name="PositionSlider" Grid.Column="2" Style="{StaticResource SettingSlider}" Minimum="0" Maximum="1"
+                        DragStarted="OnDragStarted" DragCompleted="OnDragCompleted" ValueChanged="OnSliderValueChanged" />
+                <Label x:Name="TotalLabel" Grid.Column="3" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                       HorizontalTextAlignment="End" />
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

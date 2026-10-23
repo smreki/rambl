@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        x:Class="Rambl.RamblWindow"
+        Title="Rambl"
+        Width="1280"
+        Height="840"
+        MinimumWidth="800"
+        MinimumHeight="500">
+
+    <Window.TitleBar>
+        <TitleBar HeightRequest="36"
+                  BackgroundColor="{AppThemeBinding Light={StaticResource SidebarBgLight}, Dark={StaticResource SidebarBgDark}}">
+            <TitleBar.LeadingContent>
+                <HorizontalStackLayout Padding="14,0,0,0" Spacing="8">
+                    <Image Source="rambl_icon.png"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           VerticalOptions="Center"
+                           SemanticProperties.Description="Rambl orange waveform" />
+                    <Label Text="Rambl"
+                           FontFamily="InterSemiBold"
+                           FontSize="12"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </TitleBar.LeadingContent>
+        </TitleBar>
+    </Window.TitleBar>
+
+</Window>

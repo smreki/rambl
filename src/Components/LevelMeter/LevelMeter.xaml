@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.LevelMeter">
+    <ContentView.Resources>
+        <Style x:Key="MeterSegment" TargetType="BoxView">
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="LitStates">
+                        <VisualState x:Name="Off" />
+                        <VisualState x:Name="LitAccent">
+                            <VisualState.Setters>
+                                <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="LitWarning">
+                            <VisualState.Setters>
+                                <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="LitDanger">
+                            <VisualState.Setters>
+                                <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentView.Resources>
+
+    <VerticalStackLayout Spacing="8">
+        <HorizontalStackLayout Spacing="6" HeightRequest="15">
+            <BoxView x:Name="StatusDot" WidthRequest="6" HeightRequest="6" CornerRadius="3"
+                     VerticalOptions="Center" BackgroundColor="Transparent" />
+            <Label x:Name="StatusLabel" FontSize="12" VerticalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+        </HorizontalStackLayout>
+        <Grid x:Name="Segments" HeightRequest="16" ColumnSpacing="4" />
+    </VerticalStackLayout>
+</ContentView>

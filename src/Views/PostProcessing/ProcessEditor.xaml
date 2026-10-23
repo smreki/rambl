@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.ProcessEditor"
+             SizeChanged="OnSizeChanged">
+    <Grid x:Name="Root">
+        <ScrollView x:Name="Scroll" Padding="0,0,16,0">
+            <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
+                <!-- Back to the list, then the title. -->
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                    <components:IconButton x:Name="BackButton" Glyph="{x:Static components:Icons.ArrowLeft}" GlyphSize="14"
+                                           WidthRequest="32" IsOutlined="True" VerticalOptions="Start"
+                                           AccessibleName="Back to Post Processing" AutomationId="ProcessBack"
+                                           Clicked="OnBackClicked" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                        <Label x:Name="TitleLabel" Style="{StaticResource PageTitle}" Text="Edit process"
+                               SemanticProperties.HeadingLevel="Level1" />
+                        <Label Style="{StaticResource PageSubtitle}"
+                               Text="Rewrite the transcript with a local language model before it is inserted." />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Spacing="24">
+                    <!-- Process -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Process" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Enabled" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="When off, this process is skipped and its shortcut does nothing." />
+                            </VerticalStackLayout>
+                            <Switch x:Name="EnabledToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                    HorizontalOptions="End" IsToggled="True" AutomationId="ProcessEnabled"
+                                    SemanticProperties.Description="Enabled" Toggled="OnEnabledToggled" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Shortcut" FontFamily="InterMedium" FontSize="13" />
+                                <Label x:Name="ShortcutHelp" Style="{StaticResource SettingHelp}"
+                                       Text="Can be shared with dictation and other processes. Must differ from the cancel shortcut." />
+                            </VerticalStackLayout>
+                            <components:ShortcutInput x:Name="ShortcutInput" Grid.Column="1" WidthRequest="360"
+                                                      SettingName="process shortcut" DefaultShortcut="{x:Null}"
+                                                      Shortcut="{x:Null}" AutomationId="ProcessShortcut"
+                                                      ShortcutChanged="OnShortcutChanged" />
+                        </Grid>
+
+                        <!-- Shown when dictation or other processes use the same shortcut: what runs, in which order. -->
+                        <components:SharedShortcutNotice x:Name="ShortcutNotice" IsVisible="False"
+                                                         LinkClicked="OnNoticeLinkClicked" />
+
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Name" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Shown in the list and on the dictation card." />
+                            </VerticalStackLayout>
+                            <components:TextInput x:Name="NameInput" Grid.Column="1" WidthRequest="360" MaxLength="60"
+                                                  Placeholder="For example, Polish for email" AccessibleName="Process name"
+                                                  AutomationId="ProcessName" PropertyChanged="OnInputPropertyChanged" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label Text="Short description" FontFamily="InterMedium" FontSize="13" />
+                                    <Label Text="Optional" FontSize="12" VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                </HorizontalStackLayout>
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Only for you, to tell processes apart. It is never sent to the model." />
+                            </VerticalStackLayout>
+                            <components:TextInput x:Name="DescriptionInput" Grid.Column="1" WidthRequest="360" MaxLength="120"
+                                                  Placeholder="What this process is for" AccessibleName="Process description"
+                                                  AutomationId="ProcessDescription" PropertyChanged="OnInputPropertyChanged" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Model -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Model" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Provider" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Runs on this PC. No text leaves it." />
+                            </VerticalStackLayout>
+                            <components:SelectInput x:Name="ProviderSelect" Grid.Column="1" WidthRequest="360"
+                                                    Glyph="{x:Static components:Icons.Cpu}" AccessibleName="Provider"
+                                                    AutomationId="ProcessProvider" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Model" FontFamily="InterMedium" FontSize="13" />
+                                <Label x:Name="ModelHelp" Style="{StaticResource SettingHelp}"
+                                       Text="Downloaded language models that can generate text." />
+                            </VerticalStackLayout>
+                            <!-- A select with a two-line value. The button lies on top so the whole field is one control. -->
+                            <Grid x:Name="ModelSelect" Grid.Column="1" WidthRequest="360" VerticalOptions="Center">
+                                <Border StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="12,8"
+                                        Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                            <Label x:Name="ModelNameLabel" FontFamily="InterMedium" FontSize="13"
+                                                   LineBreakMode="TailTruncation"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                            <Label x:Name="ModelDetailLabel" Style="{StaticResource SettingHelp}"
+                                                   LineBreakMode="TailTruncation" IsVisible="False" />
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1" Style="{StaticResource Icon}" FontSize="16"
+                                               VerticalOptions="Center" Text="{x:Static components:Icons.ChevronDown}"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                    </Grid>
+                                </Border>
+                                <Button x:Name="ModelSelectButton" Style="{StaticResource GhostButton}" HeightRequest="-1"
+                                        MinimumHeightRequest="0" CornerRadius="6" Padding="0" AutomationId="ProcessModel"
+                                        SemanticProperties.Description="Model" Clicked="OnModelSelectClicked" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Time limit" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="If the model takes longer, the step fails and your original text is inserted instead." />
+                            </VerticalStackLayout>
+                            <components:SelectInput x:Name="TimeoutSelect" Grid.Column="1" WidthRequest="360"
+                                                    Glyph="{x:Static components:Icons.Timer}" AccessibleName="Time limit"
+                                                    AutomationId="ProcessTimeLimit" SelectedIndexChanged="OnTimeoutChanged" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Prompt instruction -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Prompt instruction" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Label Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap"
+                               Text="Tell the model what to do with the text. Put {{original}} where you want what was dictated and {{processed}} where you want the result of the process before this one. In the first process they are the same. With neither, the result of the previous process is added after your instruction. The instruction is optional, but a process without one is skipped." />
+                        <VerticalStackLayout Spacing="8">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Label Text="Instruction" FontFamily="InterMedium" FontSize="13" VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                                    <components:IconButton x:Name="InsertOriginalButton" HeightRequest="28"
+                                                           Glyph="{x:Static components:Icons.Braces}" GlyphSize="12"
+                                                           Text="Insert {{original}}" IsOutlined="True"
+                                                           AccessibleName="Insert the original text variable"
+                                                           AutomationId="InsertOriginal" Clicked="OnInsertOriginalClicked" />
+                                    <components:IconButton x:Name="InsertProcessedButton" HeightRequest="28"
+                                                           Glyph="{x:Static components:Icons.Braces}" GlyphSize="12"
+                                                           Text="Insert {{processed}}" IsOutlined="True"
+                                                           AccessibleName="Insert the processed text variable"
+                                                           AutomationId="InsertProcessed" Clicked="OnInsertProcessedClicked" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                            <components:TextArea x:Name="InstructionEditor" MinimumTextHeight="168"
+                                                 Placeholder="Describe what the model should do with the text. Use {{original}} for what you dictated and {{processed}} for the result so far."
+                                                 AccessibleName="Prompt instruction" AutomationId="ProcessInstruction"
+                                                 PropertyChanged="OnInputPropertyChanged" />
+                            <HorizontalStackLayout Spacing="6">
+                                <Label x:Name="ValidationGlyph" Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center" />
+                                <Label x:Name="ValidationLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                                       AutomationId="ProcessValidation" />
+                            </HorizontalStackLayout>
+                            <!-- With no variable in the instruction, shows what the model will receive: the instruction, then the text. -->
+                            <Border x:Name="ModelPreview" IsVisible="False" StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="12,10"
+                                    Stroke="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="WHAT THE MODEL RECEIVES" FontFamily="InterSemiBold" FontSize="11" CharacterSpacing="0.5"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                    <Label x:Name="PreviewInstructionLabel" Style="{StaticResource SettingHelp}" LineBreakMode="TailTruncation" MaxLines="3" />
+                                    <Label x:Name="PreviewTextLabel" FontSize="12" FontAttributes="Italic" LineBreakMode="TailTruncation"
+                                           Text="hi anna quick update on tomorrow the demo moves to ten o clock…"
+                                           TextColor="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Actions -->
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+                        <components:IconButton x:Name="DeleteButton" HeightRequest="36" Glyph="{x:Static components:Icons.Trash2}"
+                                               GlyphSize="14" Text="Delete process" IsOutlined="True" IsDestructive="True"
+                                               AccessibleName="Delete process" AutomationId="DeleteProcess"
+                                               Clicked="OnDeleteClicked" />
+                        <components:IconButton x:Name="RevertButton" Grid.Column="2" HeightRequest="36" WidthRequest="88"
+                                               Text="Revert" IsOutlined="True" AccessibleName="Revert changes"
+                                               AutomationId="RevertProcess" Clicked="OnRevertClicked" />
+                        <components:IconButton x:Name="SaveButton" Grid.Column="3" HeightRequest="36" WidthRequest="88"
+                                               Text="Save" IsPrimary="True" AccessibleName="Save process"
+                                               AutomationId="SaveProcess" Clicked="OnSaveClicked" />
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Model menu layer: a nearly transparent backdrop closes the menu when anything else is clicked. -->
+        <Grid x:Name="MenuLayer" IsVisible="False">
+            <Grid BackgroundColor="#01000000">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnMenuBackdropTapped" />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <components:OptionMenu x:Name="ModelMenu" HorizontalOptions="Start" VerticalOptions="Start"
+                                   OptionChosen="OnModelChosen" />
+        </Grid>
+    </Grid>
+</ContentView>

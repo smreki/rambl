@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.KeyPressInput">
+    <!-- One recorded key press of a voice command, as key caps in a bordered field. The whole field is a button that records
+         the press again; the remove button at its right lies above it and takes its own clicks. -->
+    <Grid HeightRequest="36" HorizontalOptions="Start">
+        <Border x:Name="FieldBorder" StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="8,0,28,0"
+                Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+            <Grid>
+                <components:KeyCaps x:Name="Caps" VerticalOptions="Center" />
+                <Label x:Name="PromptLabel" FontSize="12" VerticalOptions="Center" IsVisible="False"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+            </Grid>
+        </Border>
+        <Button x:Name="RecordButton" Style="{StaticResource GhostButton}" HeightRequest="-1" MinimumHeightRequest="0"
+                CornerRadius="6" Padding="0" Clicked="OnRecordClicked" />
+        <Grid WidthRequest="20" HeightRequest="20" HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,6,0">
+            <Label Style="{StaticResource Icon}" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center"
+                   Text="{x:Static components:Icons.X}"
+                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+            <Button x:Name="RemoveButton" Style="{StaticResource GhostButton}" WidthRequest="20" HeightRequest="20"
+                    MinimumWidthRequest="20" MinimumHeightRequest="20" Padding="0" CornerRadius="4" Clicked="OnRemoveClicked" />
+        </Grid>
+    </Grid>
+</ContentView>

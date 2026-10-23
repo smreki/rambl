@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.OptionMenu">
+    <!-- A list of choices in a bordered card, like the Model Runtime Select Menu in the design. -->
+    <Border StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="8" MinimumWidthRequest="220"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <Border.Shadow>
+            <Shadow Radius="16" Offset="0,4" Opacity="1"
+                    Brush="{AppThemeBinding Light={StaticResource OverlayShadowLightBrush}, Dark={StaticResource OverlayShadowDarkBrush}}" />
+        </Border.Shadow>
+        <!-- Scrolls when its owner limits the height, so a long list still fits a short window. -->
+        <ScrollView>
+            <VerticalStackLayout x:Name="Rows" />
+        </ScrollView>
+    </Border>
+</ContentView>

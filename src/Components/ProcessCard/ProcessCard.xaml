@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.ProcessCard">
+    <!-- The Process List Item of the design. Layers, bottom to top: the card, one transparent button over all of it (so the
+         card is a single focusable, clickable control), and the parts that must take their own clicks and drags: the grip
+         at the left and the move buttons at the right. The shortcut is not on the card; the group header above it shows it. -->
+    <Grid x:Name="Root">
+        <Grid.GestureRecognizers>
+            <DropGestureRecognizer AllowDrop="True" DragOver="OnDragOver" DragLeave="OnDragLeave" Drop="OnDrop" />
+        </Grid.GestureRecognizers>
+
+        <Border x:Name="CardBorder" StrokeShape="RoundRectangle 8" StrokeThickness="1" Padding="16,12"
+                Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+            <Grid x:Name="CardGrid" ColumnDefinitions="0,*,64,0" ColumnSpacing="0">
+                <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Label x:Name="NameLabel" FontFamily="InterSemiBold" FontSize="13" LineBreakMode="TailTruncation"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                        <!-- Shown while the process is turned off; the card is dimmed too. -->
+                        <Border x:Name="DisabledTag" Grid.Column="1" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
+                                StrokeShape="RoundRectangle 4" StrokeThickness="1" Padding="6,1"
+                                Stroke="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
+                            <Label Text="Disabled" FontSize="11" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        </Border>
+                    </Grid>
+                    <Label x:Name="DescriptionLabel" IsVisible="False" Style="{StaticResource SettingHelp}"
+                           LineBreakMode="TailTruncation" MaxLines="1" />
+                    <HorizontalStackLayout Spacing="6">
+                        <Label x:Name="ModelGlyph" Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.Brain}" />
+                        <Label x:Name="ModelLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                               LineBreakMode="TailTruncation" />
+                    </HorizontalStackLayout>
+                    <!-- A second warning, such as a missing instruction, in the same style as a model that needs attention. -->
+                    <HorizontalStackLayout x:Name="WarningRow" Spacing="6" IsVisible="False">
+                        <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.TriangleAlert}"
+                               TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                        <Label x:Name="WarningLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                               LineBreakMode="TailTruncation" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+            </Grid>
+        </Border>
+
+        <Button x:Name="Surface" Style="{StaticResource GhostButton}" HeightRequest="-1" MinimumHeightRequest="0"
+                CornerRadius="8" Padding="0" Clicked="OnClicked" />
+
+        <!-- Same columns as the card, so the grip and the move buttons lie exactly over the room the card keeps for them. The
+             grid itself lets clicks through to the button underneath; only the parts in it take input. -->
+        <Grid x:Name="OverlayGrid" Padding="16,12" ColumnDefinitions="0,*,64,0" ColumnSpacing="0"
+              InputTransparent="True" CascadeInputTransparent="False">
+            <HorizontalStackLayout x:Name="Handle" Spacing="8" WidthRequest="46" VerticalOptions="Center" IsVisible="False">
+                <Label x:Name="Grip" Style="{StaticResource Icon}" FontSize="16" VerticalOptions="Center"
+                       Text="{x:Static components:Icons.GripVertical}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}">
+                    <Label.GestureRecognizers>
+                        <DragGestureRecognizer CanDrag="True" DragStarting="OnDragStarting" DropCompleted="OnDropCompleted" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Border WidthRequest="22" HeightRequest="22" StrokeThickness="0" StrokeShape="RoundRectangle 11"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}">
+                    <Label x:Name="PositionLabel" FontFamily="InterSemiBold" FontSize="11" HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                </Border>
+            </HorizontalStackLayout>
+
+            <!-- On or off. It sits above the card's button, so switching never opens the process. -->
+            <Switch x:Name="EnabledSwitch" Grid.Column="2" Style="{StaticResource SettingToggle}" HorizontalOptions="End"
+                    IsToggled="True" Toggled="OnEnabledToggled" />
+
+            <VerticalStackLayout x:Name="MoveButtons" Grid.Column="3" Margin="24,0,0,0" Spacing="4" WidthRequest="28"
+                                 VerticalOptions="Center" IsVisible="False">
+                <Grid x:Name="MoveUpHost" WidthRequest="28" HeightRequest="28">
+                    <Border StrokeShape="RoundRectangle 6" StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}" />
+                    <Label Style="{StaticResource Icon}" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center"
+                           Text="{x:Static components:Icons.ChevronUp}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Button x:Name="MoveUpButton" Style="{StaticResource GhostButton}" WidthRequest="28" HeightRequest="28"
+                            MinimumWidthRequest="28" MinimumHeightRequest="28" Padding="0" CornerRadius="6"
+                            Clicked="OnMoveUpClicked" />
+                </Grid>
+                <Grid x:Name="MoveDownHost" WidthRequest="28" HeightRequest="28">
+                    <Border StrokeShape="RoundRectangle 6" StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}" />
+                    <Label Style="{StaticResource Icon}" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center"
+                           Text="{x:Static components:Icons.ChevronDown}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Button x:Name="MoveDownButton" Style="{StaticResource GhostButton}" WidthRequest="28" HeightRequest="28"
+                            MinimumWidthRequest="28" MinimumHeightRequest="28" Padding="0" CornerRadius="6"
+                            Clicked="OnMoveDownClicked" />
+                </Grid>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Where a dragged card will land: an accent line with a dot, above or below this card. -->
+        <Grid x:Name="DropLineTop" IsVisible="False" InputTransparent="True" VerticalOptions="Start" TranslationY="-5"
+              ColumnDefinitions="Auto,*" HeightRequest="8">
+            <Ellipse WidthRequest="8" HeightRequest="8" Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+            <BoxView Grid.Column="1" HeightRequest="2" VerticalOptions="Center"
+                     Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+        </Grid>
+        <Grid x:Name="DropLineBottom" IsVisible="False" InputTransparent="True" VerticalOptions="End" TranslationY="5"
+              ColumnDefinitions="Auto,*" HeightRequest="8">
+            <Ellipse WidthRequest="8" HeightRequest="8" Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+            <BoxView Grid.Column="1" HeightRequest="2" VerticalOptions="Center"
+                     Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+        </Grid>
+    </Grid>
+</ContentView>

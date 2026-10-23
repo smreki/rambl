@@ -1,0 +1,1276 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-10",
+  "runtimes": [
+    {
+      "id": "parakeet.cpp",
+      "name": "parakeet.cpp",
+      "formats": [
+        "gguf"
+      ],
+      "platforms": [
+        "windows-x64",
+        "macos-arm64",
+        "macos-x64"
+      ],
+      "automaticOrder": 3,
+      "license": "MIT",
+      "project": "https://github.com/mudler/parakeet.cpp"
+    },
+    {
+      "id": "sherpa-onnx",
+      "name": "sherpa-onnx",
+      "formats": [
+        "onnx"
+      ],
+      "platforms": [
+        "windows-x64",
+        "macos-arm64",
+        "macos-x64"
+      ],
+      "automaticOrder": 1,
+      "license": "Apache-2.0",
+      "project": "https://github.com/k2-fsa/sherpa-onnx"
+    },
+    {
+      "id": "transcribe.cpp",
+      "name": "transcribe.cpp",
+      "formats": [
+        "gguf"
+      ],
+      "platforms": [
+        "windows-x64",
+        "macos-arm64",
+        "macos-x64"
+      ],
+      "automaticOrder": 2,
+      "license": "MIT",
+      "project": "https://github.com/handy-computer/transcribe.cpp"
+    }
+  ],
+  "models": [
+    {
+      "id": "cohere-transcribe-03-2026",
+      "name": "Cohere Transcribe 03-2026 2B",
+      "family": "cohere-transcribe",
+      "purpose": {
+        "label": "Polished transcripts",
+        "icon": "text"
+      },
+      "cpuFit": "good",
+      "languages": {
+        "label": "14 languages",
+        "codes": [
+          "ar",
+          "de",
+          "el",
+          "en",
+          "es",
+          "fr",
+          "it",
+          "ja",
+          "ko",
+          "nl",
+          "pl",
+          "pt",
+          "vi",
+          "zh"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/CohereLabs/cohere-transcribe-03-2026",
+      "ramMbEstimate": [
+        2000,
+        4000
+      ],
+      "notes": [
+        "The official repository is gated, so only open copies are listed.",
+        "In the sherpa-onnx bundle, encoder.int8.onnx.data must stay in the same folder as encoder.int8.onnx."
+      ],
+      "artifacts": [
+        {
+          "id": "sherpa-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "sherpa-onnx",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "csukuangfj2/sherpa-onnx-cohere-transcribe-14-lang-int8-2026-04-01",
+            "revision": "156a470cf08eefe706a0004f3c52d9ee567ca7a0"
+          },
+          "files": [
+            {
+              "path": "encoder.int8.onnx",
+              "bytes": 3090822,
+              "sha256": "cf704f8cfa90e3f0a76f9ffc05998bdf00ba9ae983192c14a85a3a5eb008b367"
+            },
+            {
+              "path": "encoder.int8.onnx.data",
+              "bytes": 2731503072,
+              "sha256": "bcf1b7148c8518ae52df1ad2d2fc2b4e89261ea23e6c874eef1d9f55bcbaa4a3"
+            },
+            {
+              "path": "decoder.int8.onnx",
+              "bytes": 153250705,
+              "sha256": "8372ca6c8ff4db8b916ca3592f5c757a715e691b9edec751ba19b29fc854baf9"
+            },
+            {
+              "path": "tokens.txt",
+              "bytes": 207437,
+              "sha256": "013ede043ae2480e3a9205cc34550d9686100cc682bacc90f702facdfbb93035"
+            }
+          ]
+        },
+        {
+          "id": "transcribe-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/cohere-transcribe-03-2026-gguf",
+            "revision": "ab667acedcb5d8d56837ef3ed3568c3ad50dde47"
+          },
+          "files": [
+            {
+              "path": "cohere-transcribe-03-2026-Q4_K_M.gguf",
+              "bytes": 1558162944,
+              "sha256": "0ea56826d8bd5d74b7143a4a04e022dc1bb75452cfae49d98b6acb0c1d16a1fb"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "distil-whisper-large-v3.5",
+      "name": "Distil-Whisper large-v3.5",
+      "family": "whisper",
+      "purpose": {
+        "label": "Fast English transcription",
+        "icon": "zap"
+      },
+      "cpuFit": "good",
+      "languages": {
+        "label": "English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/distil-whisper/distil-large-v3.5",
+      "ramMbEstimate": [
+        2000,
+        3000
+      ],
+      "artifacts": [
+        {
+          "id": "sherpa-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "sherpa-onnx",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "csukuangfj/sherpa-onnx-whisper-distil-large-v3.5",
+            "revision": "2933155a51e982b9ebd9ca3b7fb80fc78162fa64"
+          },
+          "files": [
+            {
+              "path": "distil-large-v3.5-encoder.int8.onnx",
+              "bytes": 668147593,
+              "sha256": "c30727100ba2dfbe64f2309a2ec44a5049b005d8a6c0acce49952f635083cbdb"
+            },
+            {
+              "path": "distil-large-v3.5-decoder.int8.onnx",
+              "bytes": 314871757,
+              "sha256": "7cef98c7b5491ba52a520fd61da957a62e6e64c702c6c8aeac8cdfb146cbdb6a"
+            },
+            {
+              "path": "distil-large-v3.5-tokens.txt",
+              "bytes": 816730,
+              "sha256": "b34b360dbb493e781e479794586d661700670d65564001f23024971d1f2fa126"
+            }
+          ]
+        },
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "Glimpse-Dictation/Distil-Whisper-Large-V3.5-gguf",
+            "revision": "2e337d23746bb8211f70b38a4edda6349125ff38"
+          },
+          "files": [
+            {
+              "path": "distil-large-v3.5-Q8_0.gguf",
+              "bytes": 830499360,
+              "sha256": "a6f012fa357e28fdc4c4a5108341571add35e77d576c87c3eda7b41033d8cfe2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "moonshine-streaming-medium",
+      "name": "Moonshine Streaming Medium",
+      "family": "moonshine",
+      "purpose": {
+        "label": "Better streaming accuracy",
+        "icon": "target"
+      },
+      "cpuFit": "excellent",
+      "languages": {
+        "label": "English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/moonshine-ai/moonshine-streaming-medium",
+      "ramMbEstimate": [
+        200,
+        1000
+      ],
+      "artifacts": [
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "native"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/moonshine-streaming-medium-gguf",
+            "revision": "0f99e956a9e63d591ddd7f2a20dfead255e96c68"
+          },
+          "files": [
+            {
+              "path": "moonshine-streaming-medium-Q8_0.gguf",
+              "bytes": 295793568,
+              "sha256": "f7c9564249b508f6012927ec4f9e536087da53a7047f858ca9975bea5f75299e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "moonshine-streaming-small",
+      "name": "Moonshine Streaming Small",
+      "family": "moonshine",
+      "purpose": {
+        "label": "Fast and compact",
+        "icon": "zap"
+      },
+      "cpuFit": "excellent",
+      "languages": {
+        "label": "English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/moonshine-ai/moonshine-streaming-small",
+      "ramMbEstimate": [
+        200,
+        1000
+      ],
+      "artifacts": [
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "native"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/moonshine-streaming-small-gguf",
+            "revision": "7e32b1b3dfce5d3a38dad59630ffce608f15c4aa"
+          },
+          "files": [
+            {
+              "path": "moonshine-streaming-small-Q8_0.gguf",
+              "bytes": 198506848,
+              "sha256": "d03670f69629b649085d0f44a63d97668b4119117cc9611a4e4ad94341713dfc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "moonshine-streaming-tiny",
+      "name": "Moonshine Streaming Tiny",
+      "family": "moonshine",
+      "purpose": {
+        "label": "Lowest memory",
+        "icon": "feather"
+      },
+      "cpuFit": "excellent",
+      "languages": {
+        "label": "English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/moonshine-ai/moonshine-streaming-tiny",
+      "ramMbEstimate": [
+        200,
+        1000
+      ],
+      "artifacts": [
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "native"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/moonshine-streaming-tiny-gguf",
+            "revision": "f33fef628bc4d7ddb419384b1cf28ee83b662b06"
+          },
+          "files": [
+            {
+              "path": "moonshine-streaming-tiny-Q8_0.gguf",
+              "bytes": 50462816,
+              "sha256": "930e4622ad3a24158b91406c30c977fa6a26b34cb32d6ac3e57cfb23383a869e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nemotron-3.5-asr-streaming-0.6b",
+      "name": "Nemotron 3.5 ASR Streaming 0.6B",
+      "family": "nemotron",
+      "purpose": {
+        "label": "Multilingual streaming",
+        "icon": "globe"
+      },
+      "cpuFit": "good",
+      "languages": {
+        "label": "35 languages",
+        "selectable": true,
+        "codes": [
+          "en",
+          "es",
+          "de",
+          "fr",
+          "it",
+          "ar",
+          "ja",
+          "ko",
+          "pt",
+          "ru",
+          "hi",
+          "zh",
+          "vi",
+          "he",
+          "nl",
+          "cs",
+          "da",
+          "pl",
+          "no",
+          "sv",
+          "th",
+          "tr",
+          "bg",
+          "el",
+          "et",
+          "fi",
+          "hr",
+          "hu",
+          "lt",
+          "lv",
+          "ro",
+          "sk",
+          "uk",
+          "mt",
+          "sl"
+        ]
+      },
+      "license": {
+        "id": "OpenMDW-1.1"
+      },
+      "source": "https://huggingface.co/nvidia/nemotron-3.5-asr-streaming-0.6b",
+      "ramMbEstimate": [
+        1000,
+        1500
+      ],
+      "notes": [
+        "The sherpa-onnx bundle uses 160 ms chunks; 80, 560 and 1120 ms bundles exist and can be added as artifacts."
+      ],
+      "artifacts": [
+        {
+          "id": "sherpa-int8-160ms",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "sherpa-onnx",
+              "streaming": "native"
+            }
+          ],
+          "latencyMs": 160,
+          "host": {
+            "type": "huggingface",
+            "repo": "csukuangfj2/sherpa-onnx-nemotron-3.5-asr-streaming-0.6b-160ms-int8-2026-06-11",
+            "revision": "b3a4dbde84fba1a13cb4270e6730b525ac6a2db6"
+          },
+          "files": [
+            {
+              "path": "encoder.int8.onnx",
+              "bytes": 657601518,
+              "sha256": "e1b39e5e16bef578a54ed2fba5f031438e000cc36c3ea2ca49d55699d5baebd4"
+            },
+            {
+              "path": "decoder.int8.onnx",
+              "bytes": 14978075,
+              "sha256": "19f9c98fc6d0a2c33a65a43b36fdb2e914c26c0aa9764be3aebc502a1e982fb0"
+            },
+            {
+              "path": "joiner.int8.onnx",
+              "bytes": 9504438,
+              "sha256": "4101c7c679a0bc30483794b27a059e34e79232aa2068d78d51231a22c8b0d7ce"
+            },
+            {
+              "path": "tokens.txt",
+              "bytes": 131440,
+              "sha256": "729cc103155bafa785f9cd45746cd41cabe97eab7182fc04d594129587958f8a"
+            }
+          ]
+        },
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "native"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/nemotron-3.5-asr-streaming-0.6b-gguf",
+            "revision": "8139c4ec14bdc45c361adf8d57c27c28e7478272"
+          },
+          "files": [
+            {
+              "path": "nemotron-3.5-asr-streaming-0.6b-Q8_0.gguf",
+              "bytes": 751094240,
+              "sha256": "b94545b313b3223fda7b2857a52681da813935c2127643d1e9ff0c23d988089c"
+            }
+          ]
+        },
+        {
+          "id": "parakeet-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "parakeet.cpp",
+              "streaming": "native"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mudler/parakeet-cpp-gguf",
+            "revision": "741158ae71e64ef5c89385862c18f777d07a97a1"
+          },
+          "files": [
+            {
+              "path": "nemotron-3.5-asr-streaming-0.6b-q8_0.gguf",
+              "bytes": 983696512,
+              "sha256": "ba2f13eccd4a5245be728f77e6149bd6a4fdcdd133ff2e08ac6005bcef7a99f1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parakeet-realtime-eou-120m",
+      "name": "Parakeet Realtime EOU 120M",
+      "family": "parakeet",
+      "purpose": {
+        "label": "Fast voice responses",
+        "icon": "messages-square"
+      },
+      "cpuFit": "excellent",
+      "languages": {
+        "label": "English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "NVIDIA-Open-Model-License"
+      },
+      "source": "https://huggingface.co/nvidia/parakeet_realtime_eou_120m-v1",
+      "ramMbEstimate": [
+        500,
+        1000
+      ],
+      "notes": [
+        "Emits an end-of-utterance token; no punctuation or capitalization."
+      ],
+      "artifacts": [
+        {
+          "id": "parakeet-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "parakeet.cpp",
+              "streaming": "native"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mudler/parakeet-cpp-gguf",
+            "revision": "741158ae71e64ef5c89385862c18f777d07a97a1"
+          },
+          "files": [
+            {
+              "path": "realtime_eou_120m-v1-q8_0.gguf",
+              "bytes": 176001472,
+              "sha256": "62616b914d6f5a683a5dea672df055b57de5c49dddf871b8b44b9c814dc3d896"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parakeet-tdt-0.6b-v3",
+      "name": "Parakeet TDT 0.6B v3",
+      "family": "parakeet",
+      "purpose": {
+        "label": "Balanced choice",
+        "icon": "scale"
+      },
+      "cpuFit": "good",
+      "languages": {
+        "label": "25 European languages",
+        "codes": [
+          "en",
+          "es",
+          "fr",
+          "de",
+          "bg",
+          "hr",
+          "cs",
+          "da",
+          "nl",
+          "et",
+          "fi",
+          "el",
+          "hu",
+          "it",
+          "lv",
+          "lt",
+          "mt",
+          "pl",
+          "pt",
+          "ro",
+          "sk",
+          "sl",
+          "sv",
+          "ru",
+          "uk"
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "attribution": "NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0). Converted and quantized (ONNX int8, GGUF) for local inference; changes were made."
+      },
+      "source": "https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3",
+      "artifacts": [
+        {
+          "id": "sherpa-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "sherpa-onnx",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8",
+            "revision": "2bda32ec70b097a55adaa07d9a7173915b43cc78"
+          },
+          "files": [
+            {
+              "path": "encoder.int8.onnx",
+              "bytes": 652184281,
+              "sha256": "acfc2b4456377e15d04f0243af540b7fe7c992f8d898d751cf134c3a55fd2247"
+            },
+            {
+              "path": "decoder.int8.onnx",
+              "bytes": 11845275,
+              "sha256": "179e50c43d1a9de79c8a24149a2f9bac6eb5981823f2a2ed88d655b24248db4e"
+            },
+            {
+              "path": "joiner.int8.onnx",
+              "bytes": 6355277,
+              "sha256": "3164c13fc2821009440d20fcb5fdc78bff28b4db2f8d0f0b329101719c0948b3"
+            },
+            {
+              "path": "tokens.txt",
+              "bytes": 93939,
+              "sha256": "d58544679ea4bc6ac563d1f545eb7d474bd6cfa467f0a6e2c1dc1c7d37e3c35d"
+            }
+          ]
+        },
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/parakeet-tdt-0.6b-v3-gguf",
+            "revision": "90f082450fcbacdb54e5900c44ef697c9ea59622"
+          },
+          "files": [
+            {
+              "path": "parakeet-tdt-0.6b-v3-Q8_0.gguf",
+              "bytes": 739508576,
+              "sha256": "5859f77944efcd8eafa23a6350731960b2b55b2203df51f319665c807d802cc7"
+            }
+          ]
+        },
+        {
+          "id": "parakeet-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "parakeet.cpp",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mudler/parakeet-cpp-gguf",
+            "revision": "741158ae71e64ef5c89385862c18f777d07a97a1"
+          },
+          "files": [
+            {
+              "path": "tdt-0.6b-v3-q8_0.gguf",
+              "bytes": 940663680,
+              "sha256": "4d69a4a6683f4f2d952bad794c1357ca6eb628027695b4699c5a9ad4cd07d757"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parakeet-ultra",
+      "name": "Parakeet Ultra",
+      "family": "parakeet",
+      "purpose": {
+        "label": "Higher accuracy",
+        "icon": "target"
+      },
+      "cpuFit": "heavy",
+      "languages": {
+        "label": "25 European languages",
+        "codes": [
+          "en",
+          "de",
+          "fr",
+          "es",
+          "it",
+          "pt",
+          "ru",
+          "uk",
+          "hr",
+          "sl",
+          "lv",
+          "lt",
+          "et",
+          "fi",
+          "sv",
+          "da",
+          "nl",
+          "pl",
+          "cs",
+          "sk",
+          "hu",
+          "ro",
+          "bg",
+          "el",
+          "mt"
+        ]
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "attribution": "Parakeet Ultra by Moondream, derived from NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0). Converted to GGUF for local inference; changes were made."
+      },
+      "source": "https://huggingface.co/moondream/parakeet-ultra",
+      "ramMbEstimate": [
+        900,
+        1500
+      ],
+      "artifacts": [
+        {
+          "id": "parakeet-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "parakeet.cpp",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mudler/parakeet-cpp-gguf",
+            "revision": "741158ae71e64ef5c89385862c18f777d07a97a1"
+          },
+          "files": [
+            {
+              "path": "ultra-q8_0.gguf",
+              "bytes": 941517728,
+              "sha256": "c2fb452a9df468a141012b01c8c168a25ce93f710897c7de6e353c6cc250986a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parakeet-unified-en-0.6b",
+      "name": "Parakeet Unified EN 0.6B",
+      "family": "parakeet",
+      "purpose": {
+        "label": "English all-rounder",
+        "icon": "audio-lines"
+      },
+      "cpuFit": "good",
+      "languages": {
+        "label": "English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "NVIDIA-Open-Model-License"
+      },
+      "source": "https://huggingface.co/nvidia/parakeet-unified-en-0.6b",
+      "ramMbEstimate": [
+        1000,
+        1500
+      ],
+      "notes": [
+        "The sherpa-onnx bundle is the offline int8 model; streaming comes from transcribe.cpp.",
+        "The handy-computer GGUF card says CC-BY-4.0 but NVIDIA lists the NVIDIA Open Model License; the upstream license is used here."
+      ],
+      "artifacts": [
+        {
+          "id": "sherpa-int8-offline",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "sherpa-onnx",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "csukuangfj2/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming",
+            "revision": "8c3a10fb13408c7a7054f6898958bf1c64a8d6c7"
+          },
+          "files": [
+            {
+              "path": "encoder.int8.onnx",
+              "bytes": 654040552,
+              "sha256": "6716910b7a0833997fec7a410494c995d70124001a0e9b66d6370d6aced577e0"
+            },
+            {
+              "path": "decoder.int8.onnx",
+              "bytes": 7257753,
+              "sha256": "a5e223392c90e75f8144cdb5eb95af7625db389e39edef2bd1a9c872b3298fe6"
+            },
+            {
+              "path": "joiner.int8.onnx",
+              "bytes": 1735860,
+              "sha256": "869f43f7d24595c55581ad3bf249a935fb8a71389fbdaa7504b9f46f93140f8a"
+            },
+            {
+              "path": "tokens.txt",
+              "bytes": 8952,
+              "sha256": "dc0b4584ab2e4ddbf888425c076c61b736e7356a015250db7d307e6f1a8188ff"
+            }
+          ]
+        },
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "native"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/parakeet-unified-en-0.6b-gguf",
+            "revision": "d5249700b2382bf5c5024c2421d101b8db54a629"
+          },
+          "files": [
+            {
+              "path": "parakeet-unified-en-0.6b-Q8_0.gguf",
+              "bytes": 731357568,
+              "sha256": "4b50b6dd862bf6e346929aaf4f5eaacec003bfa3f56462d6c874b41ef2f38795"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3-asr-0.6b",
+      "name": "Qwen3-ASR 0.6B",
+      "family": "qwen3-asr",
+      "purpose": {
+        "label": "Languages and dialects",
+        "icon": "languages"
+      },
+      "cpuFit": "good",
+      "languages": {
+        "label": "30 languages + 22 Chinese dialects",
+        "codes": [
+          "zh",
+          "en",
+          "yue",
+          "ar",
+          "de",
+          "fr",
+          "es",
+          "pt",
+          "id",
+          "it",
+          "ko",
+          "ru",
+          "th",
+          "vi",
+          "ja",
+          "tr",
+          "hi",
+          "ms",
+          "nl",
+          "sv",
+          "da",
+          "fi",
+          "pl",
+          "cs",
+          "fil",
+          "fa",
+          "el",
+          "hu",
+          "mk",
+          "ro"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B",
+      "ramMbEstimate": [
+        2860,
+        2860
+      ],
+      "notes": [
+        "Language codes cover the 30 languages; the 22 Chinese dialects have no ISO codes and are described by the label only."
+      ],
+      "artifacts": [
+        {
+          "id": "sherpa-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "sherpa-onnx",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25",
+            "revision": "68818b2313fe77bd06f6a7c5068ff3ef59d02b8a"
+          },
+          "files": [
+            {
+              "path": "conv_frontend.onnx",
+              "bytes": 44148281,
+              "sha256": "d22dc4423e0940e49884e903d2ea2f7e5567c14fc1aed97e4e26d6b8f208ef9e"
+            },
+            {
+              "path": "encoder.int8.onnx",
+              "bytes": 182491662,
+              "sha256": "60748d3e6744a57c9c91e1b17424a6c2990567e8adceb0783940c03ed98fa9d9"
+            },
+            {
+              "path": "decoder.int8.onnx",
+              "bytes": 755914231,
+              "sha256": "4f6885be5959ae26af3089d38ee7972c5fafbeeb1cf8d5e76eab6d8b61ca5771"
+            },
+            {
+              "path": "tokenizer/vocab.json",
+              "bytes": 2776833,
+              "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+            },
+            {
+              "path": "tokenizer/tokenizer_config.json",
+              "bytes": 12487,
+              "sha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+            },
+            {
+              "path": "tokenizer/merges.txt",
+              "bytes": 1671853,
+              "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+            }
+          ]
+        },
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/Qwen3-ASR-0.6B-gguf",
+            "revision": "28c66fba077f1359a42b52c55b618a24cdb6e0e7"
+          },
+          "files": [
+            {
+              "path": "Qwen3-ASR-0.6B-Q8_0.gguf",
+              "bytes": 850423456,
+              "sha256": "f081b2d5e23bd669d92cc331d722a8a0681943b8e6f34b48996fd5c319b5acd8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3-asr-1.7b",
+      "name": "Qwen3-ASR 1.7B",
+      "family": "qwen3-asr",
+      "purpose": {
+        "label": "High accuracy",
+        "icon": "target"
+      },
+      "cpuFit": "heavy",
+      "languages": {
+        "label": "30 languages + 22 Chinese dialects",
+        "codes": [
+          "zh",
+          "en",
+          "yue",
+          "ar",
+          "de",
+          "fr",
+          "es",
+          "pt",
+          "id",
+          "it",
+          "ko",
+          "ru",
+          "th",
+          "vi",
+          "ja",
+          "tr",
+          "hi",
+          "ms",
+          "nl",
+          "sv",
+          "da",
+          "fi",
+          "pl",
+          "cs",
+          "fil",
+          "fa",
+          "el",
+          "hu",
+          "mk",
+          "ro"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3-ASR-1.7B",
+      "ramMbEstimate": [
+        4100,
+        4100
+      ],
+      "notes": [
+        "Q4_K_M is listed instead of Q8_0 because the Q8_0 file is about 2.2 GB."
+      ],
+      "artifacts": [
+        {
+          "id": "transcribe-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/Qwen3-ASR-1.7B-gguf",
+            "revision": "3555bd238a8572bbace3ebf60d23b036dc0a5dbe"
+          },
+          "files": [
+            {
+              "path": "Qwen3-ASR-1.7B-Q4_K_M.gguf",
+              "bytes": 1319830496,
+              "sha256": "b7afe3674f653fa84f712ed2440353c6e7cf7f93697fef76b05a26538b24844e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "whisper-large-v3-turbo",
+      "name": "Whisper large-v3-turbo",
+      "family": "whisper",
+      "purpose": {
+        "label": "Broad language support",
+        "icon": "globe"
+      },
+      "cpuFit": "good",
+      "languages": {
+        "label": "~100 languages",
+        "codes": [
+          "en",
+          "zh",
+          "de",
+          "es",
+          "ru",
+          "ko",
+          "fr",
+          "ja",
+          "pt",
+          "tr",
+          "pl",
+          "ca",
+          "nl",
+          "ar",
+          "sv",
+          "it",
+          "id",
+          "hi",
+          "fi",
+          "vi",
+          "he",
+          "uk",
+          "el",
+          "ms",
+          "cs",
+          "ro",
+          "da",
+          "hu",
+          "ta",
+          "no",
+          "th",
+          "ur",
+          "hr",
+          "bg",
+          "lt",
+          "la",
+          "mi",
+          "ml",
+          "cy",
+          "sk",
+          "te",
+          "fa",
+          "lv",
+          "bn",
+          "sr",
+          "az",
+          "sl",
+          "kn",
+          "et",
+          "mk",
+          "br",
+          "eu",
+          "is",
+          "hy",
+          "ne",
+          "mn",
+          "bs",
+          "kk",
+          "sq",
+          "sw",
+          "gl",
+          "mr",
+          "pa",
+          "si",
+          "km",
+          "sn",
+          "yo",
+          "so",
+          "af",
+          "oc",
+          "ka",
+          "be",
+          "tg",
+          "sd",
+          "gu",
+          "am",
+          "yi",
+          "lo",
+          "uz",
+          "fo",
+          "ht",
+          "ps",
+          "tk",
+          "nn",
+          "mt",
+          "sa",
+          "lb",
+          "my",
+          "bo",
+          "tl",
+          "mg",
+          "as",
+          "tt",
+          "haw",
+          "ln",
+          "ha",
+          "ba",
+          "jw",
+          "su"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/openai/whisper-large-v3-turbo",
+      "ramMbEstimate": [
+        1300,
+        2500
+      ],
+      "notes": [
+        "The handy-computer GGUF card says Apache-2.0 but OpenAI lists MIT; the upstream license is used here."
+      ],
+      "artifacts": [
+        {
+          "id": "sherpa-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "sherpa-onnx",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "csukuangfj/sherpa-onnx-whisper-turbo",
+            "revision": "2ca6ff69fc878651b770880507669577ac41c2ff"
+          },
+          "files": [
+            {
+              "path": "turbo-encoder.int8.onnx",
+              "bytes": 674716297,
+              "sha256": "b02dcdf54f348741e93fe732b67d933c8dcb6735655f710640143081db38878b"
+            },
+            {
+              "path": "turbo-decoder.int8.onnx",
+              "bytes": 361080764,
+              "sha256": "20accd02388482eb3a46bd615631adfdc85e1eb2c7db9ea3f02a40ffe6b81547"
+            },
+            {
+              "path": "turbo-tokens.txt",
+              "bytes": 816730,
+              "sha256": "b34b360dbb493e781e479794586d661700670d65564001f23024971d1f2fa126"
+            }
+          ]
+        },
+        {
+          "id": "transcribe-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "transcribe.cpp",
+              "streaming": "none"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "handy-computer/whisper-large-v3-turbo-gguf",
+            "revision": "ceea6c8a94a21ab85be244d311e874a39344dbf5"
+          },
+          "files": [
+            {
+              "path": "whisper-large-v3-turbo-Q8_0.gguf",
+              "bytes": 886381760,
+              "sha256": "b2e30cc286bc9f3aba4db9099fc7403543497c05ce7100d0d83091ddfd25a183"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

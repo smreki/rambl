@@ -1,0 +1,163 @@
+namespace Rambl.Components;
+
+/// <summary>
+/// Lucide icon font codepoints (Resources/Fonts/Lucide.ttf, lucide-static 1.48.0).
+/// Look up new ones in lucide-static's font/lucide.css, add the constant, and add it to <see cref="FromName"/>.
+/// </summary>
+public static class Icons
+{
+    public const string ArrowLeft = "\ue048";
+    public const string ArrowRight = "";
+    public const string AudioLines = "";
+    public const string Braces = "\ue36a";
+    public const string Brain = "\ue3c6";
+    public const string CalendarClock = "\ue304";
+    public const string Captions = "";
+    public const string Check = "";
+    public const string ChevronDown = "";
+    public const string ChevronRight = "";
+    public const string ChevronUp = "";
+    public const string CircleAlert ="";
+    public const string CircleCheck = "";
+    public const string CircleSlash = "\ue402";
+    public const string Contrast = "";
+    public const string Copy = "\ue09e";
+    public const string CornerDownRight = "\ue0a2";
+    public const string Cpu = "";
+    public const string Download = "";
+    public const string Feather = "";
+    public const string FlaskConical = "\ue0d5";
+    public const string FolderOpen = "\ue247";
+    public const string Gauge = "\ue1bf";
+    public const string Globe = "";
+    public const string GripVertical = "";
+    public const string Hand = "";
+    public const string HardDrive = "";
+    public const string History = "\ue1f5";
+    public const string Info = "";
+    public const string Keyboard = "";
+    public const string KeyboardOff = "";
+    public const string Languages = "";
+    public const string Laptop = "";
+    public const string Layers = "\ue529";
+    public const string List = "\ue106";
+    public const string ListOrdered = "\ue1d1";
+    public const string Lock = "";
+    public const string MessageSquareText = "\ue575";
+    public const string MessagesSquare = "";
+    public const string Mic = "";
+    public const string Moon = "";
+    public const string Mouse = "\ue28e";
+    public const string Palette = "";
+    public const string Pause = "\ue12e";
+    public const string Pencil = "\ue1f9";
+    public const string Play = "\ue13c";
+    public const string Plus = "";
+    public const string Radio ="";
+    public const string Repeat = "";
+    public const string RefreshCw = "\ue145";
+    public const string RotateCcw = "";
+    public const string Route = "\ue53e";
+    public const string Scale = "";
+    public const string ScrollText = "\ue45f";
+    public const string Search = "";
+    public const string Settings = "\ue154";
+    public const string Shapes = "\ue4b3";
+    public const string SkipForward = "";
+    public const string Speech = "\ue51e";
+    public const string Sun = "";
+    public const string Tags = "\ue35c";
+    public const string Target = "";
+    public const string Text = "";
+    public const string Timer = "\ue1e0";
+    public const string ToggleRight = "";
+    public const string TriangleAlert = "";
+    public const string Trash2 ="";
+    public const string Volume2 = "";
+    public const string WandSparkles = "\ue357";
+    public const string Wrench = "\ue1b1";
+    public const string X = "";
+    public const string Zap = "";
+
+
+    private static readonly Dictionary<string, string> ByName = new(StringComparer.Ordinal)
+    {
+        ["arrow-left"] = ArrowLeft,
+        ["arrow-right"] = ArrowRight,
+        ["audio-lines"] = AudioLines,
+        ["braces"] = Braces,
+        ["brain"] = Brain,
+        ["calendar-clock"] = CalendarClock,
+        ["captions"] = Captions,
+        ["check"] = Check,
+        ["chevron-down"] = ChevronDown,
+        ["chevron-right"] = ChevronRight,
+        ["chevron-up"] = ChevronUp,
+        ["circle-alert"] = CircleAlert,
+        ["circle-check"] = CircleCheck,
+        ["circle-slash"] = CircleSlash,
+        ["contrast"] = Contrast,
+        ["copy"] = Copy,
+        ["corner-down-right"] = CornerDownRight,
+        ["cpu"] = Cpu,
+        ["download"] = Download,
+        ["feather"] = Feather,
+        ["flask-conical"] = FlaskConical,
+        ["folder-open"] = FolderOpen,
+        ["gauge"] = Gauge,
+        ["globe"] = Globe,
+        ["grip-vertical"] = GripVertical,
+        ["hand"] = Hand,
+        ["hard-drive"] = HardDrive,
+        ["history"] = History,
+        ["info"] = Info,
+        ["keyboard"] = Keyboard,
+        ["keyboard-off"] = KeyboardOff,
+        ["languages"] = Languages,
+        ["laptop"] = Laptop,
+        ["layers"] = Layers,
+        ["list"] = List,
+        ["list-ordered"] = ListOrdered,
+        ["lock"] = Lock,
+        ["message-square-text"] = MessageSquareText,
+        ["messages-square"] = MessagesSquare,
+        ["mic"] = Mic,
+        ["moon"] = Moon,
+        ["mouse"] = Mouse,
+        ["palette"] = Palette,
+        ["pause"] = Pause,
+        ["pencil"] = Pencil,
+        ["play"] = Play,
+        ["plus"] = Plus,
+        ["radio"] = Radio,
+        ["refresh-cw"] = RefreshCw,
+        ["repeat"] = Repeat,
+        ["rotate-ccw"] = RotateCcw,
+        ["route"] = Route,
+        ["scale"] = Scale,
+        ["scroll-text"] = ScrollText,
+        ["search"] = Search,
+        ["settings"] = Settings,
+        ["shapes"] = Shapes,
+        ["skip-forward"] = SkipForward,
+        ["speech"] = Speech,
+        ["sun"] = Sun,
+        ["tags"] = Tags,
+        ["target"] = Target,
+        ["text"] = Text,
+        ["timer"] = Timer,
+        ["toggle-right"] = ToggleRight,
+        ["triangle-alert"] = TriangleAlert,
+        ["trash-2"] = Trash2,
+        ["volume-2"] = Volume2,
+        ["wand-sparkles"] = WandSparkles,
+        ["wrench"] = Wrench,
+        ["x"] = X,
+        ["zap"] = Zap,
+    };
+
+    /// <summary>Finds an icon by its Lucide name, for icons named in data such as the model catalog.</summary>
+    /// <param name="name">The Lucide icon name, for example <c>messages-square</c>.</param>
+    /// <returns>The glyph, or an empty string when the icon has not been added to this class.</returns>
+    public static string FromName(string? name) => name is not null && ByName.TryGetValue(name, out var glyph) ? glyph : string.Empty;
+}

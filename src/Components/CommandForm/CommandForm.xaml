@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.CommandForm">
+    <!-- The Voice Command Row · Editing of the design: a command opened in place, with an accent outline. -->
+    <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Padding="16"
+            Stroke="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <VerticalStackLayout Spacing="14">
+            <Grid ColumnDefinitions="*,240" ColumnSpacing="12">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Name" FontFamily="InterMedium" FontSize="12" />
+                    <components:TextInput x:Name="NameInput" MaxLength="60" Placeholder="For example, Select all"
+                                          AccessibleName="Command name" AutomationId="CommandName"
+                                          PropertyChanged="OnInputPropertyChanged" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                    <Label Text="Action" FontFamily="InterMedium" FontSize="12" />
+                    <!-- Press keys is the only action so far. -->
+                    <components:SelectInput x:Name="ActionSelect" Glyph="{x:Static components:Icons.Keyboard}"
+                                            AccessibleName="Action" AutomationId="CommandAction" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <VerticalStackLayout Spacing="6">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="Description" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center" />
+                    <Label Text="The model reads this" FontSize="12" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                </HorizontalStackLayout>
+                <components:TextArea x:Name="DescriptionArea" MinimumTextHeight="56" MaximumTextHeight="140"
+                                     Placeholder="How you would ask for it, a few ways: select all the text, select everything"
+                                     AccessibleName="Command description" AutomationId="CommandDescription"
+                                     PropertyChanged="OnInputPropertyChanged" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="10">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="Keys" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center" />
+                    <Label Text="Pressed in order, one after another" FontSize="12" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                </HorizontalStackLayout>
+                <FlexLayout x:Name="PressList" Wrap="Wrap" AlignItems="Center" />
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout x:Name="ValidationRow" Spacing="6" IsVisible="False">
+                <Label Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center" Text="{x:Static components:Icons.TriangleAlert}"
+                       TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                <Label x:Name="ValidationLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                       AutomationId="CommandValidation" />
+            </HorizontalStackLayout>
+
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+                <components:IconButton x:Name="DeleteButton" HeightRequest="32" Glyph="{x:Static components:Icons.Trash2}" GlyphSize="14"
+                                       Text="Delete command" IsDestructive="True" AccessibleName="Delete command"
+                                       AutomationId="DeleteCommand" Clicked="OnDeleteClicked" />
+                <components:IconButton Grid.Column="2" HeightRequest="32" WidthRequest="80" Text="Cancel" IsOutlined="True"
+                                       AccessibleName="Cancel editing the command" AutomationId="CancelCommand" Clicked="OnCancelClicked" />
+                <components:IconButton x:Name="DoneButton" Grid.Column="3" HeightRequest="32" WidthRequest="80" Text="Done"
+                                       IsPrimary="True" AccessibleName="Done editing the command" AutomationId="DoneCommand"
+                                       Clicked="OnDoneClicked" />
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.FilterToggle"
+             HeightRequest="32" HorizontalOptions="Start">
+    <!-- The outline shows the on/off look and the icon and label sit on it. A real button is laid over everything: it supplies
+         focus, Enter/Space activation and the hover tint, and being on top it receives every click (on Windows the labels would
+         otherwise swallow clicks on the icon and text). It is transparent, so the labels show through. -->
+    <Grid>
+        <Border x:Name="Outline" StrokeShape="RoundRectangle 6" StrokeThickness="1" />
+        <HorizontalStackLayout Spacing="6" Padding="10,0" HorizontalOptions="Center" VerticalOptions="Center">
+            <!-- The Lucide glyph sits about a pixel above the text's visual center, so nudge it down. -->
+            <Label x:Name="GlyphLabel" Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center"
+                   TranslationY="1" />
+            <Label x:Name="TextLabel" FontSize="12" VerticalOptions="Center" VerticalTextAlignment="Center" />
+        </HorizontalStackLayout>
+        <Button x:Name="Surface" Style="{StaticResource GhostButton}" Clicked="OnClicked" />
+    </Grid>
+</ContentView>

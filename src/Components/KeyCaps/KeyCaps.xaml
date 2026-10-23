@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.KeyCaps">
+    <!-- The Key Cap component of the design, once per key: a combination joins its keys with a muted plus, and a sequence of
+         presses puts a muted arrow between them. It stays on one line: a wrapping layout has no width to wrap at inside the
+         rows and chips it sits in. -->
+    <HorizontalStackLayout x:Name="Row" />
+</ContentView>

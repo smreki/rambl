@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             xmlns:views="clr-namespace:Rambl.Views"
+             x:Class="Rambl.Layouts.AppLayout">
+
+    <Grid RowDefinitions="*,1,30"
+          ColumnDefinitions="232,*"
+          BackgroundColor="{AppThemeBinding Light={StaticResource SidebarBgLight}, Dark={StaticResource SidebarBgDark}}">
+
+        <!-- Sidebar -->
+        <Grid Padding="10,12" RowDefinitions="*,Auto">
+            <!-- Groups, top to bottom: History; what runs after a dictation; the models; then the settings, A–Z.
+                 About stays at the bottom. -->
+            <VerticalStackLayout Spacing="2">
+                <components:NavItem x:Name="HistoryNav"
+                                  Glyph="{x:Static components:Icons.History}"
+                                  Text="History"
+                                  Screen="{x:Type views:History}"
+                                  Tapped="OnNavItemTapped" />
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" Margin="10,6" />
+                <components:NavItem x:Name="PostProcessingNav"
+                                  Glyph="{x:Static components:Icons.WandSparkles}"
+                                  Text="Post Processing"
+                                  Screen="{x:Type views:PostProcessing}"
+                                  Tapped="OnNavItemTapped" />
+                <components:NavItem x:Name="VoiceCommandsNav"
+                                  Glyph="{x:Static components:Icons.Speech}"
+                                  Text="Voice Commands"
+                                  Screen="{x:Type views:VoiceCommands}"
+                                  Tapped="OnNavItemTapped" />
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" Margin="10,6" />
+                <components:NavItem x:Name="LanguageModelsNav"
+                                  Glyph="{x:Static components:Icons.Brain}"
+                                  Text="Language Models"
+                                  Screen="{x:Type views:LanguageModels}"
+                                  Tapped="OnNavItemTapped" />
+                <components:NavItem x:Name="ModelsNav"
+                                  Glyph="{x:Static components:Icons.Captions}"
+                                  Text="STT Models"
+                                  Screen="{x:Type views:Models}"
+                                  Tapped="OnNavItemTapped" />
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" Margin="10,6" />
+                <components:NavItem x:Name="AppearanceNav"
+                                  Glyph="{x:Static components:Icons.Palette}"
+                                  Text="Appearance"
+                                  Screen="{x:Type views:Appearance}"
+                                  Tapped="OnNavItemTapped" />
+                <components:NavItem x:Name="AudioNav"
+                                  Glyph="{x:Static components:Icons.Mic}"
+                                  Text="Audio"
+                                  Screen="{x:Type views:Audio}"
+                                  Tapped="OnNavItemTapped" />
+                <components:NavItem x:Name="ControlsNav"
+                                  Glyph="{x:Static components:Icons.Keyboard}"
+                                  Text="Controls"
+                                  Screen="{x:Type views:Controls}"
+                                  Tapped="OnNavItemTapped" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Row="1" Spacing="2">
+                <components:NavItem x:Name="AboutNav"
+                                  Glyph="{x:Static components:Icons.Info}"
+                                  Text="About"
+                                  Screen="{x:Type views:About}"
+                                  Tapped="OnNavItemTapped" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Current screen. The outer border paints the top/left stroke
+             (MAUI Border can't stroke individual sides). -->
+        <Border Grid.Column="1"
+                Padding="1,1,0,0"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 10,0,0,0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}">
+            <Border StrokeThickness="0"
+                    StrokeShape="RoundRectangle 9,0,0,0"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+                <Grid>
+                    <ContentView x:Name="ScreenHost" Padding="32,28" />
+                    <Grid x:Name="PageLoading" IsVisible="False"
+                          BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}"
+                          AutomationId="PageLoading">
+                        <VerticalStackLayout Spacing="12" HorizontalOptions="Center" VerticalOptions="Center">
+                            <ActivityIndicator x:Name="PageLoadingSpinner" WidthRequest="28" HeightRequest="28"
+                                               Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                            <Label x:Name="PageLoadingLabel" Style="{StaticResource PageSubtitle}"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Border>
+
+        <BoxView Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource Divider}" />
+
+        <!-- Status bar -->
+        <Grid Grid.Row="2"
+              Grid.ColumnSpan="2"
+              Padding="14,0"
+              ColumnDefinitions="*,Auto"
+              BackgroundColor="{AppThemeBinding Light={StaticResource SidebarBgLight}, Dark={StaticResource SidebarBgDark}}">
+            <HorizontalStackLayout x:Name="StatusLeft" Spacing="18">
+                <HorizontalStackLayout Spacing="6">
+                    <BoxView WidthRequest="7"
+                             HeightRequest="7"
+                             CornerRadius="3.5"
+                             VerticalOptions="Center"
+                             BackgroundColor="Transparent"
+                             Color="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                    <Label Text="Ready"
+                           FontFamily="InterMedium"
+                           FontSize="12"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <!-- STT model select: opens a menu of the downloaded models. The button lies on top so the whole pill
+                     is clickable and focusable (labels beneath a button swallow clicks on Windows). -->
+                <Grid x:Name="ModelSelect" VerticalOptions="Center" HeightRequest="22">
+                    <Border Padding="8,0,6,0"
+                            StrokeShape="RoundRectangle 4"
+                            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}">
+                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                            <Label x:Name="ActiveModelLabel"
+                                   Text="No model selected"
+                                   FontSize="12"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                            <Label Style="{StaticResource Icon}"
+                                   Text="{x:Static components:Icons.ChevronDown}"
+                                   FontSize="12"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Button x:Name="ModelSelectButton"
+                            Style="{StaticResource GhostButton}"
+                            HeightRequest="22"
+                            MinimumHeightRequest="0"
+                            Padding="0"
+                            CornerRadius="4"
+                            AutomationId="ModelSelect"
+                            Clicked="OnModelSelectClicked" />
+                </Grid>
+
+                <!-- Background model downloads, so progress stays visible on every screen. Clicking opens Browse. -->
+                <Grid x:Name="DownloadStatus" IsVisible="False" VerticalOptions="Center" HeightRequest="22">
+                    <HorizontalStackLayout Spacing="8" Padding="0,0,6,0" VerticalOptions="Center">
+                        <BoxView Style="{StaticResource Divider}"
+                                 WidthRequest="1"
+                                 HeightRequest="12"
+                                 VerticalOptions="Center" />
+                        <Label x:Name="DownloadIcon"
+                               Style="{StaticResource Icon}"
+                               Text="{x:Static components:Icons.Download}"
+                               FontSize="12"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        <Label x:Name="DownloadLabel"
+                               Style="{StaticResource StatusText}"
+                               VerticalOptions="Center"
+                               AutomationId="DownloadStatus" />
+                        <Border x:Name="DownloadTrack"
+                                WidthRequest="72"
+                                HeightRequest="4"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 2"
+                                VerticalOptions="Center"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}">
+                            <BoxView x:Name="DownloadFill"
+                                     HorizontalOptions="Start"
+                                     WidthRequest="0"
+                                     BackgroundColor="Transparent"
+                                     Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        </Border>
+                        <Label x:Name="DownloadPercentLabel"
+                               FontFamily="InterMedium"
+                               FontSize="12"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    </HorizontalStackLayout>
+                    <Button x:Name="DownloadStatusButton"
+                            Style="{StaticResource GhostButton}"
+                            HeightRequest="22"
+                            MinimumHeightRequest="0"
+                            Padding="0"
+                            CornerRadius="4"
+                            AutomationId="DownloadStatusButton"
+                            Clicked="OnDownloadStatusClicked" />
+                </Grid>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                <Label Style="{StaticResource Icon}"
+                       Text="{x:Static components:Icons.Keyboard}"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                <Label x:Name="HotkeyHint" Style="{StaticResource StatusText}" />
+                <HorizontalStackLayout Padding="6,0,0,0" Spacing="10">
+                    <BoxView Style="{StaticResource Divider}"
+                             WidthRequest="1"
+                             HeightRequest="12"
+                             VerticalOptions="Center" />
+                    <Label x:Name="VersionLabel" Style="{StaticResource StatusText}" />
+                </HorizontalStackLayout>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- Menu layer: a nearly transparent backdrop closes the menu when anything else is clicked. -->
+        <Grid x:Name="MenuLayer" Grid.RowSpan="3" Grid.ColumnSpan="2" IsVisible="False">
+            <Grid BackgroundColor="#01000000">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnMenuBackdropTapped" />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <components:OptionMenu x:Name="ModelMenu"
+                                   HorizontalOptions="Start"
+                                   VerticalOptions="End"
+                                   Margin="14,0,0,36"
+                                   OptionChosen="OnModelMenuChosen" />
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

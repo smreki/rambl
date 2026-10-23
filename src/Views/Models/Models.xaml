@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.Models"
+             SizeChanged="OnSizeChanged">
+
+    <Grid x:Name="Column" RowDefinitions="Auto,Auto,*" HorizontalOptions="Center">
+        <VerticalStackLayout Spacing="4">
+            <Label Style="{StaticResource PageTitle}"
+                   Text="STT Models"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Style="{StaticResource PageSubtitle}"
+                   Text="Find and manage the speech recognition models you use for dictation." />
+        </VerticalStackLayout>
+
+        <components:TabStrip x:Name="ModelTabs" Grid.Row="1" Margin="0,24,0,18" Labels="Local,Browse,Cloud"
+                             SelectedIndexChanged="OnTabChanged" />
+
+        <ContentView x:Name="TabContent" Grid.Row="2" />
+    </Grid>
+
+</ContentView>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.Appearance"
+             Loaded="OnLoaded" SizeChanged="OnSizeChanged">
+    <ScrollView>
+        <VerticalStackLayout Spacing="24">
+            <VerticalStackLayout Spacing="4">
+                <Label Style="{StaticResource PageTitle}" Text="Appearance"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Style="{StaticResource PageSubtitle}" Text="Make Rambl feel at home on your desktop." />
+            </VerticalStackLayout>
+            <VerticalStackLayout x:Name="Column" Spacing="28" HorizontalOptions="Start">
+                <VerticalStackLayout x:Name="ThemeSettings" Spacing="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Color theme" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Label Style="{StaticResource PageSubtitle}" LineHeight="1.5"
+                               Text="Choose a light or dark theme, or let Rambl follow your system settings." />
+                    </VerticalStackLayout>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        <components:ThemeChoice x:Name="LightChoice" Content="Light" Value="Light"
+                                              Glyph="{x:Static components:Icons.Sun}" GroupName="AppearanceTheme"
+                                              AutomationId="ThemeLight" CheckedChanged="OnThemeCheckedChanged" />
+                        <components:ThemeChoice x:Name="DarkChoice" Grid.Column="1" Content="Dark" Value="Dark"
+                                              Glyph="{x:Static components:Icons.Moon}" GroupName="AppearanceTheme"
+                                              AutomationId="ThemeDark" CheckedChanged="OnThemeCheckedChanged" />
+                        <components:ThemeChoice x:Name="SystemChoice" Grid.Column="2" Content="System" Value="Unspecified"
+                                              Glyph="{x:Static components:Icons.Laptop}" GroupName="AppearanceTheme"
+                                              AutomationId="ThemeSystem" CheckedChanged="OnThemeCheckedChanged"
+                                              SemanticProperties.Description="System: follow your system theme" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <VerticalStackLayout Spacing="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Dictation window" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Label Style="{StaticResource PageSubtitle}" LineHeight="1.5"
+                               Text="Choose where the dictation card appears on your screen." />
+                    </VerticalStackLayout>
+                    <Grid x:Name="PositionGrid" ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto"
+                          ColumnSpacing="10" RowSpacing="10">
+                        <components:PositionChoice Content="Top left" Value="TopLeft" GroupName="DictationPosition"
+                                                   MarkerHorizontal="Start" MarkerVertical="Start"
+                                                   AutomationId="PositionTopLeft"
+                                                   CheckedChanged="OnPositionCheckedChanged" />
+                        <components:PositionChoice Grid.Column="1" Content="Top center" Value="TopCenter"
+                                                   GroupName="DictationPosition"
+                                                   MarkerHorizontal="Center" MarkerVertical="Start"
+                                                   AutomationId="PositionTopCenter"
+                                                   CheckedChanged="OnPositionCheckedChanged" />
+                        <components:PositionChoice Grid.Column="2" Content="Top right" Value="TopRight"
+                                                   GroupName="DictationPosition"
+                                                   MarkerHorizontal="End" MarkerVertical="Start"
+                                                   AutomationId="PositionTopRight"
+                                                   CheckedChanged="OnPositionCheckedChanged" />
+                        <components:PositionChoice Grid.Row="1" Content="Bottom left" Value="BottomLeft"
+                                                   GroupName="DictationPosition"
+                                                   MarkerHorizontal="Start" MarkerVertical="End"
+                                                   AutomationId="PositionBottomLeft"
+                                                   CheckedChanged="OnPositionCheckedChanged" />
+                        <components:PositionChoice Grid.Row="1" Grid.Column="1" Content="Bottom center"
+                                                   Value="BottomCenter" GroupName="DictationPosition"
+                                                   MarkerHorizontal="Center" MarkerVertical="End"
+                                                   AutomationId="PositionBottomCenter"
+                                                   CheckedChanged="OnPositionCheckedChanged" />
+                        <components:PositionChoice Grid.Row="1" Grid.Column="2" Content="Bottom right"
+                                                   Value="BottomRight" GroupName="DictationPosition"
+                                                   MarkerHorizontal="End" MarkerVertical="End"
+                                                   AutomationId="PositionBottomRight"
+                                                   CheckedChanged="OnPositionCheckedChanged" />
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.History"
+             Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged">
+    <Grid>
+        <Grid x:Name="Column" RowDefinitions="Auto,Auto,*" RowSpacing="18" HorizontalOptions="Center">
+            <!-- Title, then Delete all (the same Clear history as in the settings), the folder and the settings buttons. -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label Style="{StaticResource PageTitle}" Text="History"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource PageSubtitle}"
+                           Text="Replay, copy or re-run your recent dictations. Audio stays on this device." />
+                </VerticalStackLayout>
+                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Start">
+                    <components:IconButton x:Name="DeleteAllButton" Glyph="{x:Static components:Icons.Trash2}"
+                                           GlyphSize="14" Text="Delete all" AccessibleName="Delete all recordings"
+                                           IsOutlined="True" IsDestructive="True" IsEnabled="False"
+                                           AutomationId="DeleteAllRecordings" Clicked="OnDeleteAllClicked" />
+                    <components:IconButton x:Name="OpenFolderButton" Glyph="{x:Static components:Icons.FolderOpen}"
+                                           GlyphSize="14" Text="Open folder" AccessibleName="Open recordings folder"
+                                           IsOutlined="True" AutomationId="OpenRecordingsFolder"
+                                           Clicked="OnOpenFolderClicked" />
+                    <components:IconButton x:Name="SettingsButton" Glyph="{x:Static components:Icons.Settings}"
+                                           GlyphSize="14" WidthRequest="32" IsOutlined="True"
+                                           AccessibleName="History settings"
+                                           AutomationId="RecordingHistorySettings" Clicked="OnSettingsClicked" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <components:SearchField x:Name="Search" Grid.Row="1" Placeholder="Search transcripts…"
+                                    AccessibleName="Search transcripts" AutomationId="RecordingSearch" />
+
+            <Grid Grid.Row="2">
+                <ScrollView x:Name="ListScroll">
+                    <VerticalStackLayout x:Name="List" Spacing="12" />
+                </ScrollView>
+                <Label x:Name="MessageLabel" IsVisible="False" Style="{StaticResource PageSubtitle}" VerticalOptions="Start"
+                       AutomationId="HistoryMessage" />
+            </Grid>
+        </Grid>
+
+        <!-- The History settings layer takes the place of the list; History stays selected in the sidebar. -->
+        <ContentView x:Name="SettingsHost" IsVisible="False" />
+    </Grid>
+</ContentView>

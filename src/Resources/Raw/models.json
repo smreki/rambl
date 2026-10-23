@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "cpuFitLevels": [
+    {
+      "id": "excellent",
+      "label": "Great on CPU",
+      "icon": "cpu",
+      "tone": "success",
+      "meaning": "Built for CPU and edge devices; runs comfortably."
+    },
+    {
+      "id": "good",
+      "label": "Good on CPU",
+      "icon": "cpu",
+      "tone": "neutral",
+      "meaning": "Viable on a modern CPU."
+    },
+    {
+      "id": "heavy",
+      "label": "Heavy on CPU",
+      "icon": "cpu",
+      "tone": "warning",
+      "meaning": "Demanding for a CPU; expect it to be slower than the lighter models."
+    }
+  ],
+  "licenses": [
+    {
+      "id": "Apache-2.0",
+      "name": "Apache License 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0",
+      "commercialUse": true
+    },
+    {
+      "id": "MIT",
+      "name": "MIT License",
+      "url": "https://opensource.org/license/mit",
+      "commercialUse": true
+    },
+    {
+      "id": "CC-BY-4.0",
+      "name": "Creative Commons Attribution 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "commercialUse": true
+    },
+    {
+      "id": "CC-BY-NC-4.0",
+      "name": "Creative Commons Attribution-NonCommercial 4.0",
+      "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "commercialUse": false
+    },
+    {
+      "id": "NVIDIA-Open-Model-License",
+      "name": "NVIDIA Open Model License Agreement",
+      "url": "https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/",
+      "commercialUse": true
+    },
+    {
+      "id": "OpenMDW-1.1",
+      "name": "OpenMDW License 1.1",
+      "url": "https://openmdw.ai/license/1-1/",
+      "commercialUse": true
+    }
+  ]
+}

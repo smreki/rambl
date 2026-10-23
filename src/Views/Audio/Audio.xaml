@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.Audio"
+             Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged">
+    <Grid>
+        <ScrollView x:Name="Scroll" Padding="0,0,16,0">
+            <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="4">
+                    <Label Style="{StaticResource PageTitle}" Text="Audio"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource PageSubtitle}"
+                           Text="Choose your speaker and microphone, and check your input before you dictate." />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="24">
+                    <!-- Audio output -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Audio output" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Grid ColumnDefinitions="320,*" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Speaker" FontFamily="InterMedium" FontSize="13" />
+                                <Label x:Name="SpeakerHelp" Style="{StaticResource SettingHelp}" />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <components:SelectInput x:Name="SpeakerSelect" AccessibleName="Speaker"
+                                                        AutomationId="SpeakerSelect"
+                                                        SelectedIndexChanged="OnSpeakerChanged" />
+                                <Button x:Name="ResetSpeaker" Grid.Column="1" Style="{StaticResource InputResetButton}"
+                                        AutomationId="ResetSpeaker"
+                                        SemanticProperties.Description="Reset speaker to system default"
+                                        Clicked="OnResetSpeaker" />
+                            </Grid>
+                        </Grid>
+                        <Grid ColumnDefinitions="320,*" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Feedback volume" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Loudness of the start and stop sounds." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Grid ColumnDefinitions="*,40" ColumnSpacing="16" HeightRequest="36">
+                                    <Slider x:Name="VolumeSlider" Style="{StaticResource SettingSlider}"
+                                            Minimum="0" Maximum="100" AutomationId="VolumeSlider"
+                                            SemanticProperties.Description="Feedback volume"
+                                            ValueChanged="OnVolumeChanged" DragStarted="OnVolumeDragStarted"
+                                            DragCompleted="OnVolumeDragCompleted" />
+                                    <Label x:Name="VolumeLabel" Grid.Column="1" FontSize="13" VerticalOptions="Center"
+                                           HorizontalTextAlignment="End" />
+                                </Grid>
+                                <Button x:Name="ResetVolume" Grid.Column="1" Style="{StaticResource InputResetButton}"
+                                        AutomationId="ResetVolume"
+                                        SemanticProperties.Description="Reset feedback volume to 100%"
+                                        Clicked="OnResetVolume" />
+                            </Grid>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Audio input -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Audio input" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Grid ColumnDefinitions="320,*" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Microphone" FontFamily="InterMedium" FontSize="13" />
+                                <Label x:Name="MicrophoneHelp" Style="{StaticResource SettingHelp}" />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <components:SelectInput x:Name="MicrophoneSelect" AccessibleName="Microphone"
+                                                        AutomationId="MicrophoneSelect"
+                                                        SelectedIndexChanged="OnMicrophoneChanged" />
+                                <Button x:Name="ResetMicrophone" Grid.Column="1" Style="{StaticResource InputResetButton}"
+                                        AutomationId="ResetMicrophone"
+                                        SemanticProperties.Description="Reset microphone to system default"
+                                        Clicked="OnResetMicrophone" />
+                            </Grid>
+                        </Grid>
+                        <Grid ColumnDefinitions="320,*" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Input channel" FontFamily="InterMedium" FontSize="13" />
+                                <Label x:Name="ChannelHelp" Style="{StaticResource SettingHelp}" />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <components:SelectInput x:Name="ChannelSelect" AccessibleName="Input channel"
+                                                        AutomationId="ChannelSelect"
+                                                        SelectedIndexChanged="OnChannelChanged" />
+                                <Button x:Name="ResetChannel" Grid.Column="1" Style="{StaticResource InputResetButton}"
+                                        AutomationId="ResetChannel"
+                                        SemanticProperties.Description="Reset input channel to Automatic"
+                                        Clicked="OnResetChannel" />
+                            </Grid>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Microphone test: monitors only while this screen is visible and never saves audio. -->
+                    <VerticalStackLayout Spacing="12">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Microphone test" FontFamily="InterSemiBold" FontSize="15"
+                                   SemanticProperties.HeadingLevel="Level2" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="Speak normally to check your input level." />
+                        </VerticalStackLayout>
+                        <components:LevelMeter x:Name="Meter" AutomationId="InputMeter" />
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- During recording -->
+                    <VerticalStackLayout Spacing="18">
+                        <Label Text="During recording" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Mute system audio during recording" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Silence other apps while dictating. Restore audio when you finish." />
+                            </VerticalStackLayout>
+                            <Switch x:Name="MuteToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                    AutomationId="MuteSystemAudio"
+                                    SemanticProperties.Description="Mute system audio during recording"
+                                    Toggled="OnMuteToggled" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Play sound when recording starts / stops" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Hear a short sound when dictation begins and ends." />
+                            </VerticalStackLayout>
+                            <components:IconButton x:Name="PreviewButton" Grid.Column="1" VerticalOptions="Center"
+                                                   Glyph="{x:Static components:Icons.Volume2}" Text="Preview"
+                                                   AccessibleName="Preview the start and stop sounds"
+                                                   AutomationId="PreviewSounds" Clicked="OnPreviewClicked" />
+                            <Switch x:Name="SoundToggle" Grid.Column="2" Style="{StaticResource SettingToggle}"
+                                    AutomationId="PlayFeedbackSounds"
+                                    SemanticProperties.Description="Play sound when recording starts and stops"
+                                    Toggled="OnSoundToggled" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Transcription -->
+                    <VerticalStackLayout Spacing="18">
+                        <Label Text="Transcription" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Skip silence before transcribing" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap"
+                                       Text="Finds where you speak and transcribes only that, so a model that transcribes when you let go doesn&#8217;t make up words in quiet parts. A press with no speech inserts nothing." />
+                            </VerticalStackLayout>
+                            <Switch x:Name="SkipSilenceToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                    AutomationId="SkipSilence"
+                                    SemanticProperties.Description="Skip silence before transcribing"
+                                    Toggled="OnSkipSilenceToggled" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Grid x:Name="DeviceLoading" IsVisible="False"
+              BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+            <VerticalStackLayout Spacing="12" HorizontalOptions="Center" VerticalOptions="Center">
+                <ActivityIndicator x:Name="DeviceLoadingSpinner" WidthRequest="28" HeightRequest="28"
+                                   Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                <Label Text="Loading audio devices…" Style="{StaticResource PageSubtitle}" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentView>

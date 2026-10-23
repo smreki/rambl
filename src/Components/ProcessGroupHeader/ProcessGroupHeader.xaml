@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.ProcessGroupHeader">
+    <!-- The Process Group Header of the design: the shortcut a group of processes shares, then what pressing it does. -->
+    <Grid ColumnDefinitions="Auto,Auto,Auto,*" ColumnSpacing="10" Padding="4,0">
+        <Label x:Name="GroupGlyph" Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center" />
+        <Border Grid.Column="1" VerticalOptions="Center" StrokeShape="RoundRectangle 4" StrokeThickness="1" Padding="8,3"
+                Stroke="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
+            <Label x:Name="ShortcutLabel" FontSize="12" VerticalOptions="Center" />
+        </Border>
+        <Label x:Name="TitleLabel" Grid.Column="2" Style="{StaticResource SettingHelp}" FontFamily="InterMedium"
+               VerticalOptions="Center" IsVisible="False" />
+        <Label x:Name="SummaryLabel" Grid.Column="3" Style="{StaticResource StatusText}" HorizontalOptions="End"
+               HorizontalTextAlignment="End" LineBreakMode="TailTruncation" />
+    </Grid>
+</ContentView>

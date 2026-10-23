@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:markdown="clr-namespace:Indiko.Maui.Controls.Markdown;assembly=Indiko.Maui.Controls.Markdown"
+             x:Class="Rambl.Views.About" Loaded="OnLoaded">
+    <ContentView.Resources>
+        <Style x:Key="AboutTab" TargetType="Button">
+            <Setter Property="FontFamily" Value="Inter" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="MinimumHeightRequest" Value="0" />
+            <Setter Property="BorderWidth" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+        </Style>
+    </ContentView.Resources>
+    <Grid RowDefinitions="40,*" RowSpacing="24">
+        <Grid>
+            <BoxView Style="{StaticResource Divider}" HeightRequest="1" VerticalOptions="End" />
+            <HorizontalStackLayout Spacing="24">
+                <Grid RowDefinitions="*,2">
+                    <Button x:Name="RamblTab" Style="{StaticResource AboutTab}" Text="Rambl"
+                            AutomationId="AboutRamblTab" Clicked="OnRamblClicked" />
+                    <BoxView x:Name="RamblUnderline" Grid.Row="1"
+                             Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                </Grid>
+                <Grid RowDefinitions="*,2">
+                    <Button x:Name="ChangelogTab" Style="{StaticResource AboutTab}" Text="Changelog"
+                            AutomationId="AboutChangelogTab" Clicked="OnChangelogClicked" />
+                    <BoxView x:Name="ChangelogUnderline" Grid.Row="1" IsVisible="False"
+                             Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                </Grid>
+            </HorizontalStackLayout>
+        </Grid>
+        <Grid Grid.Row="1">
+            <ScrollView x:Name="DocumentScroll">
+                <markdown:MarkdownView x:Name="Document" UseAppTheme="True"
+                                       AllowLineBreaksOnHeadlines="True"
+                                       OnHyperLinkClicked="OnHyperLinkClicked" OnRenderError="OnRenderError" />
+            </ScrollView>
+            <ActivityIndicator x:Name="Loading" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center"
+                               Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+            <Label x:Name="ErrorLabel" IsVisible="False" Style="{StaticResource PageSubtitle}" />
+        </Grid>
+    </Grid>
+
+</ContentView>

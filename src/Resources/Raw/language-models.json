@@ -1,0 +1,2116 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-12",
+  "runtimes": [
+    {
+      "id": "llama.cpp",
+      "name": "llama.cpp",
+      "formats": [
+        "gguf"
+      ],
+      "platforms": [
+        "windows-x64",
+        "macos-arm64",
+        "macos-x64"
+      ],
+      "automaticOrder": 1,
+      "license": "MIT",
+      "project": "https://github.com/ggml-org/llama.cpp"
+    },
+    {
+      "id": "onnxruntime",
+      "name": "ONNX Runtime",
+      "formats": [
+        "onnx"
+      ],
+      "platforms": [
+        "windows-x64",
+        "macos-arm64",
+        "macos-x64"
+      ],
+      "automaticOrder": 2,
+      "license": "MIT",
+      "project": "https://github.com/microsoft/onnxruntime"
+    }
+  ],
+  "modelTypes": [
+    {
+      "id": "llm",
+      "label": "LLM",
+      "meaning": "A language model: it follows instructions or translates, so it can polish, reformat or translate text. Translation-only models (M2M100, NLLB-200) are listed here too; their kind says how they differ."
+    },
+    {
+      "id": "decision",
+      "label": "Decision model",
+      "meaning": "Classifies, scores or ranks, for example to pick a command or intent; it does not write text."
+    },
+    {
+      "id": "tool-calling",
+      "label": "Tool-calling model",
+      "meaning": "Trained to choose a function and its arguments from what was said."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "routing",
+      "label": "Decisions and routing",
+      "icon": "route",
+      "meaning": "Pick a command or intent from what was said."
+    },
+    {
+      "id": "formatting",
+      "label": "Text polishing",
+      "icon": "feather",
+      "meaning": "Clean up and format dictated text."
+    },
+    {
+      "id": "tools",
+      "label": "Tool calling",
+      "icon": "wrench",
+      "meaning": "Choose a function and its arguments from what was said."
+    },
+    {
+      "id": "translation",
+      "label": "Translation",
+      "icon": "languages",
+      "meaning": "Translate dictated text into another language."
+    }
+  ],
+  "excluded": [
+    {
+      "name": "Gemma 3 4B",
+      "repo": "google/gemma-3-4b-it",
+      "reason": "The repository is gated: it needs a Hugging Face account and acceptance of the Gemma terms. Ungated mirrors exist, but the terms would still need an in-app consent step."
+    },
+    {
+      "name": "TranslateGemma 4B",
+      "repo": "google/translategemma-4b-it",
+      "reason": "The repository is gated (Gemma terms), like Gemma 3."
+    },
+    {
+      "name": "FunctionGemma 270M",
+      "repo": "google/functiongemma-270m-it",
+      "reason": "The repository is gated (Gemma terms), like Gemma 3."
+    }
+  ],
+  "models": [
+    {
+      "id": "eurollm-1.7b-instruct",
+      "name": "EuroLLM 1.7B Instruct",
+      "family": "eurollm",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting",
+        "translation"
+      ],
+      "purpose": {
+        "label": "European languages",
+        "icon": "globe"
+      },
+      "cpuFit": "excellent",
+      "parameters": "1.7B",
+      "contextLength": 4096,
+      "languages": {
+        "label": "35 languages, all official EU languages among them",
+        "codes": [
+          "en",
+          "de",
+          "es",
+          "fr",
+          "it",
+          "pt",
+          "pl",
+          "nl",
+          "tr",
+          "sv",
+          "cs",
+          "el",
+          "hu",
+          "ro",
+          "fi",
+          "uk",
+          "sl",
+          "sk",
+          "da",
+          "lt",
+          "lv",
+          "et",
+          "bg",
+          "no",
+          "ca",
+          "hr",
+          "ga",
+          "mt",
+          "gl",
+          "zh",
+          "ru",
+          "ko",
+          "ja",
+          "ar",
+          "hi"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/utter-project/EuroLLM-1.7B-Instruct",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here.",
+        "The model's authors publish no GGUF; this is a community quantization by mradermacher."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mradermacher/EuroLLM-1.7B-Instruct-GGUF",
+            "revision": "2951f08f66429c934c8b01a94347161362430808"
+          },
+          "files": [
+            {
+              "path": "EuroLLM-1.7B-Instruct.Q4_K_M.gguf",
+              "bytes": 1045157088,
+              "sha256": "1cade17f491ea46a686dbee51fbd52442e0f001f102380c3b9d66b4a77f84093"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "euromoe-2.6b-a0.6b",
+      "name": "EuroMoE 2.6B (0.6B active)",
+      "family": "euromoe",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting",
+        "translation"
+      ],
+      "purpose": {
+        "label": "Efficient mixture of experts",
+        "icon": "flask-conical"
+      },
+      "cpuFit": "excellent",
+      "parameters": "2.6B (0.6B active)",
+      "contextLength": 32768,
+      "languages": {
+        "label": "35 languages",
+        "codes": [
+          "en",
+          "de",
+          "es",
+          "fr",
+          "it",
+          "pt",
+          "pl",
+          "nl",
+          "tr",
+          "sv",
+          "cs",
+          "el",
+          "hu",
+          "ro",
+          "fi",
+          "uk",
+          "sl",
+          "sk",
+          "da",
+          "lt",
+          "lv",
+          "et",
+          "bg",
+          "no",
+          "ca",
+          "hr",
+          "ga",
+          "mt",
+          "gl",
+          "zh",
+          "ru",
+          "ko",
+          "ja",
+          "ar",
+          "hi"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/utter-project/EuroMoE-2.6B-A0.6B-Instruct-2512",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here.",
+        "Experimental. The model's authors publish no GGUF; this is a community quantization by mradermacher of a Mixtral-architecture model."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mradermacher/EuroMoE-2.6B-A0.6B-Instruct-2512-GGUF",
+            "revision": "11be4a9e68eb5aba18e4c3b341cbef2d018b2da0"
+          },
+          "files": [
+            {
+              "path": "EuroMoE-2.6B-A0.6B-Instruct-2512.Q4_K_M.gguf",
+              "bytes": 1616056480,
+              "sha256": "8bec0980cb2a33b0ef05f504b43269cb2cac9484d0eb526504ea23e03a0e3b15"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gemma-4-e2b-it",
+      "name": "Gemma 4 E2B",
+      "family": "gemma",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting",
+        "translation"
+      ],
+      "purpose": {
+        "label": "Edge-tuned multilingual",
+        "icon": "cpu"
+      },
+      "cpuFit": "good",
+      "parameters": "~5.1B (2B effective)",
+      "contextLength": 131072,
+      "languages": {
+        "label": "35+ languages out of the box",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/google/gemma-4-E2B-it",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "unsloth/gemma-4-E2B-it-GGUF",
+            "revision": "0314792d7f1f7e229411f620751375812bb9faf2"
+          },
+          "files": [
+            {
+              "path": "gemma-4-E2B-it-Q4_K_M.gguf",
+              "bytes": 3106738272,
+              "sha256": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gemma-4-e4b-it",
+      "name": "Gemma 4 E4B",
+      "family": "gemma",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting"
+      ],
+      "purpose": {
+        "label": "Stronger instruction following",
+        "icon": "brain"
+      },
+      "cpuFit": "heavy",
+      "parameters": "~8B (4B effective)",
+      "contextLength": 131072,
+      "languages": {
+        "label": "35+ languages out of the box",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/google/gemma-4-E4B-it",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "unsloth/gemma-4-E4B-it-GGUF",
+            "revision": "bfc15c382204943c3a8fff0c750b94ae2364d7a3"
+          },
+          "files": [
+            {
+              "path": "gemma-4-E4B-it-Q4_K_M.gguf",
+              "bytes": 4977171584,
+              "sha256": "85a896a047553e842f25297ee5b031d64ff30147d9c4af17b1e4b394cd1fab87"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hammer2.1-0.5b",
+      "name": "Hammer 2.1 0.5B",
+      "family": "hammer",
+      "kind": "chat",
+      "modelType": "tool-calling",
+      "tasks": [
+        "tools"
+      ],
+      "purpose": {
+        "label": "Function selection",
+        "icon": "wrench"
+      },
+      "cpuFit": "excellent",
+      "parameters": "0.5B",
+      "contextLength": 32768,
+      "languages": {
+        "label": "English; other languages need testing",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "CC-BY-NC-4.0"
+      },
+      "source": "https://huggingface.co/MadeAgents/Hammer2.1-0.5b",
+      "notes": [
+        "Non-commercial license (CC BY-NC 4.0). The authors publish no GGUF; this is a community quantization by mradermacher."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mradermacher/Hammer2.1-0.5b-GGUF",
+            "revision": "9e6662dbe13e4cc6b86e5feb9c05e5a4794513f9"
+          },
+          "files": [
+            {
+              "path": "Hammer2.1-0.5b.Q8_0.gguf",
+              "bytes": 530804672,
+              "sha256": "a936b93cdd1c1ef683a531a582e99a397cd4cd8969b0c2ae2740b1e9f8e240ca"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hammer2.1-1.5b",
+      "name": "Hammer 2.1 1.5B",
+      "family": "hammer",
+      "kind": "chat",
+      "modelType": "tool-calling",
+      "tasks": [
+        "tools"
+      ],
+      "purpose": {
+        "label": "Function selection",
+        "icon": "wrench"
+      },
+      "cpuFit": "excellent",
+      "parameters": "1.5B",
+      "contextLength": 32768,
+      "languages": {
+        "label": "English; other languages need testing",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "CC-BY-NC-4.0"
+      },
+      "source": "https://huggingface.co/MadeAgents/Hammer2.1-1.5b",
+      "notes": [
+        "Non-commercial license (CC BY-NC 4.0). The authors publish no GGUF; this is a community quantization by mradermacher."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mradermacher/Hammer2.1-1.5b-GGUF",
+            "revision": "d3414318e22ced45ca3c43862269a75db5b5f2ed"
+          },
+          "files": [
+            {
+              "path": "Hammer2.1-1.5b.Q4_K_M.gguf",
+              "bytes": 985701504,
+              "sha256": "567555510e0c72d69a5fe17a6d3a391456f4471eac97ecaf840e701161703555"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multilingual-zeroshot-small",
+      "name": "Horizon Multilingual Zero-Shot Small",
+      "family": "horizon",
+      "kind": "classifier",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "Tiny intent classifier",
+        "icon": "tags"
+      },
+      "cpuFit": "excellent",
+      "parameters": "141M",
+      "languages": {
+        "label": "Multilingual",
+        "codes": [
+          "en",
+          "de",
+          "fr",
+          "es",
+          "pt",
+          "it",
+          "nl",
+          "pl",
+          "ru",
+          "uk",
+          "cs",
+          "tr",
+          "ar",
+          "fa",
+          "he",
+          "hi",
+          "bn",
+          "zh",
+          "ja",
+          "ko",
+          "vi",
+          "id",
+          "th",
+          "sw",
+          "el"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Horizon-Labs/multilingual-zeroshot-small",
+      "notes": [],
+      "artifacts": [
+        {
+          "id": "onnx-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "Horizon-Labs/multilingual-zeroshot-small",
+            "revision": "3fe1f0c48b589cf6220fd21a628a1dd56d3d41f8"
+          },
+          "files": [
+            {
+              "path": "onnx/model_quantized.onnx",
+              "bytes": 268409234,
+              "sha256": "0ac394942a086fb1c02beb0fde0357bf7f3bd739ca07af7fa6c9fa11c9c05512"
+            },
+            {
+              "path": "config.json",
+              "bytes": 2053,
+              "sha256": "3e5f7eebf8ddee141f092672ca5865b7741e64df974fbc68223c91da6cd74222"
+            },
+            {
+              "path": "tokenizer.json",
+              "bytes": 34363287,
+              "sha256": "aebee76d0312011b0d73b08a255d4d11d25c83e9639324870c7b916ea102e13e"
+            },
+            {
+              "path": "tokenizer_config.json",
+              "bytes": 46440,
+              "sha256": "ea349495764b24570b4560fe2e4a557e5c0a47e6bce782c2409b1d6445cf8633"
+            },
+            {
+              "path": "special_tokens_map.json",
+              "bytes": 636,
+              "sha256": "baec30ea10906f16adb8c18af7a34023002c1746542612b8b41c9f09e1351351"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "laya",
+      "name": "Laya",
+      "family": "laya",
+      "kind": "decision",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "English decisions",
+        "icon": "route"
+      },
+      "cpuFit": "excellent",
+      "parameters": "421M",
+      "languages": {
+        "label": "English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/convaiinnovations/laya",
+      "notes": [],
+      "artifacts": [
+        {
+          "id": "onnx-fp16",
+          "format": "onnx",
+          "quantization": "fp16",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "onnx-community/laya-ONNX",
+            "revision": "42e2a6e3b3708c8ff5f61f4aa75c314b1449199b"
+          },
+          "files": [
+            {
+              "path": "onnx/model_fp16.onnx",
+              "bytes": 4466054,
+              "sha256": "027403a80579f1546bac9831383c00ab9469a4e7c37aa8f68fdcecd85f8ef29e"
+            },
+            {
+              "path": "onnx/model_fp16.onnx_data",
+              "bytes": 842587136,
+              "sha256": "6631bd51ee258787336568fda528ae3534fb5a3e13386558e7502043cbff4828"
+            },
+            {
+              "path": "config.json",
+              "bytes": 3281,
+              "sha256": "1a888f1373542026f6e09b4bdfa746eb6ed6cd0713187cf18c5602e92993bb0c"
+            },
+            {
+              "path": "tokenizer.json",
+              "bytes": 3583228,
+              "sha256": "6c8aaa9a542084f2457eab775d4eeb51f92a70c0fd9de28d5edb0ddec3c08d30"
+            },
+            {
+              "path": "tokenizer_config.json",
+              "bytes": 308,
+              "sha256": "50044de60daaa73df97d262e15a40d4faf0160e7d742df64b377877a1320dd12"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "laya-multilingual",
+      "name": "Laya Multilingual",
+      "family": "laya",
+      "kind": "decision",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "Decision scoring",
+        "icon": "route"
+      },
+      "cpuFit": "excellent",
+      "parameters": "322M",
+      "languages": {
+        "label": "100+ languages",
+        "codes": [
+          "en",
+          "de",
+          "fr",
+          "es",
+          "pt",
+          "it",
+          "nl",
+          "sv",
+          "da",
+          "nb",
+          "ru",
+          "pl",
+          "tr",
+          "ar",
+          "he",
+          "fa",
+          "ur",
+          "hi",
+          "bn",
+          "ta",
+          "te",
+          "kn",
+          "ml",
+          "th",
+          "vi",
+          "id",
+          "ms",
+          "tl",
+          "ja",
+          "ko",
+          "zh",
+          "el",
+          "hu",
+          "fi",
+          "ro",
+          "sq",
+          "sl",
+          "sw",
+          "af",
+          "cy",
+          "am",
+          "hy",
+          "ka",
+          "km",
+          "my",
+          "mn",
+          "lv",
+          "is",
+          "az",
+          "jv"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/convaiinnovations/laya-multilingual",
+      "notes": [
+        "Languages beyond English need testing. An fp32 export (1.2 GB) is also published."
+      ],
+      "artifacts": [
+        {
+          "id": "onnx-fp16",
+          "format": "onnx",
+          "quantization": "fp16",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "onnx-community/laya-multilingual-ONNX",
+            "revision": "46b77bbf5642fec5f14e540570228a8cbe8ab81f"
+          },
+          "files": [
+            {
+              "path": "onnx/model_fp16.onnx",
+              "bytes": 3572287,
+              "sha256": "81f641e21289ddb2cd8ac774c1cddebfdb0fa7e4b183e49ad476d2faee46d98a"
+            },
+            {
+              "path": "onnx/model_fp16.onnx_data",
+              "bytes": 643817472,
+              "sha256": "3c9eb52f5f795f76d7a681197228131fac7e92c3e5a4c90b68ec4065699ee4cf"
+            },
+            {
+              "path": "config.json",
+              "bytes": 2859,
+              "sha256": "cc32109b1fded91ec6734127ffb1827f80cdcf8ffdd4eeda75a1b0f4d3687dcc"
+            },
+            {
+              "path": "tokenizer.json",
+              "bytes": 34363188,
+              "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f"
+            },
+            {
+              "path": "tokenizer_config.json",
+              "bytes": 502,
+              "sha256": "424b69444bf7b5809dc2cd2e36d0bd71b8055124dd24274d6db3c655d38205e7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "laya-typed-decisions",
+      "name": "Laya Typed Decisions",
+      "family": "laya",
+      "kind": "decision",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "Typed decisions",
+        "icon": "route"
+      },
+      "cpuFit": "excellent",
+      "parameters": "421M",
+      "languages": {
+        "label": "English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/convaiinnovations/laya-typed-decisions",
+      "notes": [
+        "English only; use Laya Multilingual for other languages."
+      ],
+      "artifacts": [
+        {
+          "id": "onnx-fp16",
+          "format": "onnx",
+          "quantization": "fp16",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "onnx-community/laya-typed-decisions-ONNX",
+            "revision": "79c441b22da79eb3727bb01e8452e29a32cfa548"
+          },
+          "files": [
+            {
+              "path": "onnx/model_fp16.onnx",
+              "bytes": 4466054,
+              "sha256": "94c25ed9a1ebe3f13b85bdbd54cd20ed407fb1993e3993f3deda1bc5662b8ae1"
+            },
+            {
+              "path": "onnx/model_fp16.onnx_data",
+              "bytes": 842587136,
+              "sha256": "2565dd3a00465c5c615502894176cdb96a528ad66256dd8d08eb0af3a0f73582"
+            },
+            {
+              "path": "config.json",
+              "bytes": 3300,
+              "sha256": "17276af4594edd2528024d1a23de7905e789f8befe659a47e337aa4ce144a226"
+            },
+            {
+              "path": "tokenizer.json",
+              "bytes": 3583228,
+              "sha256": "6c8aaa9a542084f2457eab775d4eeb51f92a70c0fd9de28d5edb0ddec3c08d30"
+            },
+            {
+              "path": "tokenizer_config.json",
+              "bytes": 337,
+              "sha256": "08d4cf3ac4dca381759441b85b91a6d40e688471dcd33d15d6649eb0a9a854d1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "littlelamb-toolcalling",
+      "name": "LittleLamb ToolCalling",
+      "family": "littlelamb",
+      "kind": "chat",
+      "modelType": "tool-calling",
+      "tasks": [
+        "tools"
+      ],
+      "purpose": {
+        "label": "Tiny tool calling",
+        "icon": "wrench"
+      },
+      "cpuFit": "excellent",
+      "parameters": "~290M",
+      "contextLength": 40960,
+      "languages": {
+        "label": "Primarily English",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/MultiverseComputingCAI/LittleLamb-ToolCalling",
+      "notes": [
+        "A Qwen3-0.6B derivative. The authors publish no GGUF; this is a community quantization by mradermacher."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mradermacher/LittleLamb-ToolCalling-GGUF",
+            "revision": "1e36035c6f1a6ac1004e9cbfc97e2e07827a05af"
+          },
+          "files": [
+            {
+              "path": "LittleLamb-ToolCalling.Q8_0.gguf",
+              "bytes": 317651552,
+              "sha256": "c96cbebc67f4abb0bdf5a737ad0d255c1788a94fd3dc30f14a547270e4b7654a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2m100-418m",
+      "name": "M2M100 418M",
+      "family": "m2m100",
+      "kind": "translation",
+      "modelType": "llm",
+      "tasks": [
+        "translation"
+      ],
+      "purpose": {
+        "label": "100-language translation",
+        "icon": "languages"
+      },
+      "cpuFit": "excellent",
+      "parameters": "418M",
+      "languages": {
+        "label": "100 languages, 9,900 directions",
+        "codes": [
+          "af",
+          "am",
+          "ar",
+          "az",
+          "ba",
+          "be",
+          "bg",
+          "bn",
+          "br",
+          "bs",
+          "ca",
+          "cs",
+          "cy",
+          "da",
+          "de",
+          "el",
+          "en",
+          "es",
+          "et",
+          "fa",
+          "ff",
+          "fi",
+          "fr",
+          "fy",
+          "ga",
+          "gd",
+          "gl",
+          "gu",
+          "ha",
+          "he",
+          "hi",
+          "hr",
+          "ht",
+          "hu",
+          "hy",
+          "id",
+          "ig",
+          "is",
+          "it",
+          "ja",
+          "jv",
+          "ka",
+          "kk",
+          "km",
+          "kn",
+          "ko",
+          "lb",
+          "lg",
+          "ln",
+          "lo",
+          "lt",
+          "lv",
+          "mg",
+          "mk",
+          "ml",
+          "mn",
+          "mr",
+          "ms",
+          "my",
+          "ne",
+          "nl",
+          "no",
+          "ns",
+          "oc",
+          "or",
+          "pa",
+          "pl",
+          "ps",
+          "pt",
+          "ro",
+          "ru",
+          "sd",
+          "si",
+          "sk",
+          "sl",
+          "so",
+          "sq",
+          "sr",
+          "ss",
+          "su",
+          "sv",
+          "sw",
+          "ta",
+          "th",
+          "tl",
+          "tn",
+          "tr",
+          "uk",
+          "ur",
+          "uz",
+          "vi",
+          "wo",
+          "xh",
+          "yi",
+          "yo",
+          "zh",
+          "zu"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/facebook/m2m100_418M",
+      "notes": [],
+      "artifacts": [
+        {
+          "id": "onnx-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "Xenova/m2m100_418M",
+            "revision": "9c374f0b7aca709787cea97b047bfbbd1559d177"
+          },
+          "files": [
+            {
+              "path": "onnx/encoder_model_quantized.onnx",
+              "bytes": 287856370,
+              "sha256": "13a94e354a9140764eb81102d77d3ec6952d796e6f113c651eeb3c3443da0386"
+            },
+            {
+              "path": "onnx/decoder_model_merged_quantized.onnx",
+              "bytes": 344128178,
+              "sha256": "007654bcabb6cea6fd3bde34ce933137b431330b3755781145d7b6906270b45a"
+            },
+            {
+              "path": "config.json",
+              "bytes": 908,
+              "sha256": "1dbdf77ddc7809acd4c54ccf0eab46f840b40174afb1b6f6de8787244e832938"
+            },
+            {
+              "path": "generation_config.json",
+              "bytes": 233,
+              "sha256": "722210dd0bee7bef4e8e7f9a8574d8c56a2dfff723d73f390ce67892740b9009"
+            },
+            {
+              "path": "tokenizer.json",
+              "bytes": 7988527,
+              "sha256": "03d9e111731c2d71f39a2c2a88499743e4c251385d07f0384b4349a23ba54363"
+            },
+            {
+              "path": "tokenizer_config.json",
+              "bytes": 1813,
+              "sha256": "bacfd4b9da25a61e01f17abe660465f616c9a1a3f5e23ab9ad3326c3788f2d9f"
+            },
+            {
+              "path": "special_tokens_map.json",
+              "bytes": 1559,
+              "sha256": "009ea667e0ca903c10dac22cf7ae3a3a0b173ff33f8c64154fddd8c043805622"
+            },
+            {
+              "path": "sentencepiece.bpe.model",
+              "bytes": 2423393,
+              "sha256": "d8f7c76ed2a5e0822be39f0a4f95a55eb19c78f4593ce609e2edbc2aea4d380a"
+            },
+            {
+              "path": "vocab.json",
+              "bytes": 3708092,
+              "sha256": "b6e77e474aeea8f441363aca7614317c06381f3eacfe10fb9856d5081d1074cc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mdeberta-v3-base-xnli",
+      "name": "mDeBERTa v3 Base XNLI",
+      "family": "mdeberta",
+      "kind": "classifier",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "Stronger intent classifier",
+        "icon": "tags"
+      },
+      "cpuFit": "excellent",
+      "parameters": "~278M",
+      "languages": {
+        "label": "100 languages (XNLI fine-tuned on 15)",
+        "codes": [
+          "en",
+          "ar",
+          "bg",
+          "de",
+          "el",
+          "es",
+          "fr",
+          "hi",
+          "ru",
+          "sw",
+          "th",
+          "tr",
+          "ur",
+          "vi",
+          "zh"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-mnli-xnli",
+      "notes": [],
+      "artifacts": [
+        {
+          "id": "onnx-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli",
+            "revision": "8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c"
+          },
+          "files": [
+            {
+              "path": "onnx/model_quantized.onnx",
+              "bytes": 338679133,
+              "sha256": "27c39e884c14b03cf46cfc5485971b6db70ff330220d93dfe729c63fde43af0e"
+            },
+            {
+              "path": "config.json",
+              "bytes": 1066,
+              "sha256": "4e4430c95100d613df80fa01276f231931e1b535557cf62fbb3cc50323e50cca"
+            },
+            {
+              "path": "tokenizer.json",
+              "bytes": 16331396,
+              "sha256": "3aca3ce69a0a35aeb144a52c4f1d41c4246b8785f8f398315cc8fb6b24057810"
+            },
+            {
+              "path": "tokenizer_config.json",
+              "bytes": 1256,
+              "sha256": "df9fd3a4482cc4a866788244824573fab8e74dadd1609d4f0e5997f9e96921dc"
+            },
+            {
+              "path": "special_tokens_map.json",
+              "bytes": 286,
+              "sha256": "9463f61e1b109a8eb4688b829260d7c6b1e6dff04c98ff7269bb89e2b92369b9"
+            },
+            {
+              "path": "added_tokens.json",
+              "bytes": 23,
+              "sha256": "fb697283833d25e2c711f1bc37730ecd8b20f4bd5f015db1d84aefe0adc9155a"
+            },
+            {
+              "path": "spm.model",
+              "bytes": 4305025,
+              "sha256": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multilingual-e5-small",
+      "name": "Multilingual E5 Small",
+      "family": "e5",
+      "kind": "embedding",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "Command similarity",
+        "icon": "search"
+      },
+      "cpuFit": "excellent",
+      "parameters": "~118M",
+      "contextLength": 512,
+      "languages": {
+        "label": "94 languages",
+        "codes": [
+          "af",
+          "am",
+          "ar",
+          "as",
+          "az",
+          "be",
+          "bg",
+          "bn",
+          "br",
+          "bs",
+          "ca",
+          "cs",
+          "cy",
+          "da",
+          "de",
+          "el",
+          "en",
+          "eo",
+          "es",
+          "et",
+          "eu",
+          "fa",
+          "fi",
+          "fr",
+          "fy",
+          "ga",
+          "gd",
+          "gl",
+          "gu",
+          "ha",
+          "he",
+          "hi",
+          "hr",
+          "hu",
+          "hy",
+          "id",
+          "is",
+          "it",
+          "ja",
+          "jv",
+          "ka",
+          "kk",
+          "km",
+          "kn",
+          "ko",
+          "ku",
+          "ky",
+          "la",
+          "lo",
+          "lt",
+          "lv",
+          "mg",
+          "mk",
+          "ml",
+          "mn",
+          "mr",
+          "ms",
+          "my",
+          "ne",
+          "nl",
+          "no",
+          "om",
+          "or",
+          "pa",
+          "pl",
+          "ps",
+          "pt",
+          "ro",
+          "ru",
+          "sa",
+          "sd",
+          "si",
+          "sk",
+          "sl",
+          "so",
+          "sq",
+          "sr",
+          "su",
+          "sv",
+          "sw",
+          "ta",
+          "te",
+          "th",
+          "tl",
+          "tr",
+          "ug",
+          "uk",
+          "ur",
+          "uz",
+          "vi",
+          "xh",
+          "yi",
+          "zh"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/intfloat/multilingual-e5-small",
+      "notes": [
+        "Other exports in the repository need AVX-512 VNNI or a GPU, so the portable fp32 one is used."
+      ],
+      "artifacts": [
+        {
+          "id": "onnx-fp32",
+          "format": "onnx",
+          "quantization": "fp32",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "intfloat/multilingual-e5-small",
+            "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3"
+          },
+          "files": [
+            {
+              "path": "onnx/model.onnx",
+              "bytes": 470268510,
+              "sha256": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665"
+            },
+            {
+              "path": "onnx/config.json",
+              "bytes": 653,
+              "sha256": "bbb7c1333fc4b3e27fbc9cd5d2070aabcc1d4dfb99917c3633e772f97545a6b6"
+            },
+            {
+              "path": "onnx/tokenizer.json",
+              "bytes": 17082730,
+              "sha256": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39"
+            },
+            {
+              "path": "onnx/tokenizer_config.json",
+              "bytes": 443,
+              "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b"
+            },
+            {
+              "path": "onnx/special_tokens_map.json",
+              "bytes": 167,
+              "sha256": "d05497f1da52c5e09554c0cd874037a083e1dc1b9cfd48034d1c717f1afc07a7"
+            },
+            {
+              "path": "onnx/sentencepiece.bpe.model",
+              "bytes": 5069051,
+              "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+            },
+            {
+              "path": "1_Pooling/config.json",
+              "bytes": 200,
+              "sha256": "987f7a67a38fa564c849bb5d277c52ab9088a84368fc0be31a354125aebb12a0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multilingual-minilmv2-l6-xnli",
+      "name": "Multilingual MiniLM L6 XNLI",
+      "family": "minilm",
+      "kind": "classifier",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "Fast zero-shot intents",
+        "icon": "tags"
+      },
+      "cpuFit": "excellent",
+      "parameters": "~100M",
+      "languages": {
+        "label": "100+ languages (XNLI fine-tuned on 15)",
+        "codes": [
+          "en",
+          "ar",
+          "bg",
+          "de",
+          "el",
+          "es",
+          "fr",
+          "hi",
+          "ru",
+          "sw",
+          "th",
+          "tr",
+          "ur",
+          "vi",
+          "zh"
+        ]
+      },
+      "license": {
+        "id": "MIT"
+      },
+      "source": "https://huggingface.co/MoritzLaurer/multilingual-MiniLMv2-L6-mnli-xnli",
+      "notes": [],
+      "artifacts": [
+        {
+          "id": "onnx-fp32",
+          "format": "onnx",
+          "quantization": "fp32",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "MoritzLaurer/multilingual-MiniLMv2-L6-mnli-xnli",
+            "revision": "0a71e92a985b6e1ad1828cf67ce9c459639c1dca"
+          },
+          "files": [
+            {
+              "path": "onnx/model.onnx",
+              "bytes": 428127016,
+              "sha256": "79f8cda2b1230585a95ea0514a6f1bd21c5c986ba0529bb3261213a3e195fa6e"
+            },
+            {
+              "path": "onnx/config.json",
+              "bytes": 921,
+              "sha256": "e08b628c4d46c8601dda34ddb40a7857e5961870b80482382d420db6dfb6e00e"
+            },
+            {
+              "path": "onnx/tokenizer.json",
+              "bytes": 17082854,
+              "sha256": "b2116c05e7305eea30394284760789681c5b3440dd4cd9a8c77539da68f9e8a6"
+            },
+            {
+              "path": "onnx/tokenizer_config.json",
+              "bytes": 1255,
+              "sha256": "10dd51e1952b6725b3c65edd16411a4ffe97a6f61636f11a7505bcb0bdb6b360"
+            },
+            {
+              "path": "onnx/special_tokens_map.json",
+              "bytes": 964,
+              "sha256": "8c785abebea9ae3257b61681b4e6fd8365ceafde980c21970d001e834cf10835"
+            },
+            {
+              "path": "onnx/sentencepiece.bpe.model",
+              "bytes": 5069051,
+              "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nllb-200-distilled-600m",
+      "name": "NLLB-200 Distilled 600M",
+      "family": "nllb",
+      "kind": "translation",
+      "modelType": "llm",
+      "tasks": [
+        "translation"
+      ],
+      "purpose": {
+        "label": "200-language translation",
+        "icon": "languages"
+      },
+      "cpuFit": "excellent",
+      "parameters": "600M",
+      "languages": {
+        "label": "200 languages",
+        "codes": [
+          "af",
+          "ak",
+          "am",
+          "ar",
+          "as",
+          "ba",
+          "bm",
+          "be",
+          "bn",
+          "bo",
+          "bs",
+          "bg",
+          "ca",
+          "cs",
+          "cy",
+          "da",
+          "de",
+          "dz",
+          "el",
+          "en",
+          "eo",
+          "et",
+          "eu",
+          "ee",
+          "fo",
+          "fj",
+          "fi",
+          "fr",
+          "gd",
+          "ga",
+          "gl",
+          "gn",
+          "gu",
+          "ht",
+          "ha",
+          "he",
+          "hi",
+          "hr",
+          "hu",
+          "hy",
+          "ig",
+          "id",
+          "is",
+          "it",
+          "jv",
+          "ja",
+          "kn",
+          "ks",
+          "ka",
+          "kk",
+          "km",
+          "ki",
+          "rw",
+          "ky",
+          "kg",
+          "ko",
+          "lo",
+          "li",
+          "ln",
+          "lt",
+          "lb",
+          "lg",
+          "ml",
+          "mk",
+          "mt",
+          "mi",
+          "my",
+          "nl",
+          "nn",
+          "nb",
+          "ny",
+          "oc",
+          "pa",
+          "pl",
+          "pt",
+          "ro",
+          "rn",
+          "ru",
+          "sg",
+          "sa",
+          "si",
+          "sk",
+          "sl",
+          "sm",
+          "sn",
+          "sd",
+          "so",
+          "st",
+          "es",
+          "sc",
+          "sr",
+          "ss",
+          "su",
+          "sv",
+          "ta",
+          "tt",
+          "te",
+          "tg",
+          "tl",
+          "th",
+          "ti",
+          "tn",
+          "ts",
+          "tk",
+          "tr",
+          "tw",
+          "ug",
+          "uk",
+          "ur",
+          "vi",
+          "wo",
+          "xh",
+          "yo",
+          "zh",
+          "zu"
+        ]
+      },
+      "license": {
+        "id": "CC-BY-NC-4.0"
+      },
+      "source": "https://huggingface.co/facebook/nllb-200-distilled-600M",
+      "notes": [
+        "Non-commercial license (CC BY-NC 4.0)."
+      ],
+      "artifacts": [
+        {
+          "id": "onnx-int8",
+          "format": "onnx",
+          "quantization": "int8",
+          "runtimes": [
+            {
+              "name": "onnxruntime"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "Xenova/nllb-200-distilled-600M",
+            "revision": "261c31d1a5732c67cdd16d80e8d6088507c7ccea"
+          },
+          "files": [
+            {
+              "path": "onnx/encoder_model_quantized.onnx",
+              "bytes": 419120483,
+              "sha256": "5cde664eacba07a62f198857ec6c06e09572b1ebb77c8137f1fa99ac604a3a28"
+            },
+            {
+              "path": "onnx/decoder_model_merged_quantized.onnx",
+              "bytes": 475505771,
+              "sha256": "dd66608c2a4194e78f95548fa0e64f24302303698c5b09fa8e1f9e16ec00676b"
+            },
+            {
+              "path": "config.json",
+              "bytes": 873,
+              "sha256": "52f035acb54ac80e5ef7fe78d6967f8ddf8e8799f078d1a92a2c8168d8ff4a20"
+            },
+            {
+              "path": "generation_config.json",
+              "bytes": 189,
+              "sha256": "1ce846259ae04c572ae1863e358534bbc376ff3d3f100b1494feda6200b51de8"
+            },
+            {
+              "path": "tokenizer.json",
+              "bytes": 17331224,
+              "sha256": "8ac789ad7dabea44d41537822d48c516ba358374c51813e2cba78c006e150c94"
+            },
+            {
+              "path": "tokenizer_config.json",
+              "bytes": 544,
+              "sha256": "ddf411c9f790d081e72de76bb8e8b714d74e160e61bc10c9bd8f56022dcd7fd7"
+            },
+            {
+              "path": "special_tokens_map.json",
+              "bytes": 3548,
+              "sha256": "992bd4ed610d644d6823081937bcc91bb8878dd556cea4ae5327f2480361330e"
+            },
+            {
+              "path": "sentencepiece.bpe.model",
+              "bytes": 4852054,
+              "sha256": "14bb8dfb35c0ffdea7bc01e56cea38b9e3d5efcdcb9c251d6b40538e1aab555a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3-0.6b",
+      "name": "Qwen3 0.6B",
+      "family": "qwen",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "tools"
+      ],
+      "purpose": {
+        "label": "Tool-calling baseline",
+        "icon": "wrench"
+      },
+      "cpuFit": "excellent",
+      "parameters": "0.6B",
+      "contextLength": 40960,
+      "languages": {
+        "label": "100+ languages and dialects",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3-0.6B",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here.",
+        "Qwen publishes only a Q8_0 file."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "Qwen/Qwen3-0.6B-GGUF",
+            "revision": "23749fefcc72300e3a2ad315e1317431b06b590a"
+          },
+          "files": [
+            {
+              "path": "Qwen3-0.6B-Q8_0.gguf",
+              "bytes": 639446688,
+              "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3-1.7b",
+      "name": "Qwen3 1.7B",
+      "family": "qwen",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting"
+      ],
+      "purpose": {
+        "label": "Mature all-rounder",
+        "icon": "scale"
+      },
+      "cpuFit": "excellent",
+      "parameters": "1.7B",
+      "contextLength": 40960,
+      "languages": {
+        "label": "100+ languages and dialects",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3-1.7B",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here.",
+        "Qwen publishes only a Q8_0 file."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "Qwen/Qwen3-1.7B-GGUF",
+            "revision": "90862c4b9d2787eaed51d12237eafdfe7c5f6077"
+          },
+          "files": [
+            {
+              "path": "Qwen3-1.7B-Q8_0.gguf",
+              "bytes": 1834426016,
+              "sha256": "061b54daade076b5d3362dac252678d17da8c68f07560be70818cace6590cb1a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3-embedding-0.6b",
+      "name": "Qwen3 Embedding 0.6B",
+      "family": "qwen",
+      "kind": "embedding",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "Semantic routing",
+        "icon": "search"
+      },
+      "cpuFit": "excellent",
+      "parameters": "0.6B",
+      "contextLength": 32768,
+      "languages": {
+        "label": "100+ languages",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "Qwen/Qwen3-Embedding-0.6B-GGUF",
+            "revision": "370f27d7550e0def9b39c1f16d3fbaa13aa67728"
+          },
+          "files": [
+            {
+              "path": "Qwen3-Embedding-0.6B-Q8_0.gguf",
+              "bytes": 639150592,
+              "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3-reranker-0.6b",
+      "name": "Qwen3 Reranker 0.6B",
+      "family": "qwen",
+      "kind": "reranker",
+      "modelType": "decision",
+      "tasks": [
+        "routing"
+      ],
+      "purpose": {
+        "label": "Rank candidate commands",
+        "icon": "list-ordered"
+      },
+      "cpuFit": "excellent",
+      "parameters": "0.6B",
+      "contextLength": 40960,
+      "languages": {
+        "label": "100+ languages",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3-Reranker-0.6B",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF",
+            "revision": "a02f48bb4f057028298c21fa033da2b30d7742d5"
+          },
+          "files": [
+            {
+              "path": "qwen3-reranker-0.6b-q8_0.gguf",
+              "bytes": 639153184,
+              "sha256": "22c9979ce4fbcdc5acdc310c6641c32797eff1aa980b8f7a2db8a8ea23429a48"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3.5-0.8b",
+      "name": "Qwen3.5 0.8B",
+      "family": "qwen",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting",
+        "tools"
+      ],
+      "purpose": {
+        "label": "Very light cleanup",
+        "icon": "zap"
+      },
+      "cpuFit": "excellent",
+      "parameters": "0.8B",
+      "contextLength": 262144,
+      "languages": {
+        "label": "201 languages and dialects",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3.5-0.8B",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here.",
+        "The repository also holds image projector files; only the text model is downloaded."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "unsloth/Qwen3.5-0.8B-GGUF",
+            "revision": "6ab461498e2023f6e3c1baea90a8f0fe38ab64d0"
+          },
+          "files": [
+            {
+              "path": "Qwen3.5-0.8B-Q8_0.gguf",
+              "bytes": 811843840,
+              "sha256": "0ad885ffd4bb022fc4f0d33a3308fa108ef8613159d3b3a67e23abca056b7a6c"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3.5-2b",
+      "name": "Qwen3.5 2B",
+      "family": "qwen",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting",
+        "translation"
+      ],
+      "purpose": {
+        "label": "Balanced polishing",
+        "icon": "scale"
+      },
+      "cpuFit": "excellent",
+      "parameters": "2B",
+      "contextLength": 262144,
+      "languages": {
+        "label": "201 languages and dialects",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3.5-2B",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "unsloth/Qwen3.5-2B-GGUF",
+            "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae"
+          },
+          "files": [
+            {
+              "path": "Qwen3.5-2B-Q4_K_M.gguf",
+              "bytes": 1280835840,
+              "sha256": "aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3.5-4b",
+      "name": "Qwen3.5 4B",
+      "family": "qwen",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting",
+        "translation"
+      ],
+      "purpose": {
+        "label": "Best polish quality",
+        "icon": "target"
+      },
+      "cpuFit": "good",
+      "parameters": "4B",
+      "contextLength": 262144,
+      "languages": {
+        "label": "201 languages and dialects",
+        "codes": [
+          "en",
+          "de",
+          "sk"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3.5-4B",
+      "notes": [
+        "Language support is taken from the supplied comparison; it is not measured here."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "unsloth/Qwen3.5-4B-GGUF",
+            "revision": "e87f176479d0855a907a41277aca2f8ee7a09523"
+          },
+          "files": [
+            {
+              "path": "Qwen3.5-4B-Q4_K_M.gguf",
+              "bytes": 2740937888,
+              "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "xlam-2-1b-fc-r",
+      "name": "xLAM-2 1B fc-r",
+      "family": "xlam",
+      "kind": "chat",
+      "modelType": "tool-calling",
+      "tasks": [
+        "tools"
+      ],
+      "purpose": {
+        "label": "Agent function calling",
+        "icon": "wrench"
+      },
+      "cpuFit": "excellent",
+      "parameters": "~1.5B",
+      "contextLength": 32768,
+      "languages": {
+        "label": "English; other languages need testing",
+        "codes": [
+          "en"
+        ]
+      },
+      "license": {
+        "id": "CC-BY-NC-4.0"
+      },
+      "source": "https://huggingface.co/Salesforce/xLAM-2-1b-fc-r",
+      "notes": [
+        "Non-commercial license (CC BY-NC 4.0)."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "Salesforce/xLAM-2-1b-fc-r-gguf",
+            "revision": "5c28181eb7be2575173dc18e54e09e3efaf2ed25"
+          },
+          "files": [
+            {
+              "path": "xLAM-2-1B-fc-r-Q4_K_M.gguf",
+              "bytes": 986048192,
+              "sha256": "61eeb070aaae78ff1cbb16fecd14e35a624d792cb3592a6116a82dba92285aa3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

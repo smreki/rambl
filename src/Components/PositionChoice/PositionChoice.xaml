@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RadioButton xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.PositionChoice"
+             HeightRequest="64" HorizontalOptions="Fill">
+    <RadioButton.ControlTemplate>
+        <ControlTemplate>
+            <Border x:Name="Container" StrokeShape="RoundRectangle 6" Padding="12,0"
+                    WidthRequest="{TemplateBinding Width}" HorizontalOptions="Fill" StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CheckedStates">
+                        <VisualState x:Name="Unchecked">
+                            <VisualState.Setters>
+                                <Setter Property="StrokeThickness" Value="1" />
+                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}" />
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}" />
+                                <Setter TargetName="Marker" Property="BoxView.Color" Value="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                <Setter TargetName="TextLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Checked">
+                            <VisualState.Setters>
+                                <Setter Property="StrokeThickness" Value="2" />
+                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}" />
+                                <Setter TargetName="Marker" Property="BoxView.Color" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                <Setter TargetName="TextLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                    <!-- A miniature screen; the marker sits where the dictation window appears. -->
+                    <Border WidthRequest="72" HeightRequest="44" Padding="5" StrokeShape="RoundRectangle 4"
+                            StrokeThickness="1" VerticalOptions="Center"
+                            Stroke="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
+                        <BoxView x:Name="Marker" WidthRequest="26" HeightRequest="8" CornerRadius="4"
+                                 BackgroundColor="Transparent"
+                                 HorizontalOptions="{TemplateBinding MarkerHorizontal}"
+                                 VerticalOptions="{TemplateBinding MarkerVertical}" />
+                    </Border>
+                    <Label x:Name="TextLabel" FontFamily="InterSemiBold" FontSize="13" VerticalOptions="Center"
+                           Text="{TemplateBinding Content}" />
+                </HorizontalStackLayout>
+            </Border>
+        </ControlTemplate>
+    </RadioButton.ControlTemplate>
+</RadioButton>

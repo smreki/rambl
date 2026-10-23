@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.VoiceCommands"
+             Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged">
+    <Grid>
+        <Grid x:Name="Column" RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="18" HorizontalOptions="Center">
+            <!-- Title and the New command set button. -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label Style="{StaticResource PageTitle}" Text="Voice Commands"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource PageSubtitle}"
+                           Text="Say what you want done and Rambl presses the keys for it. A decision model picks the command that matches what you said." />
+                </VerticalStackLayout>
+                <components:IconButton x:Name="NewButton" Grid.Column="1" Glyph="{x:Static components:Icons.Plus}"
+                                       GlyphSize="14" Text="New command set" IsPrimary="True" VerticalOptions="Start"
+                                       AccessibleName="New command set" AutomationId="NewCommandSet" Clicked="OnNewClicked" />
+            </Grid>
+
+            <components:SearchField x:Name="Search" Grid.Row="1" Placeholder="Search command sets and commands…"
+                                    AccessibleName="Search command sets and commands" AutomationId="CommandSetSearch" />
+
+            <!-- Filters: the model a set uses, and sets that cannot run yet. -->
+            <Grid Grid.Row="2" ColumnDefinitions="220,Auto,*" ColumnSpacing="12" HeightRequest="32">
+                <components:SelectInput x:Name="ModelFilter" IsCompact="True" Glyph="{x:Static components:Icons.Brain}"
+                                        AccessibleName="Filter by model" AutomationId="CommandSetModelFilter"
+                                        SelectedIndexChanged="OnModelFilterChanged" />
+                <components:FilterToggle x:Name="AttentionToggle" Grid.Column="1"
+                                         Glyph="{x:Static components:Icons.TriangleAlert}" Text="Needs attention"
+                                         AutomationId="CommandSetNeedsAttention" CheckedChanged="OnAttentionChanged" />
+                <Label x:Name="CountLabel" Grid.Column="2" Style="{StaticResource SettingHelp}" HorizontalOptions="End"
+                       VerticalOptions="Center" AutomationId="CommandSetCount" />
+            </Grid>
+
+            <!-- How a command set runs, only while there are sets. -->
+            <Grid x:Name="HintRow" Grid.Row="3" ColumnDefinitions="Auto,*" ColumnSpacing="8" IsVisible="False">
+                <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Start" Margin="0,2,0,0"
+                       Text="{x:Static components:Icons.Info}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                <Label Grid.Column="1" Style="{StaticResource StatusText}" LineBreakMode="WordWrap" VerticalOptions="Start"
+                       Text="Each shortcut can start one command set. Dictation and any post-processing on the same shortcut run first; then the model picks the command that matches what you said and Rambl presses its keys." />
+            </Grid>
+
+            <Grid Grid.Row="4">
+                <ScrollView>
+                    <VerticalStackLayout x:Name="List" Spacing="24" />
+                </ScrollView>
+                <Label x:Name="MessageLabel" IsVisible="False" Style="{StaticResource PageSubtitle}" VerticalOptions="Start"
+                       AutomationId="CommandSetMessage" />
+            </Grid>
+        </Grid>
+
+        <!-- The edit layer takes the place of the list; Voice Commands stays selected in the sidebar. -->
+        <ContentView x:Name="EditorHost" IsVisible="False" />
+    </Grid>
+</ContentView>

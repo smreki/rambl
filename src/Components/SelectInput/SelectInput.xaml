@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.SelectInput">
+    <Border x:Name="Outline" HeightRequest="36" StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="4,0,0,0"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <Grid ColumnDefinitions="Auto,*">
+            <Label x:Name="GlyphLabel" Style="{StaticResource Icon}" FontSize="14" IsVisible="False"
+                   Margin="6,0,0,0" />
+            <Picker x:Name="Chooser" Grid.Column="1" FontFamily="Inter" FontSize="13" MinimumHeightRequest="0"
+                    VerticalOptions="Center" BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                    SelectedIndexChanged="OnSelectedIndexChanged" />
+        </Grid>
+    </Border>
+</ContentView>

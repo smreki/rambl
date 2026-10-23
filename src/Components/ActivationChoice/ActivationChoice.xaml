@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RadioButton xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.ActivationChoice"
+             HorizontalOptions="Fill">
+    <RadioButton.ControlTemplate>
+        <ControlTemplate>
+            <Border x:Name="Container" StrokeShape="RoundRectangle 6" Padding="16"
+                    WidthRequest="{TemplateBinding Width}" HorizontalOptions="Fill" StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CheckedStates">
+                        <VisualState x:Name="Unchecked">
+                            <VisualState.Setters>
+                                <Setter Property="StrokeThickness" Value="1" />
+                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}" />
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}" />
+                                <Setter TargetName="GlyphLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                                <Setter TargetName="RadioRing" Property="Border.Stroke" Value="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}" />
+                                <Setter TargetName="RadioDot" Property="VisualElement.IsVisible" Value="False" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Checked">
+                            <VisualState.Setters>
+                                <Setter Property="StrokeThickness" Value="2" />
+                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}" />
+                                <Setter TargetName="GlyphLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                <Setter TargetName="RadioRing" Property="Border.Stroke" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                <Setter TargetName="RadioDot" Property="VisualElement.IsVisible" Value="True" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                        <Label x:Name="GlyphLabel" Style="{StaticResource Icon}" FontSize="18"
+                               Text="{TemplateBinding Glyph}" />
+                        <Label Grid.Column="1" FontFamily="InterSemiBold" FontSize="13" LineHeight="1.3"
+                               VerticalOptions="Center" Text="{TemplateBinding Content}" />
+                        <Border x:Name="RadioRing" Grid.Column="2" WidthRequest="16" HeightRequest="16"
+                                StrokeShape="Ellipse" StrokeThickness="1" VerticalOptions="Center">
+                            <Ellipse x:Name="RadioDot" WidthRequest="8" HeightRequest="8"
+                                     HorizontalOptions="Center" VerticalOptions="Center"
+                                     Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        </Border>
+                    </Grid>
+                    <Label Style="{StaticResource PageSubtitle}" LineHeight="1.5"
+                           Text="{TemplateBinding Description}" />
+                </VerticalStackLayout>
+            </Border>
+        </ControlTemplate>
+    </RadioButton.ControlTemplate>
+</RadioButton>

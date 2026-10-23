@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.SharedShortcutNotice">
+    <Border StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="14,12"
+            BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}">
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+            <Label x:Name="NoticeGlyph" Style="{StaticResource Icon}" FontSize="16" VerticalOptions="Start" Text="{x:Static components:Icons.WandSparkles}"
+                   TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+            <VerticalStackLayout Grid.Column="1" Spacing="8">
+                <Label x:Name="TitleLabel" FontFamily="InterSemiBold" FontSize="13" LineBreakMode="WordWrap"
+                       SemanticProperties.HeadingLevel="Level3" />
+                <Label x:Name="DescriptionLabel" Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap" />
+                <!-- The chain wraps onto a second line when the window is narrow. -->
+                <FlexLayout x:Name="Chain" Wrap="Wrap" AlignItems="Center" />
+                <!-- The label is laid out on its own, with a real button on top, like the other label-and-icon controls. -->
+                <Grid HorizontalOptions="Start">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label x:Name="LinkLabel" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.ArrowRight}"
+                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    </HorizontalStackLayout>
+                    <Button x:Name="LinkButton" Style="{StaticResource GhostButton}" HeightRequest="-1" MinimumHeightRequest="0"
+                            Padding="0" AutomationId="SharedShortcutLink" Clicked="OnLinkClicked" />
+                </Grid>
+            </VerticalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

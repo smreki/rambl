@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             xmlns:input="clr-namespace:Rambl.Common.Input"
+             x:Class="Rambl.Views.Controls"
+             Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged">
+    <Grid x:Name="Root">
+    <ScrollView>
+        <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
+            <VerticalStackLayout Spacing="4">
+                <Label Style="{StaticResource PageTitle}" Text="Controls"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Style="{StaticResource PageSubtitle}"
+                       Text="Set your dictation shortcut, choose how recording works and what happens with the text." />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="28">
+                <!-- Speech model: the same choice as the status bar pill, which it follows. -->
+                <VerticalStackLayout Spacing="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Speech model" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Label Style="{StaticResource PageSubtitle}" LineHeight="1.5"
+                               Text="The model that turns what you say into text. It runs on this PC." />
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Active model" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource PageSubtitle}" FontSize="12" LineHeight="1.5"
+                                   Text="Downloaded models that can run here. Get more in STT Models." />
+                        </VerticalStackLayout>
+                        <!-- A select with a two-line value. The button lies on top so the whole field is one control. -->
+                        <Grid x:Name="ModelSelect" Grid.Column="1" WidthRequest="360" VerticalOptions="Center">
+                            <Border StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="12,8"
+                                    Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                        <Label x:Name="ModelNameLabel" FontFamily="InterMedium" FontSize="13"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                        <Label x:Name="ModelDetailLabel" Style="{StaticResource SettingHelp}"
+                                               LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1" Style="{StaticResource Icon}" FontSize="16"
+                                           VerticalOptions="Center" Text="{x:Static components:Icons.ChevronDown}"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                </Grid>
+                            </Border>
+                            <Button x:Name="ModelSelectButton" Style="{StaticResource GhostButton}" HeightRequest="-1"
+                                    MinimumHeightRequest="0" CornerRadius="6" Padding="0" AutomationId="ActiveSpeechModel"
+                                    Clicked="OnModelSelectClicked" />
+                        </Grid>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <VerticalStackLayout Spacing="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Activation mode" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Label Style="{StaticResource PageSubtitle}" LineHeight="1.5"
+                               Text="Choose how the shortcut starts and stops recording." />
+                    </VerticalStackLayout>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <components:ActivationChoice x:Name="HoldChoice" Content="Hold to talk"
+                                                     Value="HoldToTalk" GroupName="ActivationMode"
+                                                     Glyph="{x:Static components:Icons.Hand}"
+                                                     Description="Hold the shortcut to record.&#10;Release to insert your text."
+                                                     AutomationId="ActivationHold"
+                                                     CheckedChanged="OnActivationCheckedChanged" />
+                        <components:ActivationChoice x:Name="ToggleChoice" Grid.Column="1" Content="Press to toggle"
+                                                     Value="PressToToggle" GroupName="ActivationMode"
+                                                     Glyph="{x:Static components:Icons.ToggleRight}"
+                                                     Description="Press once to start recording.&#10;Press again to insert your text."
+                                                     AutomationId="ActivationToggle"
+                                                     CheckedChanged="OnActivationCheckedChanged" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <VerticalStackLayout Spacing="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Keyboard shortcuts" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Label Style="{StaticResource PageSubtitle}" LineHeight="1.5"
+                               Text="Choose the keys you’ll use to control dictation." />
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Start dictation" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource PageSubtitle}" FontSize="12"
+                                   Text="Available in any app" />
+                        </VerticalStackLayout>
+                        <components:ShortcutInput x:Name="DictationInput" Grid.Column="1"
+                                                  SettingName="dictation shortcut"
+                                                  DefaultShortcut="{x:Static input:Shortcut.DefaultDictation}"
+                                                  AutomationId="DictationShortcut"
+                                                  ShortcutChanged="OnDictationShortcutChanged" />
+                    </Grid>
+
+                    <!-- Shown when post-processing processes use the dictation shortcut: they run after each dictation, in order. -->
+                    <components:SharedShortcutNotice x:Name="DictationNotice" IsVisible="False"
+                                                     LinkClicked="OnNoticeLinkClicked" />
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Cancel recording" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource PageSubtitle}" FontSize="12" LineHeight="1.5"
+                                   Text="Discard the current recording without inserting text." />
+                        </VerticalStackLayout>
+                        <components:ShortcutInput x:Name="CancelInput" Grid.Column="1"
+                                                  SettingName="cancel shortcut"
+                                                  DefaultShortcut="{x:Static input:Shortcut.DefaultCancel}"
+                                                  AutomationId="CancelShortcut"
+                                                  ShortcutChanged="OnCancelShortcutChanged" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Auto paste to focused app" FontFamily="InterMedium" FontSize="13" />
+                        <Label Style="{StaticResource PageSubtitle}" FontSize="12" LineHeight="1.5"
+                               Text="Pastes the text into the app you’re typing in. Turn this off and the text is only copied to the clipboard." />
+                    </VerticalStackLayout>
+                    <Switch x:Name="AutoPasteToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                            AutomationId="AutoPaste"
+                            SemanticProperties.Description="Auto paste to focused app"
+                            Toggled="OnAutoPasteToggled" />
+                </Grid>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+    <!-- Model menu layer: a nearly transparent backdrop closes the menu when anything else is clicked. -->
+    <Grid x:Name="MenuLayer" IsVisible="False">
+        <Grid BackgroundColor="#01000000">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnMenuBackdropTapped" />
+            </Grid.GestureRecognizers>
+        </Grid>
+        <components:OptionMenu x:Name="ModelMenu" HorizontalOptions="Start" VerticalOptions="Start"
+                               OptionChosen="OnModelChosen" />
+    </Grid>
+    </Grid>
+</ContentView>

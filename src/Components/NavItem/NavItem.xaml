@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.NavItem">
+
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="SelectionStates">
+            <VisualState x:Name="Unselected">
+                <VisualState.Setters>
+                    <Setter TargetName="Container" Property="Border.BackgroundColor" Value="Transparent" />
+                    <Setter TargetName="GlyphLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Setter TargetName="TextLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Setter TargetName="TextLabel" Property="Label.FontFamily" Value="Inter" />
+                </VisualState.Setters>
+            </VisualState>
+            <VisualState x:Name="Selected">
+                <VisualState.Setters>
+                    <Setter TargetName="Container" Property="Border.BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}" />
+                    <Setter TargetName="GlyphLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    <Setter TargetName="TextLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                    <Setter TargetName="TextLabel" Property="Label.FontFamily" Value="InterSemiBold" />
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+
+    <Border x:Name="Container"
+            HeightRequest="36"
+            Padding="10,0"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 6">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnTapped" />
+        </Border.GestureRecognizers>
+        <HorizontalStackLayout Spacing="10">
+            <Label x:Name="GlyphLabel" Style="{StaticResource Icon}" />
+            <Label x:Name="TextLabel" FontSize="13" VerticalOptions="Center" />
+        </HorizontalStackLayout>
+    </Border>
+
+</ContentView>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.CommandRow">
+    <!-- The Voice Command Row of the design: what the model reads (name and description), the action and its keys, then
+         Edit and Delete. -->
+    <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Padding="16,12,12,12"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="16">
+            <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                <Label x:Name="NameLabel" FontFamily="InterSemiBold" FontSize="13" LineBreakMode="TailTruncation"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                <Label x:Name="DescriptionLabel" Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap" MaxLines="2" />
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                <HorizontalStackLayout Spacing="5" HorizontalOptions="End">
+                    <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center" Text="{x:Static components:Icons.Keyboard}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                    <Label Text="Press keys" FontSize="11" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                </HorizontalStackLayout>
+                <components:KeyCaps x:Name="Caps" HorizontalOptions="End" MaxPresses="3" />
+            </VerticalStackLayout>
+            <HorizontalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center">
+                <components:IconButton x:Name="EditButton" Glyph="{x:Static components:Icons.Pencil}" GlyphSize="14"
+                                       WidthRequest="32" HeightRequest="32" IsOutlined="True" Clicked="OnEditClicked" />
+                <components:IconButton x:Name="DeleteButton" Glyph="{x:Static components:Icons.Trash2}" GlyphSize="14"
+                                       WidthRequest="32" HeightRequest="32" IsOutlined="True" IsDestructive="True"
+                                       Clicked="OnDeleteClicked" />
+            </HorizontalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

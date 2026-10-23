@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.ModelsTab"
+             Loaded="OnLoaded">
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="18">
+        <!-- Name search and filters; each tab keeps its own state. -->
+        <VerticalStackLayout x:Name="FilterBar" Spacing="12">
+            <components:SearchField x:Name="Search" Placeholder="Search models by name…"
+                                    AccessibleName="Search models by name" AutomationId="ModelSearch" />
+            <!-- One row with 16 between items, as designed. The language select takes the room that is left, up to 186,
+                 so it shrinks in a narrow window instead of pushing Reset off the edge. -->
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="16">
+                <!-- Language models: the Task select takes the place of the two toggles. -->
+                <components:SelectInput x:Name="TaskFilter" Grid.ColumnSpan="2" IsCompact="True" IsVisible="False"
+                                        HorizontalOptions="Start" WidthRequest="186"
+                                        Glyph="{x:Static components:Icons.WandSparkles}" AccessibleName="Task"
+                                        AutomationId="TaskFilter" SelectedIndexChanged="OnTaskChanged" />
+                <components:FilterToggle x:Name="StreamingFilter" Glyph="{x:Static components:Icons.Radio}"
+                                         Text="Streaming" AutomationId="StreamingFilter"
+                                         CheckedChanged="OnFilterChanged" />
+                <components:FilterToggle x:Name="MultilingualFilter" Grid.Column="1"
+                                         Glyph="{x:Static components:Icons.Languages}"
+                                         Text="Multilingual" AutomationId="MultilingualFilter"
+                                         CheckedChanged="OnFilterChanged" />
+                <components:SelectInput x:Name="LanguageFilter" Grid.Column="2" IsCompact="True"
+                                        HorizontalOptions="Start" WidthRequest="186"
+                                        Glyph="{x:Static components:Icons.Languages}" AccessibleName="Language"
+                                        AutomationId="LanguageFilter" SelectedIndexChanged="OnLanguageChanged" />
+                <components:IconButton x:Name="ResetFilters" Grid.Column="3" Glyph="{x:Static components:Icons.RotateCcw}"
+                                       GlyphSize="14" Text="Reset filters" AccessibleName="Reset filters"
+                                       AutomationId="ResetModelFilters" IsEnabled="False" Clicked="OnResetFilters" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <Label x:Name="CountLabel" Grid.Row="1" Style="{StaticResource SettingHelp}" AutomationId="ModelResultsCount" />
+
+        <Grid Grid.Row="2">
+            <ScrollView x:Name="CardScroll">
+                <VerticalStackLayout x:Name="CardList" Spacing="12" />
+            </ScrollView>
+            <ActivityIndicator x:Name="Loading" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Start"
+                               Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+            <Label x:Name="MessageLabel" IsVisible="False" Style="{StaticResource PageSubtitle}" VerticalOptions="Start" />
+
+            <!-- The Local tab before anything is downloaded; this state is not in the design. -->
+            <VerticalStackLayout x:Name="EmptyState" IsVisible="False" Spacing="12" VerticalOptions="Start"
+                                 HorizontalOptions="Start">
+                <Label x:Name="EmptyTitle" Text="No models downloaded yet" FontFamily="InterSemiBold" FontSize="14"
+                       SemanticProperties.HeadingLevel="Level2" />
+                <Label x:Name="EmptyText" Style="{StaticResource PageSubtitle}" LineHeight="1.5"
+                       Text="Models you download appear here, ready to use for dictation." />
+                <components:IconButton Glyph="{x:Static components:Icons.Search}" GlyphSize="14"
+                                       Text="Browse models" IsOutlined="True" HorizontalOptions="Start"
+                                       AutomationId="BrowseModels" Clicked="OnBrowseClicked" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentView>

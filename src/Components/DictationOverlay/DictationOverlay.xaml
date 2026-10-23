@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.DictationOverlay">
+    <ContentView.Resources>
+        <Style x:Key="WaveBar" TargetType="BoxView">
+            <Setter Property="WidthRequest" Value="3" />
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+        </Style>
+        <!-- While post-processing the wave is violet, so it is never mistaken for recording. -->
+        <Style x:Key="ProcessingWaveBar" TargetType="BoxView" BasedOn="{StaticResource WaveBar}">
+            <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
+        </Style>
+        <Style x:Key="PulseRing" TargetType="Ellipse">
+            <Setter Property="WidthRequest" Value="8" />
+            <Setter Property="HeightRequest" Value="8" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+        </Style>
+        <Style x:Key="OverlayIndicator" TargetType="Border">
+            <Setter Property="WidthRequest" Value="20" />
+            <Setter Property="HeightRequest" Value="20" />
+            <Setter Property="HorizontalOptions" Value="Start" />
+            <Setter Property="VerticalOptions" Value="Start" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+        </Style>
+    </ContentView.Resources>
+
+    <!-- The margin leaves room inside the transparent window for the drop shadow. -->
+    <Border x:Name="Card" Margin="24" WidthRequest="350" HorizontalOptions="Center" VerticalOptions="Start"
+            Padding="16,12" StrokeShape="RoundRectangle 20" StrokeThickness="1"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <Border.Shadow>
+            <Shadow Radius="20" Offset="0,6" Opacity="1"
+                    Brush="{AppThemeBinding Light={StaticResource OverlayShadowLightBrush}, Dark={StaticResource OverlayShadowDarkBrush}}" />
+        </Border.Shadow>
+        <Grid RowDefinitions="Auto,Auto,Auto">
+            <!-- The waveform is centered in the room between the indicator and the time and close button, which is what the eye
+                 compares it with; the card's own center would put it nearer the (wider) right group. The row has three
+                 looks: recording, processing (the same row with a violet wave, the step and a Skip button) and a failed process
+                 (the waveform is replaced by the message, so the row grows with it). -->
+            <Grid x:Name="ControlsRow" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" HeightRequest="28">
+                <Grid x:Name="IndicatorHost" VerticalOptions="Center" HeightRequest="20" WidthRequest="20">
+                    <Border x:Name="RecordingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}"
+                            SemanticProperties.Description="Recording">
+                        <!-- Two ripples grow out of the dot, half a period apart, and fade before they reach the edge of the
+                             circle (which clips them), so recording reads as a pulse. -->
+                        <Grid>
+                            <Ellipse x:Name="PulseRingA" Style="{StaticResource PulseRing}" />
+                            <Ellipse x:Name="PulseRingB" Style="{StaticResource PulseRing}" />
+                            <Ellipse WidthRequest="8" HeightRequest="8" HorizontalOptions="Center" VerticalOptions="Center"
+                                     Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        </Grid>
+                    </Border>
+                    <Border x:Name="ProcessingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource ProcessingSoftLight}, Dark={StaticResource ProcessingSoftDark}}"
+                            SemanticProperties.Description="Processing">
+                        <Label x:Name="ProcessingGlyph" Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.WandSparkles}"
+                               HorizontalOptions="Center" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
+                    </Border>
+                    <Border x:Name="FailureIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource WarningSoftLight}, Dark={StaticResource WarningSoftDark}}"
+                            SemanticProperties.Description="A process did not run">
+                        <Label Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.TriangleAlert}"
+                               HorizontalOptions="Center" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                    </Border>
+                    <Border x:Name="CommandIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}"
+                            SemanticProperties.Description="A voice command ran">
+                        <Label Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.Check}"
+                               HorizontalOptions="Center" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    </Border>
+                </Grid>
+
+                <HorizontalStackLayout x:Name="Waveform" Grid.Column="1" Spacing="3" HeightRequest="24"
+                                       HorizontalOptions="Center" VerticalOptions="Center"
+                                       AutomationId="DictationWaveform" />
+
+                <VerticalStackLayout x:Name="FailureText" Grid.Column="1" Spacing="3" IsVisible="False" VerticalOptions="Start">
+                    <Label x:Name="FailureTitleLabel" FontSize="13" FontAttributes="Bold" LineBreakMode="WordWrap"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                    <Label x:Name="FailureDetailLabel" FontSize="12" LineBreakMode="WordWrap"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout x:Name="RightGroup" Grid.Column="2" Spacing="10" HorizontalOptions="End" VerticalOptions="Center">
+                    <!-- A minimum width keeps the waveform from shifting as the digits change. -->
+                    <Label x:Name="ElapsedLabel" Style="{StaticResource StatusText}" Text="0:00" MinimumWidthRequest="30"
+                           HorizontalTextAlignment="End" SemanticProperties.Description="Elapsed time" />
+                    <Label x:Name="StepLabel" Style="{StaticResource StatusText}" IsVisible="False"
+                           SemanticProperties.Description="Process step" />
+                    <BoxView x:Name="RightDivider" Style="{StaticResource Divider}" WidthRequest="1" HeightRequest="14"
+                             VerticalOptions="Center" />
+                    <!-- The glyph is laid out on its own so it sits exactly in the middle of the circle, which a
+                         button's own image layout does not do; a transparent button on top takes the clicks. -->
+                    <Grid x:Name="CloseHost" WidthRequest="28" HeightRequest="28" VerticalOptions="Center">
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 14"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}" />
+                        <Label Style="{StaticResource Icon}" FontSize="13" Text="&#xe1b2;" TranslationY="0.5"
+                               HorizontalOptions="Center" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                        <Button x:Name="CloseButton" Style="{StaticResource GhostButton}" WidthRequest="28" HeightRequest="28"
+                                MinimumWidthRequest="28" MinimumHeightRequest="28" Padding="0" CornerRadius="14"
+                                AutomationId="CloseDictation" SemanticProperties.Description="Close dictation"
+                                Clicked="OnCloseClicked" />
+                    </Grid>
+                    <!-- While processing, the close button is a Skip pill: it stops the processes and inserts the original text. -->
+                    <Grid x:Name="SkipHost" HeightRequest="28" VerticalOptions="Center" IsVisible="False">
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 14" Padding="10,0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
+                            <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.SkipForward}"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                                <Label Text="Skip" FontSize="12" FontAttributes="Bold" VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Button x:Name="SkipButton" Style="{StaticResource GhostButton}" HeightRequest="28" MinimumHeightRequest="28"
+                                Padding="0" CornerRadius="14" AutomationId="SkipProcessing"
+                                SemanticProperties.Description="Skip processing and insert the original text"
+                                Clicked="OnSkipClicked" />
+                    </Grid>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- The process that is running and its model, only while post-processing. -->
+            <HorizontalStackLayout x:Name="ProcessingStatus" Grid.Row="1" Margin="0,8,0,0" Spacing="6" IsVisible="False">
+                <Label x:Name="ProcessNameLabel" FontSize="12" FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
+                <Label x:Name="ProcessModelLabel" FontSize="12"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+            </HorizontalStackLayout>
+
+            <!-- The live transcript, only once a model that streams has produced words. It wraps and the card grows
+                 with it; the margin, not a row gap, separates it so a hidden transcript leaves no space. -->
+            <Label x:Name="TranscriptLabel" Grid.Row="2" Margin="0,6,0,0" FontSize="14" FontAttributes="Italic"
+                   IsVisible="False" LineBreakMode="WordWrap" />
+        </Grid>
+    </Border>
+</ContentView>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.CommandSetCard">
+    <!-- The Command Set List Item of the design. Layers, bottom to top: the card, one transparent button over all of it (the
+         card is a single control that opens the set), and the on/off switch, which takes its own clicks. -->
+    <Grid>
+        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Padding="16,14"
+                Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+            <Grid x:Name="CardGrid" ColumnDefinitions="Auto,*,64" ColumnSpacing="14">
+                <Border WidthRequest="36" HeightRequest="36" StrokeThickness="0" StrokeShape="RoundRectangle 8" VerticalOptions="Start"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}">
+                    <Label Style="{StaticResource Icon}" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"
+                           Text="{x:Static components:Icons.Speech}"
+                           TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                </Border>
+                <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Label x:Name="NameLabel" FontFamily="InterSemiBold" FontSize="13" LineBreakMode="TailTruncation"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                        <!-- Shown while the set is turned off; the card is dimmed too. -->
+                        <Border x:Name="DisabledTag" Grid.Column="1" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
+                                StrokeShape="RoundRectangle 4" StrokeThickness="1" Padding="6,1"
+                                Stroke="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
+                            <Label Text="Disabled" FontSize="11" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        </Border>
+                    </Grid>
+                    <Label x:Name="DescriptionLabel" IsVisible="False" Style="{StaticResource SettingHelp}"
+                           LineBreakMode="TailTruncation" MaxLines="1" />
+                    <HorizontalStackLayout Spacing="6">
+                        <Label x:Name="ModelGlyph" Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.Brain}" />
+                        <Label x:Name="ModelLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                               LineBreakMode="TailTruncation" />
+                        <Label Text="·" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center" Text="{x:Static components:Icons.List}"
+                               TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        <Label x:Name="CountLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <!-- A second warning, such as a set without commands, in the same style as a model that needs attention. -->
+                    <HorizontalStackLayout x:Name="WarningRow" Spacing="6" IsVisible="False">
+                        <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.TriangleAlert}"
+                               TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                        <Label x:Name="WarningLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                               LineBreakMode="TailTruncation" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <Button x:Name="Surface" Style="{StaticResource GhostButton}" HeightRequest="-1" MinimumHeightRequest="0"
+                CornerRadius="8" Padding="0" Clicked="OnClicked" />
+
+        <!-- Same columns as the card, so the switch lies over the room the card keeps for it, above the card's button. -->
+        <Grid Padding="16,14" ColumnDefinitions="Auto,*,64" ColumnSpacing="14" InputTransparent="True" CascadeInputTransparent="False">
+            <Switch x:Name="EnabledSwitch" Grid.Column="2" Style="{StaticResource SettingToggle}" HorizontalOptions="End"
+                    VerticalOptions="Center" IsToggled="True" Toggled="OnEnabledToggled" />
+        </Grid>
+    </Grid>
+</ContentView>

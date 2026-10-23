@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.ModelCard">
+    <Border x:Name="Outline" StrokeShape="RoundRectangle 8" StrokeThickness="1" Padding="16"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <VerticalStackLayout Spacing="12">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="10" VerticalOptions="Center">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label x:Name="TitleLabel" FontFamily="InterSemiBold" FontSize="14" VerticalOptions="Center"
+                               SemanticProperties.HeadingLevel="Level3" />
+                        <!-- Marks the model used for dictation. -->
+                        <Border x:Name="ActiveBadge" IsVisible="False" Padding="7,3" StrokeThickness="0"
+                                StrokeShape="RoundRectangle 4" VerticalOptions="Center"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}">
+                            <HorizontalStackLayout Spacing="4">
+                                <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
+                                       Text="{x:Static components:Icons.Check}"
+                                       TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                                <Label Text="Active" FontFamily="InterMedium" FontSize="11" VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </HorizontalStackLayout>
+
+                    <!-- What the model is for, on its own line under the name. -->
+                    <HorizontalStackLayout Spacing="6">
+                        <Label x:Name="PurposeGlyphLabel" Style="{StaticResource Icon}" FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        <Label x:Name="PurposeLabel" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    </HorizontalStackLayout>
+
+                    <!-- The tags, in one row that wraps when the window is narrow: the model type (language models), languages
+                         or parameters, streaming or context length, CPU fit, size. -->
+                    <FlexLayout Wrap="Wrap" Direction="Row" AlignItems="Center">
+                        <HorizontalStackLayout x:Name="TypeItem" Spacing="6" Margin="0,0,18,4" IsVisible="False">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Shapes}" />
+                            <Label x:Name="TypeLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="6" Margin="0,0,18,4">
+                            <Label x:Name="LanguagesGlyphLabel" Style="{StaticResource Icon}" FontSize="14"
+                                   Text="{x:Static components:Icons.Languages}" />
+                            <Label x:Name="LanguagesLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout x:Name="StreamingItem" Spacing="6" Margin="0,0,18,4" IsVisible="False">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Radio}" />
+                            <Label Style="{StaticResource SettingHelp}" VerticalOptions="Center" Text="Streaming" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout x:Name="ContextItem" Spacing="6" Margin="0,0,18,4" IsVisible="False">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.ScrollText}" />
+                            <Label x:Name="ContextLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="6" Margin="0,0,18,4">
+                            <Label x:Name="CpuFitGlyphLabel" Style="{StaticResource Icon}" FontSize="14"
+                                   Text="{x:Static components:Icons.Cpu}" />
+                            <Label x:Name="CpuFitLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="6" Margin="0,0,0,4">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.HardDrive}" />
+                            <Label x:Name="SizeLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </FlexLayout>
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                    <!-- Which runtime runs the model (Local) or whose files are downloaded (Browse), chosen before the
+                         action that uses it. It has no visible label; its accessible name says what it is. -->
+                    <components:SelectInput x:Name="RuntimeSelect" WidthRequest="208" IsVisible="False"
+                                            SelectedIndexChanged="OnRuntimeSelectChanged" />
+                    <components:IconButton x:Name="ActionButton" IsOutlined="True" GlyphSize="14" Clicked="OnActionClicked" />
+                    <!-- Replaces the action on a downloaded model in Browse, which has nothing left to offer. -->
+                    <HorizontalStackLayout x:Name="DownloadedItem" Spacing="6" IsVisible="False" Padding="10,0"
+                                           VerticalOptions="Center">
+                        <Label Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.Check}" />
+                        <Label Style="{StaticResource SettingHelp}" Text="Downloaded" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <!-- The only secondary action is Delete, a destructive one, so it uses the danger color. -->
+                    <components:IconButton x:Name="SecondaryButton" GlyphSize="14" WidthRequest="32" IsVisible="False"
+                                           IsDestructive="True"
+                                           Clicked="OnSecondaryClicked" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- Local only, and only for a model that takes a language. It has its own row because the actions have no room
+                 for a third control. The hint explains Auto-detect and goes away once a language is chosen. -->
+            <HorizontalStackLayout x:Name="LanguageRow" Spacing="12" IsVisible="False">
+                <Label Style="{StaticResource SettingHelp}" FontFamily="InterMedium" Text="Language" VerticalOptions="Center" />
+                <components:SelectInput x:Name="LanguageSelect" WidthRequest="176"
+                                        SelectedIndexChanged="OnLanguageSelectChanged" />
+                <Label x:Name="LanguageHintLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                       Text="The model decides from what you say."
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+            </HorizontalStackLayout>
+
+            <!-- Download progress across the whole card. -->
+            <VerticalStackLayout x:Name="ProgressArea" Spacing="8" IsVisible="False">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <Label x:Name="ProgressLabel" FontFamily="InterMedium" FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    <Label x:Name="ProgressDetailLabel" Grid.Column="1" Style="{StaticResource SettingHelp}" />
+                </Grid>
+                <Border x:Name="ProgressTrack" HeightRequest="4" StrokeThickness="0" StrokeShape="RoundRectangle 2"
+                        SizeChanged="OnProgressTrackSizeChanged"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}">
+                    <BoxView x:Name="ProgressFill" HorizontalOptions="Start" WidthRequest="0" BackgroundColor="Transparent"
+                             Color="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Why the last download failed. -->
+            <Label x:Name="ErrorLabel" IsVisible="False" Style="{StaticResource SettingHelp}"
+                   TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
+
+            <!-- Why a downloaded model cannot be used, for example because its runtime is not available yet. -->
+            <Grid x:Name="NoticeItem" IsVisible="False" ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                <Label Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center"
+                       Text="{x:Static components:Icons.CircleAlert}"
+                       TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                <Label x:Name="NoticeLabel" Grid.Column="1" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

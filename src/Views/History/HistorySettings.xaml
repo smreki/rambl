@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.HistorySettings"
+             Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged">
+    <ScrollView x:Name="Scroll" Padding="0,0,16,0">
+        <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
+            <!-- Back to the list, then the title. -->
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                <components:IconButton x:Name="BackButton" Glyph="{x:Static components:Icons.ArrowLeft}" GlyphSize="14"
+                                       WidthRequest="32" IsOutlined="True" VerticalOptions="Start"
+                                       AccessibleName="Back to History" AutomationId="HistorySettingsBack"
+                                       Clicked="OnBackClicked" />
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Style="{StaticResource PageTitle}" Text="History settings"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource PageSubtitle}"
+                           Text="Choose what Rambl keeps, for how long and where. Recordings never leave this device." />
+                </VerticalStackLayout>
+            </Grid>
+
+            <VerticalStackLayout Spacing="24">
+                <!-- Recordings -->
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Recordings" FontFamily="InterSemiBold" FontSize="15"
+                           SemanticProperties.HeadingLevel="Level2" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Save recordings" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="Keep the audio and transcript of each dictation on this computer. Turn this off and nothing new is saved; what is already here stays until you clear it." />
+                        </VerticalStackLayout>
+                        <Switch x:Name="SaveToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                AutomationId="SaveRecordings"
+                                SemanticProperties.Description="Save recordings" Toggled="OnSaveToggled" />
+                    </Grid>
+                    <Grid x:Name="RetentionRow" ColumnDefinitions="320,*" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Keep recordings for" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="Older recordings are deleted automatically while Rambl is running." />
+                        </VerticalStackLayout>
+                        <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="8" HorizontalOptions="End">
+                            <components:SelectInput x:Name="RetentionSelect" AccessibleName="Keep recordings for"
+                                                    WidthRequest="208" AutomationId="RetentionSelect"
+                                                    SelectedIndexChanged="OnRetentionChanged" />
+                            <Button x:Name="ResetRetention" Grid.Column="1" Style="{StaticResource InputResetButton}"
+                                    AutomationId="ResetRetention"
+                                    SemanticProperties.Description="Reset retention to 30 days"
+                                    Clicked="OnResetRetention" />
+                        </Grid>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <!-- Storage -->
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Storage" FontFamily="InterSemiBold" FontSize="15"
+                           SemanticProperties.HeadingLevel="Level2" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Current path" FontFamily="InterMedium" FontSize="13" />
+                            <Label x:Name="FolderPathLabel" Style="{StaticResource SettingHelp}"
+                                   LineBreakMode="CharacterWrap" AutomationId="RecordingsFolderPath" />
+                        </VerticalStackLayout>
+                        <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                            <components:IconButton x:Name="ChooseFolderButton" HeightRequest="36"
+                                                  Glyph="{x:Static components:Icons.FolderOpen}" GlyphSize="14"
+                                                  Text="Choose folder…" IsOutlined="True"
+                                                  AccessibleName="Choose recordings folder"
+                                                  AutomationId="ChooseRecordingsFolder" Clicked="OnChooseFolderClicked" />
+                            <Button x:Name="ResetFolder" Style="{StaticResource InputResetButton}"
+                                    AutomationId="ResetRecordingsFolder"
+                                    SemanticProperties.Description="Reset recordings folder to default"
+                                    Clicked="OnResetFolderClicked" />
+                        </HorizontalStackLayout>
+                    </Grid>
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Used space" FontFamily="InterMedium" FontSize="13" />
+                        <Label x:Name="UsageLabel" Style="{StaticResource SettingHelp}" AutomationId="RecordingsUsage" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <!-- Danger zone -->
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Danger zone" FontFamily="InterSemiBold" FontSize="15"
+                           SemanticProperties.HeadingLevel="Level2" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Clear history" FontFamily="InterMedium" FontSize="13" />
+                            <Label x:Name="ClearHelp" Style="{StaticResource SettingHelp}" />
+                        </VerticalStackLayout>
+                        <components:IconButton x:Name="ClearButton" Grid.Column="1" HeightRequest="36"
+                                               Glyph="{x:Static components:Icons.Trash2}" GlyphSize="14"
+                                               Text="Clear history" AccessibleName="Clear history" IsOutlined="True"
+                                               IsDestructive="True" AutomationId="ClearHistory"
+                                               Clicked="OnClearClicked" />
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

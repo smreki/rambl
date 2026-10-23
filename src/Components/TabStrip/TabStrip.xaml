@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Rambl.Components.TabStrip"
+             HeightRequest="40">
+    <ContentView.Resources>
+        <Style x:Key="TabButton" TargetType="Button">
+            <Setter Property="FontFamily" Value="Inter" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="MinimumHeightRequest" Value="0" />
+            <Setter Property="MinimumWidthRequest" Value="0" />
+            <Setter Property="BorderWidth" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </Style>
+    </ContentView.Resources>
+
+    <!-- The divider runs under every tab; the selected tab's underline sits on top of it. -->
+    <Grid>
+        <BoxView Style="{StaticResource Divider}" HeightRequest="1" VerticalOptions="End" />
+        <HorizontalStackLayout x:Name="Tabs" Spacing="24" />
+    </Grid>
+</ContentView>

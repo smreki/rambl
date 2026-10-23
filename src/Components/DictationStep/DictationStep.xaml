@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.DictationStep">
+    <!-- The Dictation Step Item of the design: the first item of the dictation shortcut's group. It is not a process. -->
+    <Border StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="12,10"
+            BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}"
+            SemanticProperties.Description="Default post-processing, every dictation. These use the dictation shortcut, so they run after every dictation, in this order.">
+        <Grid ColumnDefinitions="58,*,Auto">
+            <Label Style="{StaticResource Icon}" FontSize="16" VerticalOptions="Center" Text="{x:Static components:Icons.Mic}"
+                   TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                <Label Text="Default post-processing" FontFamily="InterSemiBold" FontSize="13"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                <Label Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap"
+                       Text="These use the dictation shortcut, so they run after every dictation, in this order." />
+            </VerticalStackLayout>
+            <HorizontalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center">
+                <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center" Text="{x:Static components:Icons.Repeat}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                <Label Style="{StaticResource StatusText}" Text="Every dictation" />
+            </HorizontalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

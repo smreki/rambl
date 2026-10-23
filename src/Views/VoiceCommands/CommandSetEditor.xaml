@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.CommandSetEditor"
+             SizeChanged="OnSizeChanged">
+    <Grid x:Name="Root">
+        <ScrollView x:Name="Scroll" Padding="0,0,16,0">
+            <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
+                <!-- Back to the list, then the title. -->
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                    <components:IconButton x:Name="BackButton" Glyph="{x:Static components:Icons.ArrowLeft}" GlyphSize="14"
+                                           WidthRequest="32" IsOutlined="True" VerticalOptions="Start"
+                                           AccessibleName="Back to Voice Commands" AutomationId="CommandSetBack"
+                                           Clicked="OnBackClicked" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                        <Label x:Name="TitleLabel" Style="{StaticResource PageTitle}" Text="Edit command set"
+                               SemanticProperties.HeadingLevel="Level1" />
+                        <Label Style="{StaticResource PageSubtitle}"
+                               Text="Say a command after this shortcut: a decision model picks the one that matches and Rambl presses its keys." />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Spacing="24">
+                    <!-- Command set -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Command set" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Enabled" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="When off, the shortcut still dictates and runs its post-processing, but no keys are pressed." />
+                            </VerticalStackLayout>
+                            <Switch x:Name="EnabledToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                    HorizontalOptions="End" IsToggled="True" AutomationId="CommandSetEnabled"
+                                    SemanticProperties.Description="Enabled" Toggled="OnEnabledToggled" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Shortcut" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Dictation and the post-processing on this shortcut run first. One command set per shortcut; it must differ from the cancel shortcut." />
+                            </VerticalStackLayout>
+                            <components:ShortcutInput x:Name="ShortcutInput" Grid.Column="1" WidthRequest="360"
+                                                      SettingName="command set shortcut" DefaultShortcut="{x:Null}"
+                                                      Shortcut="{x:Null}" AutomationId="CommandSetShortcut"
+                                                      ShortcutChanged="OnShortcutChanged" />
+                        </Grid>
+
+                        <!-- Shown when dictation or processes use the same shortcut: what runs before this set. -->
+                        <components:SharedShortcutNotice x:Name="ShortcutNotice" IsVisible="False"
+                                                         LinkClicked="OnNoticeLinkClicked" />
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Name" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Shown in the list and on the dictation card." />
+                            </VerticalStackLayout>
+                            <components:TextInput x:Name="NameInput" Grid.Column="1" WidthRequest="360" MaxLength="60"
+                                                  Placeholder="For example, Editor commands" AccessibleName="Command set name"
+                                                  AutomationId="CommandSetName" PropertyChanged="OnInputPropertyChanged" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label Text="Short description" FontFamily="InterMedium" FontSize="13" />
+                                    <Label Text="Optional" FontSize="12" VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                </HorizontalStackLayout>
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="Only for you, to tell command sets apart. The model never reads it." />
+                            </VerticalStackLayout>
+                            <components:TextInput x:Name="DescriptionInput" Grid.Column="1" WidthRequest="360" MaxLength="120"
+                                                  Placeholder="What this set is for" AccessibleName="Command set description"
+                                                  AutomationId="CommandSetDescription" PropertyChanged="OnInputPropertyChanged" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Model -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Model" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Provider" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Runs on this PC. No text leaves it." />
+                            </VerticalStackLayout>
+                            <components:SelectInput x:Name="ProviderSelect" Grid.Column="1" WidthRequest="360"
+                                                    Glyph="{x:Static components:Icons.Cpu}" AccessibleName="Provider"
+                                                    AutomationId="CommandSetProvider" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Model" FontFamily="InterMedium" FontSize="13" />
+                                <Label x:Name="ModelHelp" Style="{StaticResource SettingHelp}"
+                                       Text="Downloaded decision models that pick one command from a list, such as Laya." />
+                            </VerticalStackLayout>
+                            <!-- A select with a two-line value. The button lies on top so the whole field is one control. -->
+                            <Grid x:Name="ModelSelect" Grid.Column="1" WidthRequest="360" VerticalOptions="Center">
+                                <Border StrokeShape="RoundRectangle 6" StrokeThickness="1" Padding="12,8"
+                                        Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                            <Label x:Name="ModelNameLabel" FontFamily="InterMedium" FontSize="13"
+                                                   LineBreakMode="TailTruncation"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                            <Label x:Name="ModelDetailLabel" Style="{StaticResource SettingHelp}"
+                                                   LineBreakMode="TailTruncation" IsVisible="False" />
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1" Style="{StaticResource Icon}" FontSize="16"
+                                               VerticalOptions="Center" Text="{x:Static components:Icons.ChevronDown}"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                    </Grid>
+                                </Border>
+                                <Button x:Name="ModelSelectButton" Style="{StaticResource GhostButton}" HeightRequest="-1"
+                                        MinimumHeightRequest="0" CornerRadius="6" Padding="0" AutomationId="CommandSetModel"
+                                        SemanticProperties.Description="Model" Clicked="OnModelSelectClicked" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Time limit" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="If the model takes longer, no keys are pressed and the dictation card says so." />
+                            </VerticalStackLayout>
+                            <components:SelectInput x:Name="TimeoutSelect" Grid.Column="1" WidthRequest="360"
+                                                    Glyph="{x:Static components:Icons.Timer}" AccessibleName="Time limit"
+                                                    AutomationId="CommandSetTimeLimit" SelectedIndexChanged="OnTimeoutChanged" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Matching -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Matching" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Required confidence" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="How sure the model must be before Rambl presses keys. Higher means fewer wrong presses, and more often nothing at all." />
+                            </VerticalStackLayout>
+                            <components:SelectInput x:Name="ConfidenceSelect" Grid.Column="1" WidthRequest="360"
+                                                    Glyph="{x:Static components:Icons.Gauge}" AccessibleName="Required confidence"
+                                                    AutomationId="CommandSetConfidence" SelectedIndexChanged="OnConfidenceChanged" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="When nothing matches" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}"
+                                       Text="No command is sure enough, or the set cannot run: do nothing (the card says so), or insert the dictated text like plain dictation." />
+                            </VerticalStackLayout>
+                            <components:SelectInput x:Name="NoMatchSelect" Grid.Column="1" WidthRequest="360"
+                                                    Glyph="{x:Static components:Icons.CircleSlash}" AccessibleName="When nothing matches"
+                                                    AutomationId="CommandSetNoMatch" SelectedIndexChanged="OnNoMatchChanged" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Commands -->
+                    <VerticalStackLayout Spacing="16">
+                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8">
+                            <Label Text="Commands" FontFamily="InterSemiBold" FontSize="15" VerticalOptions="Center"
+                                   SemanticProperties.HeadingLevel="Level2" />
+                            <Border Grid.Column="1" VerticalOptions="Center" StrokeShape="RoundRectangle 9" StrokeThickness="1" Padding="7,1"
+                                    Stroke="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
+                                <Label x:Name="CommandCountLabel" FontFamily="InterSemiBold" FontSize="11" Text="0"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                            </Border>
+                            <components:IconButton x:Name="AddCommandButton" Grid.Column="3" HeightRequest="32"
+                                                   Glyph="{x:Static components:Icons.Plus}" GlyphSize="14" Text="Add command"
+                                                   IsOutlined="True" AccessibleName="Add command" AutomationId="AddCommand"
+                                                   Clicked="OnAddCommandClicked" />
+                        </Grid>
+                        <Label Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap"
+                               Text="The model reads each command's name and description and picks the one that matches what you said. Write the description the way you would say it, with a few ways of saying it. Names must be unique; the list is sorted A–Z." />
+                        <VerticalStackLayout x:Name="CommandList" Spacing="8" />
+                        <Label x:Name="NoCommandsLabel" Style="{StaticResource SettingHelp}" IsVisible="False"
+                               Text="No commands yet. Add one, such as Select all with Ctrl+A." />
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Try it -->
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Try it" FontFamily="InterSemiBold" FontSize="15"
+                               SemanticProperties.HeadingLevel="Level2" />
+                        <Label Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap"
+                               Text="Type what you would say to see which command the model picks. Nothing is pressed, and post-processing is skipped." />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <components:TextInput x:Name="TryInput" MaxLength="200" Placeholder="For example, get rid of this whole line"
+                                                  AccessibleName="Phrase to try" AutomationId="TryPhrase" />
+                            <components:IconButton x:Name="TryButton" Grid.Column="1" HeightRequest="36"
+                                                   Glyph="{x:Static components:Icons.Play}" GlyphSize="14" Text="Test" IsOutlined="True"
+                                                   AccessibleName="Test the phrase" AutomationId="TryTest" Clicked="OnTryClicked" />
+                        </Grid>
+                        <Border x:Name="TryResult" IsVisible="False" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="14,12">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <Label x:Name="TryGlyph" Style="{StaticResource Icon}" FontSize="16" VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label x:Name="TryCommandLabel" FontFamily="InterSemiBold" FontSize="13" VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                        <components:KeyCaps x:Name="TryKeys" VerticalOptions="Center" MaxPresses="5" />
+                                    </HorizontalStackLayout>
+                                    <Label x:Name="TryDetailLabel" Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap"
+                                           AutomationId="TryDetail" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="2" Spacing="2" VerticalOptions="Center">
+                                    <Label x:Name="TryScoreLabel" FontFamily="InterSemiBold" FontSize="13" HorizontalOptions="End"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                    <Label x:Name="TryNoteLabel" FontSize="12" HorizontalOptions="End"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                    <!-- Actions -->
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+                        <components:IconButton x:Name="DeleteButton" HeightRequest="36" Glyph="{x:Static components:Icons.Trash2}"
+                                               GlyphSize="14" Text="Delete command set" IsOutlined="True" IsDestructive="True"
+                                               AccessibleName="Delete command set" AutomationId="DeleteCommandSet"
+                                               Clicked="OnDeleteClicked" />
+                        <Label x:Name="SaveHintLabel" Grid.Column="1" Style="{StaticResource SettingHelp}" HorizontalOptions="End"
+                               VerticalOptions="Center" IsVisible="False" Text="Finish editing the command first." />
+                        <components:IconButton x:Name="RevertButton" Grid.Column="2" HeightRequest="36" WidthRequest="88"
+                                               Text="Revert" IsOutlined="True" AccessibleName="Revert changes"
+                                               AutomationId="RevertCommandSet" Clicked="OnRevertClicked" />
+                        <components:IconButton x:Name="SaveButton" Grid.Column="3" HeightRequest="36" WidthRequest="88"
+                                               Text="Save" IsPrimary="True" AccessibleName="Save command set"
+                                               AutomationId="SaveCommandSet" Clicked="OnSaveClicked" />
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Model menu layer: a nearly transparent backdrop closes the menu when anything else is clicked. -->
+        <Grid x:Name="MenuLayer" IsVisible="False">
+            <Grid BackgroundColor="#01000000">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnMenuBackdropTapped" />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <components:OptionMenu x:Name="ModelMenu" HorizontalOptions="Start" VerticalOptions="Start"
+                                   OptionChosen="OnModelChosen" />
+        </Grid>
+    </Grid>
+</ContentView>
