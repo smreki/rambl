@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.ReaderPanel">
+    <ContentView.Resources>
+        <Style x:Key="ReaderMuted" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="LineHeight" Value="1.3" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+            <Setter Property="MaxLines" Value="1" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+        </Style>
+        <Style x:Key="ReaderChip" TargetType="Border">
+            <Setter Property="HeightRequest" Value="28" />
+            <Setter Property="Padding" Value="10,0,6,0" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 6" />
+            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}" />
+        </Style>
+    </ContentView.Resources>
+
+    <!-- The margin leaves room inside the transparent window for the drop shadow. -->
+    <Border x:Name="Card" Margin="24" WidthRequest="380" HorizontalOptions="Center" VerticalOptions="Start"
+            Padding="16,10,12,12" StrokeShape="RoundRectangle 16" StrokeThickness="1"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <Border.Shadow>
+            <Shadow Radius="20" Offset="0,6" Opacity="1"
+                    Brush="{AppThemeBinding Light={StaticResource OverlayShadowLightBrush}, Dark={StaticResource OverlayShadowDarkBrush}}" />
+        </Border.Shadow>
+        <VerticalStackLayout Spacing="10">
+            <!-- The header is where the panel is dragged from. -->
+            <Grid x:Name="Header" ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="8" HeightRequest="28"
+                  BackgroundColor="Transparent">
+                <Grid.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="OnHeaderPanUpdated" />
+                </Grid.GestureRecognizers>
+                <Border x:Name="Indicator" WidthRequest="20" HeightRequest="20" StrokeThickness="0" StrokeShape="RoundRectangle 10"
+                        VerticalOptions="Center">
+                    <Label x:Name="IndicatorGlyph" Style="{StaticResource Icon}" FontSize="12"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <Label x:Name="StatusLabel" Grid.Column="1" FontFamily="InterSemiBold" FontSize="12" VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                <Label x:Name="PositionLabel" Grid.Column="2" FontSize="12" VerticalOptions="Center" LineBreakMode="TailTruncation"
+                       MaxLines="1"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                <Grid Grid.Column="3" WidthRequest="28" HeightRequest="28" VerticalOptions="Center">
+                    <Label Style="{StaticResource Icon}" FontSize="15" Text="{x:Static components:Icons.Maximize2}"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Button Style="{StaticResource GhostButton}" WidthRequest="28" HeightRequest="28" MinimumWidthRequest="28"
+                            MinimumHeightRequest="28" Padding="0" CornerRadius="6" AutomationId="ReaderOpenWindow"
+                            SemanticProperties.Description="Open in window" ToolTipProperties.Text="Open in window"
+                            Clicked="OnOpenWindowClicked" />
+                </Grid>
+                <Grid Grid.Column="4" WidthRequest="28" HeightRequest="28" VerticalOptions="Center">
+                    <Label Style="{StaticResource Icon}" FontSize="15" Text="{x:Static components:Icons.X}"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Button Style="{StaticResource GhostButton}" WidthRequest="28" HeightRequest="28" MinimumWidthRequest="28"
+                            MinimumHeightRequest="28" Padding="0" CornerRadius="6" AutomationId="ReaderClose"
+                            SemanticProperties.Description="Close reader" ToolTipProperties.Text="Close"
+                            Clicked="OnCloseClicked" />
+                </Grid>
+            </Grid>
+
+            <!-- About four lines: the sentence before, the one being spoken (highlighted, its word underlined) and the next. -->
+            <VerticalStackLayout Spacing="2" HeightRequest="98" IsClippedToBounds="True">
+                <Label x:Name="PreviousLabel" Style="{StaticResource ReaderMuted}" />
+                <Border x:Name="CurrentBox" StrokeThickness="0" StrokeShape="RoundRectangle 4" Padding="6,2">
+                    <Label x:Name="CurrentLabel" FontSize="13" LineHeight="1.3" MaxLines="3" LineBreakMode="TailTruncation" />
+                </Border>
+                <!-- What follows, as much as fits. -->
+                <Label x:Name="NextLabel" Style="{StaticResource ReaderMuted}" MaxLines="3" LineBreakMode="TailTruncation" />
+            </VerticalStackLayout>
+
+            <Label x:Name="NoticeLabel" FontSize="12" LineBreakMode="WordWrap" IsVisible="False"
+                   TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+
+            <Grid x:Name="ProgressTrack" HeightRequest="3" SizeChanged="OnProgressTrackSizeChanged">
+                <BoxView CornerRadius="2" Color="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}" />
+                <BoxView x:Name="ProgressFill" CornerRadius="2" HorizontalOptions="Start" WidthRequest="0" />
+            </Grid>
+
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="6">
+                <Grid WidthRequest="32" HeightRequest="32" VerticalOptions="Center">
+                    <Border x:Name="PlayCircle" StrokeThickness="0" StrokeShape="RoundRectangle 16" />
+                    <Label x:Name="PlayGlyphLabel" Style="{StaticResource Icon}" FontSize="15" HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}" />
+                    <Button x:Name="PlayButton" Style="{StaticResource GhostButton}" WidthRequest="32" HeightRequest="32"
+                            MinimumWidthRequest="32" MinimumHeightRequest="32" Padding="0" CornerRadius="16"
+                            AutomationId="ReaderPlayPause" Clicked="OnPlayClicked" />
+                </Grid>
+                <Grid Grid.Column="1" WidthRequest="28" HeightRequest="28" VerticalOptions="Center">
+                    <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Square}"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Button Style="{StaticResource GhostButton}" WidthRequest="28" HeightRequest="28" MinimumWidthRequest="28"
+                            MinimumHeightRequest="28" Padding="0" CornerRadius="6" AutomationId="ReaderStop"
+                            SemanticProperties.Description="Stop and go back to the start" ToolTipProperties.Text="Stop"
+                            Clicked="OnStopClicked" />
+                </Grid>
+                <Grid Grid.Column="3" VerticalOptions="Center">
+                    <Border Style="{StaticResource ReaderChip}">
+                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                            <Label x:Name="SpeedLabel" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.ChevronDown}"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Button x:Name="SpeedButton" Style="{StaticResource GhostButton}" HeightRequest="28" MinimumHeightRequest="28"
+                            Padding="0" CornerRadius="6" AutomationId="ReaderSpeed" Clicked="OnSpeedClicked" />
+                </Grid>
+                <Grid Grid.Column="4" VerticalOptions="Center">
+                    <Border Style="{StaticResource ReaderChip}">
+                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                            <Label x:Name="VoiceLabel" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center"
+                                   MaximumWidthRequest="150" LineBreakMode="TailTruncation"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.ChevronDown}"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Button x:Name="VoiceButton" Style="{StaticResource GhostButton}" HeightRequest="28" MinimumHeightRequest="28"
+                            Padding="0" CornerRadius="6" AutomationId="ReaderVoice" Clicked="OnVoiceClicked" />
+                </Grid>
+            </Grid>
+
+            <!-- Opened by a select: the speeds, or every downloaded voice. It is part of the panel, which grows to fit,
+                 because a pop-up would take focus from the app being read from. -->
+            <Border x:Name="Menu" IsVisible="False" Padding="4" StrokeThickness="1" StrokeShape="RoundRectangle 8"
+                    Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}">
+                <ScrollView MaximumHeightRequest="180">
+                    <VerticalStackLayout x:Name="MenuItems" />
+                </ScrollView>
+            </Border>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

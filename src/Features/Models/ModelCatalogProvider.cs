@@ -4,7 +4,7 @@ namespace Rambl.Features.Models;
 
 /// <summary>Loads a model catalog bundled with the app once and shares it.</summary>
 /// <param name="logger">The logger for load failures.</param>
-/// <param name="catalogAssetName">The catalog file: <c>stt-models.json</c> (the default) or <c>language-models.json</c>.</param>
+/// <param name="catalogAssetName">The catalog file: <c>stt-models.json</c> (the default), <c>language-models.json</c> or <c>tts-models.json</c>.</param>
 public sealed class ModelCatalogProvider(ILogger<ModelCatalogProvider> logger, string catalogAssetName = "stt-models.json")
 {
     private const string CommonAssetName = "models.json";

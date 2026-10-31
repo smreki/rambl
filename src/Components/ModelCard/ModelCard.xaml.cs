@@ -283,6 +283,7 @@ public partial class ModelCard : ContentView
 
     private bool settingRuntimeOptions;
     private bool settingLanguageOptions;
+    private bool keepsLanguageRowHint;
 
     /// <summary>Creates an empty card.</summary>
     public ModelCard() => InitializeComponent();
@@ -304,6 +305,63 @@ public partial class ModelCard : ContentView
         {
             TypeLabel.Text = value;
             TypeItem.IsVisible = !string.IsNullOrEmpty(value);
+        }
+    }
+
+    /// <summary>Gets or sets the Lucide glyph of the first tag; the default is the model type's.</summary>
+    public string TypeGlyph
+    {
+        get => TypeGlyphLabel.Text ?? string.Empty;
+        set => TypeGlyphLabel.Text = value;
+    }
+
+    /// <summary>Gets or sets the license tag, for example "Apache License 2.0"; the tag is hidden while empty.</summary>
+    public string LicenseText
+    {
+        get => LicenseLabel.Text ?? string.Empty;
+        set
+        {
+            LicenseLabel.Text = value;
+            LicenseItem.IsVisible = !string.IsNullOrEmpty(value);
+        }
+    }
+
+    /// <summary>Gets or sets the text of the badge on the active model; the default is "Active".</summary>
+    public string ActiveBadgeText
+    {
+        get => ActiveBadgeLabel.Text ?? string.Empty;
+        set => ActiveBadgeLabel.Text = value;
+    }
+
+    /// <summary>Gets or sets what the language row chooses, "Language" by default; a voice model's row chooses a voice.</summary>
+    public string LanguageRowTitle
+    {
+        get => LanguageRowLabel.Text ?? string.Empty;
+        set
+        {
+            LanguageRowLabel.Text = value;
+            UpdateActionNames();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the hint after the language row's selector, and whether it stays when a choice other than the first
+    /// is picked. The language hint explains Auto-detect, the first choice, so by default it goes away.
+    /// </summary>
+    public string LanguageRowHint
+    {
+        get => LanguageHintLabel.Text ?? string.Empty;
+        set => LanguageHintLabel.Text = value;
+    }
+
+    /// <summary>Gets or sets whether the language row's hint stays whatever is chosen.</summary>
+    public bool KeepsLanguageRowHint
+    {
+        get => keepsLanguageRowHint;
+        set
+        {
+            keepsLanguageRowHint = value;
+            LanguageHintLabel.IsVisible = value || LanguageSelect.SelectedIndex <= 0;
         }
     }
 
@@ -372,7 +430,7 @@ public partial class ModelCard : ContentView
         try
         {
             LanguageSelect.SetItems(labels, selectedIndex);
-            LanguageHintLabel.IsVisible = selectedIndex <= 0;
+            LanguageHintLabel.IsVisible = keepsLanguageRowHint || selectedIndex <= 0;
         }
         finally
         {
@@ -580,12 +638,12 @@ public partial class ModelCard : ContentView
         ActionButton.AccessibleName = $"{ActionText} {Title}".Trim();
         SecondaryButton.AccessibleName = $"{SecondaryActionName} {Title}".Trim();
         RuntimeSelect.AccessibleName = $"Runtime for {Title}".Trim();
-        LanguageSelect.AccessibleName = $"Language for {Title}".Trim();
+        LanguageSelect.AccessibleName = $"{LanguageRowTitle} for {Title}".Trim();
     }
 
     private void OnLanguageSelectChanged(object? sender, EventArgs e)
     {
-        LanguageHintLabel.IsVisible = LanguageSelect.SelectedIndex <= 0;
+        LanguageHintLabel.IsVisible = keepsLanguageRowHint || LanguageSelect.SelectedIndex <= 0;
         if (!settingLanguageOptions)
             LanguageChanged?.Invoke(this, EventArgs.Empty);
     }

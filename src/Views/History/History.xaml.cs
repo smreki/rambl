@@ -1,5 +1,6 @@
 using System.Globalization;
 using Microsoft.Extensions.Logging;
+using Rambl.Common.Text;
 using Rambl.Components;
 using Rambl.Features.Audio;
 using Rambl.Features.Dialogs;
@@ -217,6 +218,8 @@ public partial class History : ContentView
         var busy = history.IsRetranscribing(recording.Id);
         var canRetranscribe = history.CanRetranscribe;
 
+        card.IsReading = recording.IsReading;
+        card.SourceText = recording.Reading is { } reading ? string.Join(" · ", new[] { reading.Profile, reading.Voice }.OfType<string>()) : string.Empty;
         card.TimeText = TimeText(recording.CreatedAt);
         card.DurationText = FormatDuration(recording.Duration);
 
@@ -224,11 +227,11 @@ public partial class History : ContentView
         // the processes themselves are not named, as there can be several.
         card.ActionTitle = recording.Action?.Title ?? string.Empty;
         card.ActionDetail = recording.Action?.Detail ?? string.Empty;
-        card.Transcript = recording.Action is null && recording.HasTranscript ? recording.FinalText!.Trim() : string.Empty;
-        card.OriginalText = recording.WasProcessed && recording.HasTranscript ? recording.Transcript!.Trim() : string.Empty;
-        card.ProcessingNote = recording.ProcessingError is not null && recording.HasTranscript
-            ? "Post-processing didn’t finish. The original text was inserted instead."
-            : string.Empty;
+        card.Transcript = recording.Action is null && recording.HasTranscript ? Shown(recording, recording.FinalText!) : string.Empty;
+        card.OriginalText = recording.WasProcessed && recording.HasTranscript ? Shown(recording, recording.Transcript!) : string.Empty;
+        card.ProcessingNote = recording.ProcessingError is null || !recording.HasTranscript ? string.Empty
+            : recording.IsReading ? "Pre-processing didn’t finish. The selected text was read instead."
+            : "Post-processing didn’t finish. The original text was inserted instead.";
 
         // While a transcription runs the card says so, under the old transcript when there is one (it is dimmed until the
         // new one arrives) and instead of the last failure's message when there is none.
@@ -254,6 +257,10 @@ public partial class History : ContentView
             card.ElapsedText = "0:00";
         }
     }
+
+    // A reading's text can be Markdown; its card shows the sentences that were read, without the marks and blank lines.
+    private static string Shown(RecordingInfo recording, string text) =>
+        recording.IsReading ? string.Join(" ", SpeechDocument.Parse(text).Sentences.Select(sentence => sentence.Text)) : text.Trim();
 
     // ---- playback
 

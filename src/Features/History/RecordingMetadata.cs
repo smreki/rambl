@@ -13,6 +13,7 @@ namespace Rambl.Features.History;
 /// <param name="Action">The action the last process executed instead of making text, or null.</param>
 /// <param name="Processes">The ids of the processes that ran on it, in order, so Retranscribe can run them again; null when none did.</param>
 /// <param name="ProcessingError">Why post-processing stopped, or null. The original text was inserted then.</param>
+/// <param name="Reading">The profile and voice that read the text, for a reading; null for a dictation.</param>
 public sealed record RecordingMetadata(
     int SchemaVersion,
     string Id,
@@ -23,7 +24,8 @@ public sealed record RecordingMetadata(
     string? Result = null,
     ProcessAction? Action = null,
     string[]? Processes = null,
-    string? ProcessingError = null
+    string? ProcessingError = null,
+    ReadingInfo? Reading = null
 )
 {
     /// <summary>The layout this version of Rambl writes.</summary>

@@ -2,7 +2,11 @@ using Rambl.Features.PostProcessing;
 
 namespace Rambl.Features.History;
 
-/// <summary>One saved dictation: its audio file and what is known about it.</summary>
+/// <summary>One saved dictation, or one reading by a read-aloud profile: its audio file and what is known about it.</summary>
+/// <remarks>
+/// A reading keeps the selected text as <see cref="Transcript"/>, what the profile's steps made of it as
+/// <see cref="Result"/>, and the spoken text as its audio.
+/// </remarks>
 /// <param name="Id">The recording's id, which is also the name of its files.</param>
 /// <param name="CreatedAt">When the recording started.</param>
 /// <param name="Duration">The length of the audio.</param>
@@ -13,6 +17,7 @@ namespace Rambl.Features.History;
 /// <param name="Action">The action the last process executed instead of making text, or null.</param>
 /// <param name="ProcessIds">The ids of the processes that ran, in order, or null when none did.</param>
 /// <param name="ProcessingError">Why post-processing stopped, or null; the original text was inserted then.</param>
+/// <param name="Reading">The profile and voice that read the text, for a reading; null for a dictation.</param>
 public sealed record RecordingInfo(
     string Id,
     DateTimeOffset CreatedAt,
@@ -23,9 +28,13 @@ public sealed record RecordingInfo(
     string? Result = null,
     ProcessAction? Action = null,
     IReadOnlyList<string>? ProcessIds = null,
-    string? ProcessingError = null
+    string? ProcessingError = null,
+    ReadingInfo? Reading = null
 )
 {
+    /// <summary>Gets whether this is a reading by a read-aloud profile rather than a dictation.</summary>
+    public bool IsReading => Reading is not null;
+
     /// <summary>Gets the metadata file that sits next to the audio.</summary>
     public string MetadataPath => Path.ChangeExtension(AudioPath, ".json");
 

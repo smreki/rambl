@@ -64,7 +64,9 @@ public sealed class CommandSetStore(string directory, ILogger<CommandSetStore> l
                 .. set.Commands.Select(command => new VoiceCommandFile(
                     command.Name,
                     string.IsNullOrWhiteSpace(command.Description) ? null : command.Description,
-                    [.. command.Keys.Select(key => key.ToString())]
+                    [.. command.Keys.Select(key => key.ToString())],
+                    string.IsNullOrWhiteSpace(command.SayAfter) ? null : command.SayAfter,
+                    string.IsNullOrWhiteSpace(command.SayAfter) || command.Voice is null ? null : Tts.TtsVoiceFile.From(command.Voice)
                 )),
             ],
             set.TimeoutSeconds == CommandSet.DefaultTimeoutSeconds ? null : set.TimeoutSeconds,
@@ -128,7 +130,9 @@ public sealed class CommandSetStore(string directory, ILogger<CommandSetStore> l
                             .. (command.Keys ?? [])
                                 .Select(text => Shortcut.TryParse(text, out var key) ? key : null)
                                 .OfType<Shortcut>(),
-                        ]
+                        ],
+                        string.IsNullOrWhiteSpace(command.SayAfter) ? null : command.SayAfter.Trim()[..Math.Min(command.SayAfter.Trim().Length, VoiceCommand.MaximumSayAfterLength)],
+                        command.Voice is null ? null : Tts.TtsVoiceFile.Read(command.Voice)
                     ))
                     .Where(command => command.Name.Length > 0 && command.Keys.Count > 0)
                     .DistinctBy(command => command.Name, StringComparer.CurrentCultureIgnoreCase),

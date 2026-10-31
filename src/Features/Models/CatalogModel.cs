@@ -1,6 +1,6 @@
 namespace Rambl.Features.Models;
 
-/// <summary>A model in a catalog: a speech-to-text model, or a language model.</summary>
+/// <summary>A model in a catalog: a speech-to-text model, a language model, or a text-to-speech model.</summary>
 /// <param name="Id">The stable identifier.</param>
 /// <param name="Name">The name to show.</param>
 /// <param name="Family">The model family, for example <c>parakeet</c>.</param>
@@ -17,6 +17,8 @@ namespace Rambl.Features.Models;
 /// <param name="Tasks">Language models only: the <see cref="CatalogTask.Id"/>s the model serves.</param>
 /// <param name="Parameters">Language models only: the parameter count as text, for example <c>1.7B</c>.</param>
 /// <param name="ContextLength">Language models only: the trained context length in tokens, where it applies.</param>
+/// <param name="DefaultVoice">Text-to-speech models only: the <see cref="CatalogVoice.Id"/> chosen until the user picks another.</param>
+/// <param name="Voices">Text-to-speech models only: the voices the model speaks with.</param>
 public sealed record CatalogModel(
     string Id,
     string Name,
@@ -33,5 +35,7 @@ public sealed record CatalogModel(
     string? ModelType = null,
     IReadOnlyList<string>? Tasks = null,
     string? Parameters = null,
-    int? ContextLength = null
+    int? ContextLength = null,
+    string? DefaultVoice = null,
+    IReadOnlyList<CatalogVoice>? Voices = null
 );

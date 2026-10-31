@@ -132,6 +132,32 @@ internal sealed class WindowsAudioService : IAudioService
     }
 
     /// <inheritdoc/>
+    public IAudioStream OpenStream(int sampleRate, string? outputDeviceId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(sampleRate);
+
+        var enumerator = new MMDeviceEnumerator();
+        MMDevice? device = null;
+        try
+        {
+            device = Resolve(enumerator, DataFlow.Render, outputDeviceId, fallbackToDefault: true);
+            return new WasapiStream(sampleRate, enumerator, device);
+        }
+        catch (Exception ex) when (ex is COMException or InvalidOperationException)
+        {
+            device?.Dispose();
+            enumerator.Dispose();
+            throw new AudioUnavailableException("The voice cannot be played on the selected speaker.", ex);
+        }
+        catch
+        {
+            device?.Dispose();
+            enumerator.Dispose();
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
     public async Task PlayFeedbackAsync(FeedbackSound sound, string? outputDeviceId, int volumePercent)
     {
         var gain = Math.Clamp(volumePercent, 0, 100) / 100f;

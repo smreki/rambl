@@ -14,4 +14,7 @@ public enum ShortcutAction
 
     /// <summary>The cancel shortcut was pressed while it is enabled.</summary>
     CancelPressed,
+
+    /// <summary>A read-aloud profile's shortcut was pressed; the binding says which.</summary>
+    ReadPressed,
 }

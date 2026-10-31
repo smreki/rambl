@@ -2,6 +2,10 @@ namespace Rambl.Components;
 
 /// <summary>A saved dictation: a two-line transcript preview, when it was made and how long it is, Copy, Retranscribe and Delete, and a player.</summary>
 /// <remarks>
+/// A reading (<see cref="IsReading"/>) shows what was read instead, with the selected text as its original, the profile and
+/// voice that read it, and no Retranscribe; it uses the speaking color where a dictation uses the accent.
+/// </remarks>
+/// <remarks>
 /// It takes plain values rather than a recording type, so the screen decides what is shown and what the buttons do. A
 /// card that is the one being played has an accent border. Dragging or clicking the slider asks to move playback through
 /// <see cref="SeekRequested"/>; the slider only follows <see cref="Progress"/> while it is not being dragged.
@@ -15,6 +19,7 @@ public partial class RecordingCard : ContentView
     private bool isCopied;
     private bool isActive;
     private bool originalExpanded;
+    private bool isReading;
     private string namesSuffix = string.Empty;
     private string playName = string.Empty;
 
@@ -195,7 +200,7 @@ public partial class RecordingCard : ContentView
         set
         {
             isActive = value;
-            var key = value ? "Accent" : "Border";
+            var key = !value ? "Border" : isReading ? "Speaking" : "Accent";
             var resources = Application.Current!.Resources;
             Outline.SetAppTheme<Brush>(
                 Border.StrokeProperty,
@@ -221,6 +226,40 @@ public partial class RecordingCard : ContentView
     {
         get => TranscriptLabel.Opacity < 1;
         set => TranscriptLabel.Opacity = value ? 0.5 : 1;
+    }
+
+    /// <summary>Gets or sets whether this is a reading by a read-aloud profile rather than a dictation.</summary>
+    public bool IsReading
+    {
+        get => isReading;
+        set
+        {
+            if (isReading == value)
+                return;
+
+            isReading = value;
+            RetranscribeButton.IsVisible = !value;
+            OriginalHeading.Text = value ? "SELECTED TEXT" : "ORIGINAL TRANSCRIPT";
+            CopyOriginalLabel.Text = value ? "Copy selected text" : "Copy original";
+            var tone = value ? "Speaking" : "Accent";
+            var resources = Application.Current!.Resources;
+            PlayDisc.SetAppThemeColor(BackgroundColorProperty, (Color)resources[tone + "SoftLight"], (Color)resources[tone + "SoftDark"]);
+            PlayGlyph.SetAppThemeColor(Label.TextColorProperty, (Color)resources[tone + "Light"], (Color)resources[tone + "Dark"]);
+            IsActive = isActive;
+            ShowProcessing();
+            UpdateNames();
+        }
+    }
+
+    /// <summary>Gets or sets what read a reading, for example "Read · Heart · Kokoro 82M"; hidden while empty.</summary>
+    public string SourceText
+    {
+        get => SourceLabel.Text ?? string.Empty;
+        set
+        {
+            SourceLabel.Text = value;
+            SourceRow.IsVisible = !string.IsNullOrEmpty(value);
+        }
     }
 
     /// <summary>Gets or sets whether there is a transcript to copy.</summary>
@@ -269,9 +308,11 @@ public partial class RecordingCard : ContentView
         ProcessingGlyph.SetAppThemeColor(Label.TextColorProperty, (Color)resources[tone + "Light"], (Color)resources[tone + "Dark"]);
 
         OriginalChevron.Text = originalExpanded ? Icons.ChevronUp : Icons.ChevronDown;
-        OriginalToggleLabel.Text = originalExpanded ? "Hide original" : "Show original";
-        SemanticProperties.SetDescription(OriginalToggleButton, originalExpanded ? "Hide original transcript" : "Show original transcript");
-        SemanticProperties.SetDescription(CopyOriginalButton, "Copy original transcript");
+        var original = isReading ? "selected text" : "original";
+        OriginalToggleLabel.Text = originalExpanded ? $"Hide {original}" : $"Show {original}";
+        var originalName = isReading ? "selected text" : "original transcript";
+        SemanticProperties.SetDescription(OriginalToggleButton, originalExpanded ? $"Hide {originalName}" : $"Show {originalName}");
+        SemanticProperties.SetDescription(CopyOriginalButton, $"Copy {originalName}");
     }
 
     private void OnToggleOriginalClicked(object? sender, EventArgs e)
@@ -290,17 +331,19 @@ public partial class RecordingCard : ContentView
     private void UpdateNames()
     {
         var suffix = string.IsNullOrEmpty(timeText) ? string.Empty : $" of {timeText}";
-        if (suffix != namesSuffix)
+        // The names also depend on whether it is a reading.
+        var names = $"{isReading}{suffix}";
+        if (names != namesSuffix)
         {
-            namesSuffix = suffix;
-            CopyButton.AccessibleName = $"Copy transcript{suffix}";
+            namesSuffix = names;
+            CopyButton.AccessibleName = isReading ? $"Copy text read{suffix}" : $"Copy transcript{suffix}";
             RetranscribeButton.AccessibleName = $"Retranscribe recording{suffix}";
-            DeleteButton.AccessibleName = $"Delete recording{suffix}";
+            DeleteButton.AccessibleName = isReading ? $"Delete reading{suffix}" : $"Delete recording{suffix}";
             SemanticProperties.SetDescription(PositionSlider, $"Playback position{suffix}");
         }
 
         // Only a real change is announced: setting the same text again still makes the platform raise accessibility events.
-        var play = $"{(isPlaying ? "Pause" : "Play")} recording{suffix}";
+        var play = $"{(isPlaying ? "Pause" : "Play")} {(isReading ? "reading" : "recording")}{suffix}";
         if (play != playName)
         {
             playName = play;

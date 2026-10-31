@@ -6,13 +6,14 @@ using Rambl.Features.Stt;
 namespace Rambl.Features.History;
 
 /// <summary>
-/// The History of dictations: keeps recordings and what was transcribed from them, deletes old ones, and runs a
-/// recording through the active speech model again.
+/// The History of dictations and readings: keeps recordings and what was transcribed from them, deletes old ones, and
+/// runs a recording through the active speech model again.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Recordings are kept while <see cref="AppSettings.HistoryEnabled"/> is on, in <see cref="AppSettings.RecordingsDirectory"/>
-/// or the default folder. Turning it off stops new recordings and keeps the existing ones.
+/// Dictations are kept while <see cref="AppSettings.HistoryEnabled"/> is on, in <see cref="AppSettings.RecordingsDirectory"/>
+/// or the default folder. Turning it off stops new recordings and keeps the existing ones. Readings are kept by the
+/// read-aloud profiles that ask for it, whatever that setting is, in the same folder and for as long.
 /// </para>
 /// <para>
 /// Old recordings are deleted by this service, not by the user or the operating system: when it is created, shortly
@@ -129,6 +130,34 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
         }
     }
 
+    /// <summary>Starts keeping the audio of a reading.</summary>
+    /// <param name="startedAt">When reading started.</param>
+    /// <param name="sampleRate">The sample rate of the voice, which the audio is saved at.</param>
+    /// <returns>The session to write the spoken audio to, or null when it cannot be stored.</returns>
+    public RecordingSession? BeginReading(DateTimeOffset startedAt, int sampleRate)
+    {
+        try
+        {
+            return CurrentStore().Begin(startedAt, sampleRate);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            logger.LogWarning(ex, "Unable to start keeping a reading in {Folder}", Directory);
+            return null;
+        }
+    }
+
+    /// <summary>Saves a finished reading.</summary>
+    /// <param name="recording">The reading, with its audio file in place and <see cref="RecordingInfo.Reading"/> set.</param>
+    /// <returns>A task that completes when it is saved.</returns>
+    /// <exception cref="IOException">The metadata cannot be written.</exception>
+    public async Task SaveReadingAsync(RecordingInfo recording)
+    {
+        ArgumentNullException.ThrowIfNull(recording);
+        await UpdateAsync(recording).ConfigureAwait(false);
+        StartPrune();
+    }
+
     /// <inheritdoc/>
     public async Task SaveAsync(RecordingInfo recording, string? transcript, string? error)
     {
@@ -190,7 +219,7 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
     /// <param name="id">The recording's id.</param>
     /// <returns>A task that completes when the new transcript is saved. The old transcript stays until then, and if this fails.</returns>
     /// <exception cref="KeyNotFoundException">There is no such recording.</exception>
-    /// <exception cref="InvalidOperationException">No model that can be used is active, or the model failed.</exception>
+    /// <exception cref="InvalidOperationException">It is a reading, no model that can be used is active, or the model failed.</exception>
     /// <exception cref="IOException">The audio cannot be read or the transcript cannot be saved.</exception>
     public async Task RetranscribeAsync(string id)
     {
@@ -201,6 +230,9 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
         var recording =
             (await GetRecordingsAsync().ConfigureAwait(false)).FirstOrDefault(candidate => candidate.Id == id)
             ?? throw new KeyNotFoundException($"There is no recording {id}.");
+        if (recording.IsReading)
+            throw new InvalidOperationException("A reading is not transcribed.");
+
         var model =
             speech.ResolveActive(settings.Settings)
             ?? throw new InvalidOperationException("Choose a speech model that can be used in STT Models first.");

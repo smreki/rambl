@@ -1,6 +1,6 @@
 namespace Rambl.Features.Models;
 
-/// <summary>The root of a catalog file: <c>stt-models.json</c> or <c>language-models.json</c>.</summary>
+/// <summary>The root of a catalog file: <c>stt-models.json</c>, <c>language-models.json</c> or <c>tts-models.json</c>.</summary>
 /// <param name="SchemaVersion">The file format version.</param>
 /// <param name="GeneratedAt">The date the file was generated, as text.</param>
 /// <param name="Runtimes">The runtimes models can run on.</param>

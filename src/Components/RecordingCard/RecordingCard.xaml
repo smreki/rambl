@@ -65,7 +65,7 @@
                             BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}">
                         <VerticalStackLayout Spacing="6">
                             <Grid ColumnDefinitions="*,Auto">
-                                <Label Text="ORIGINAL TRANSCRIPT" FontFamily="InterSemiBold" FontSize="11" CharacterSpacing="0.5"
+                                <Label x:Name="OriginalHeading" Text="ORIGINAL TRANSCRIPT" FontFamily="InterSemiBold" FontSize="11" CharacterSpacing="0.5"
                                        VerticalOptions="Center"
                                        TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
                                 <Grid Grid.Column="1">
@@ -95,6 +95,13 @@
                             <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Timer}" />
                             <Label x:Name="DurationLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
                         </HorizontalStackLayout>
+                        <!-- A reading: the profile and voice that read it. -->
+                        <HorizontalStackLayout x:Name="SourceRow" Spacing="6" IsVisible="False">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Volume2}"
+                                   TextColor="{AppThemeBinding Light={StaticResource SpeakingLight}, Dark={StaticResource SpeakingDark}}" />
+                            <Label x:Name="SourceLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                                   LineBreakMode="TailTruncation" MaxLines="1" />
+                        </HorizontalStackLayout>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
 
@@ -111,7 +118,7 @@
             <Grid ColumnDefinitions="Auto,34,*,34" ColumnSpacing="12" HeightRequest="32">
                 <!-- A round play/pause button: the glyph sits on an accent-soft disc and a real transparent button is on top. -->
                 <Grid WidthRequest="32" HeightRequest="32">
-                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 16"
+                    <Border x:Name="PlayDisc" StrokeThickness="0" StrokeShape="RoundRectangle 16"
                             BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}" />
                     <Label x:Name="PlayGlyph" Style="{StaticResource Icon}" FontSize="14" HorizontalOptions="Center"
                            VerticalOptions="Center"

@@ -13,6 +13,17 @@ public partial class CommandRow : ContentView
     /// <summary>Creates the row.</summary>
     public CommandRow() => InitializeComponent();
 
+    /// <summary>Gets or sets the phrase spoken after the keys; the row shows it in quotes, or nothing while it is empty.</summary>
+    public string SpeechText
+    {
+        get => SpeechLabel.Text ?? string.Empty;
+        set
+        {
+            SpeechLabel.Text = string.IsNullOrEmpty(value) ? string.Empty : $"“{value}”";
+            SpeechRow.IsVisible = !string.IsNullOrEmpty(value);
+        }
+    }
+
     /// <summary>Occurs when Edit is clicked.</summary>
     public event EventHandler? EditRequested;
 

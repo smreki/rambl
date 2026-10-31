@@ -38,6 +38,10 @@
     <Color x:Key="ProcessingDark">#A78BFA</Color>
     <Color x:Key="ProcessingSoftLight">#147C3AED</Color>
     <Color x:Key="ProcessingSoftDark">#1FA78BFA</Color>
+    <Color x:Key="SpeakingLight">#2563EB</Color>
+    <Color x:Key="SpeakingDark">#60A5FA</Color>
+    <Color x:Key="SpeakingSoftLight">#142563EB</Color>
+    <Color x:Key="SpeakingSoftDark">#1F60A5FA</Color>
     <Color x:Key="DangerLight">#DC2626</Color>
     <Color x:Key="DangerDark">#F87171</Color>
     <Color x:Key="DangerSoftLight">#14DC2626</Color>

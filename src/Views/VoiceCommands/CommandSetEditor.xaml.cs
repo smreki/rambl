@@ -34,6 +34,12 @@ public partial class CommandSetEditor : ContentView
     private readonly CommandModels models;
     private readonly CommandMatcher matcher;
     private readonly PostProcessLibrary processes;
+    private readonly Features.ReadAloud.ShortcutUsage shortcuts;
+    private readonly Features.Tts.TtsEngine tts;
+    private readonly Features.Tts.VoicePreview preview;
+    private IReadOnlyList<Features.Tts.VoiceChoice> voices = [];
+    private Features.Tts.TtsVoiceSettings formVoice = Features.Tts.TtsVoiceSettings.None;
+    private IReadOnlyList<string> formLanguages = [];
     private readonly IConfirmService confirmations;
     private readonly ILogger<CommandSetEditor> logger;
     private readonly CommandForm form = new();
@@ -58,6 +64,9 @@ public partial class CommandSetEditor : ContentView
     /// <param name="models">Lists the decision models a set can use.</param>
     /// <param name="matcher">Answers Try it.</param>
     /// <param name="processes">The post-processing processes, which run first on a shared shortcut.</param>
+    /// <param name="shortcuts">Keeps the read-aloud shortcuts out of the set's.</param>
+    /// <param name="tts">Lists the voices a command's Say after phrase can be spoken with.</param>
+    /// <param name="preview">Speaks the phrase for Preview.</param>
     /// <param name="confirmations">Asks before a change is discarded or a set deleted.</param>
     /// <param name="logger">The logger for failures.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
@@ -66,10 +75,19 @@ public partial class CommandSetEditor : ContentView
         CommandModels models,
         CommandMatcher matcher,
         PostProcessLibrary processes,
+        Features.ReadAloud.ShortcutUsage shortcuts,
+        Features.Tts.TtsEngine tts,
+        Features.Tts.VoicePreview preview,
         IConfirmService confirmations,
         ILogger<CommandSetEditor> logger
     )
     {
+        ArgumentNullException.ThrowIfNull(shortcuts);
+        ArgumentNullException.ThrowIfNull(tts);
+        ArgumentNullException.ThrowIfNull(preview);
+        this.shortcuts = shortcuts;
+        this.tts = tts;
+        this.preview = preview;
         ArgumentNullException.ThrowIfNull(library);
         ArgumentNullException.ThrowIfNull(models);
         ArgumentNullException.ThrowIfNull(matcher);
@@ -91,6 +109,10 @@ public partial class CommandSetEditor : ContentView
         form.DoneRequested += OnFormDone;
         form.CancelRequested += (_, _) => CloseForm();
         form.DeleteRequested += OnFormDelete;
+        form.ModelChanged += OnFormModelChanged;
+        form.VoiceChanged += OnFormVoiceChanged;
+        form.PreviewRequested += OnFormPreviewRequested;
+        preview.Changed += (_, _) => form.ShowPreviewPlaying(preview.Current is not null);
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
         Open(null);
@@ -249,7 +271,7 @@ public partial class CommandSetEditor : ContentView
             confidence,
             noMatch,
             enabled,
-            string.Join("\n", commands.Select(command => $"{command.Name}\t{command.Description}\t{command.KeysText}"))
+            string.Join("\n", commands.Select(command => $"{command.Name}\t{command.Description}\t{command.KeysText}\t{command.SayAfter}\t{command.Voice}"))
         );
 
     // ---- the simple settings
@@ -313,7 +335,7 @@ public partial class CommandSetEditor : ContentView
         if (proposed is not null)
         {
             _ = await library.GetAllAsync();
-            if (library.FindConflict(proposed, setId, CurrentApp.Settings) is { } conflict)
+            if ((library.FindConflict(proposed, setId, CurrentApp.Settings) ?? await shortcuts.FindDictationConflictAsync(proposed)) is { } conflict)
             {
                 await ShowAlertAsync("Shortcut already in use", $"{proposed} {conflict}. Choose a different shortcut.");
                 return;
@@ -402,6 +424,7 @@ public partial class CommandSetEditor : ContentView
                 NameText = commands[index].Name,
                 DescriptionText = commands[index].Description,
                 Presses = commands[index].Keys,
+                SpeechText = commands[index].SayAfter ?? string.Empty,
                 AutomationId = $"Command-{index}",
             };
             row.EditRequested += (_, _) => OpenForm(position);
@@ -423,7 +446,140 @@ public partial class CommandSetEditor : ContentView
         editing = index;
         var command = index >= 0 ? commands[index] : null;
         form.Load(command?.Name ?? string.Empty, command?.Description ?? string.Empty, command?.Keys ?? [], isNew: command is null);
+        form.SayAfterText = command?.SayAfter ?? string.Empty;
+        formVoice = command?.Voice ?? Features.Tts.TtsVoiceSettings.None;
         RebuildCommands();
+        _ = ShowFormVoicesAsync();
+    }
+
+    // ---- a command's Say after phrase
+
+    // A command without a voice yet starts with the first downloaded model's default voice.
+    private async Task ShowFormVoicesAsync()
+    {
+        try
+        {
+            voices = await tts.GetVoicesAsync();
+        }
+        catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException)
+        {
+            logger.LogWarning(ex, "Unable to list the voices");
+        }
+
+        if (formVoice.ModelId is null && voices.FirstOrDefault(choice => choice.IsDefault) is { } first)
+            formVoice = new Features.Tts.TtsVoiceSettings(first.ModelId, first.VoiceId);
+
+        ShowFormVoiceChoices();
+        var speeds = Features.Tts.TtsVoiceSettings.SpeedChoices;
+        var volumes = Features.Tts.TtsVoiceSettings.VolumeChoices;
+        form.SetPaceOptions(
+            [.. speeds.Select(Features.Tts.TtsVoiceSettings.FormatSpeed)],
+            speeds.ToList().IndexOf(speeds.OrderBy(speed => Math.Abs(speed - formVoice.Speed)).First()),
+            [.. volumes.Select(Features.Tts.TtsVoiceSettings.FormatVolume)],
+            volumes.ToList().IndexOf(volumes.OrderBy(volume => Math.Abs(volume - formVoice.Volume)).First())
+        );
+        ShowFormLanguages();
+    }
+
+    // A model, then a voice of it: one list of every voice of every model would be long.
+    private void ShowFormVoiceChoices()
+    {
+        var models = FormModels();
+        var modelIndex = models.FindIndex(model => model.Id == formVoice.ModelId);
+        var modelLabels = models.Select(model => model.Name).ToList();
+        if (modelIndex < 0)
+        {
+            modelLabels.Insert(0, voices.Count == 0 ? "No voices downloaded" : "Not downloaded");
+            modelIndex = 0;
+        }
+
+        var modelVoices = FormModelVoices();
+        var voiceIndex = modelVoices.FindIndex(choice => choice.VoiceId == (formVoice.VoiceId ?? DefaultVoice(formVoice.ModelId)));
+        var voiceLabels = modelVoices.Select(choice => $"{choice.Name} · {choice.Detail}").ToList();
+        if (voiceIndex < 0)
+        {
+            voiceLabels.Insert(0, "Voice not downloaded");
+            voiceIndex = 0;
+        }
+
+        form.SetVoiceOptions(modelLabels, modelIndex, voiceLabels, voiceIndex);
+    }
+
+    private List<(string Id, string Name)> FormModels() => [.. voices.Select(choice => (choice.ModelId, choice.ModelName)).Distinct()];
+
+    private List<Features.Tts.VoiceChoice> FormModelVoices() => [.. voices.Where(choice => choice.ModelId == formVoice.ModelId)];
+
+    // Another model speaks with its default voice, and with no language picked yet.
+    private void OnFormModelChanged(object? sender, EventArgs e)
+    {
+        var models = FormModels();
+        var offset = models.Any(model => model.Id == formVoice.ModelId) ? 0 : 1;
+        var index = form.SelectedModelIndex - offset;
+        if (index < 0 || index >= models.Count || models[index].Id == formVoice.ModelId)
+            return;
+
+        var modelId = models[index].Id;
+        formVoice = formVoice with { ModelId = modelId, VoiceId = DefaultVoice(modelId) ?? voices.First(choice => choice.ModelId == modelId).VoiceId, Language = null };
+        ShowFormVoiceChoices();
+        ShowFormLanguages();
+    }
+
+    private string? DefaultVoice(string? modelId) => voices.FirstOrDefault(choice => choice.ModelId == modelId && choice.IsDefault)?.VoiceId;
+
+    private void ShowFormLanguages()
+    {
+        formLanguages = formVoice.ModelId is null ? [] : [.. tts.GetLanguages(formVoice.ModelId, formVoice.VoiceId).OrderBy(Features.Models.LanguageNames.Of, StringComparer.CurrentCulture)];
+        var chosen = formVoice.Language ?? (formLanguages.Contains("en") ? "en" : formLanguages.FirstOrDefault());
+        form.SetLanguageOptions([.. formLanguages.Select(Features.Models.LanguageNames.Of)], chosen is null ? -1 : formLanguages.ToList().IndexOf(chosen));
+    }
+
+    private void OnFormVoiceChanged(object? sender, EventArgs e)
+    {
+        var modelVoices = FormModelVoices();
+        var offset = modelVoices.Any(choice => choice.VoiceId == (formVoice.VoiceId ?? DefaultVoice(formVoice.ModelId))) ? 0 : 1;
+        var index = form.SelectedVoiceIndex - offset;
+        if (index < 0 || index >= modelVoices.Count)
+            return;
+
+        formVoice = formVoice with { VoiceId = modelVoices[index].VoiceId };
+        ShowFormLanguages();
+    }
+
+    // The voice settings as the form shows them now.
+    private Features.Tts.TtsVoiceSettings ReadFormVoice()
+    {
+        var speeds = Features.Tts.TtsVoiceSettings.SpeedChoices;
+        var volumes = Features.Tts.TtsVoiceSettings.VolumeChoices;
+        var language = form.SelectedLanguageIndex is >= 0 and var languageIndex && languageIndex < formLanguages.Count ? formLanguages[languageIndex] : null;
+        return formVoice with
+        {
+            Language = language,
+            Speed = form.SelectedSpeedIndex is >= 0 and var speedIndex && speedIndex < speeds.Count ? speeds[speedIndex] : formVoice.Speed,
+            Volume = form.SelectedVolumeIndex is >= 0 and var volumeIndex && volumeIndex < volumes.Count ? volumes[volumeIndex] : formVoice.Volume,
+        };
+    }
+
+    private async void OnFormPreviewRequested(object? sender, EventArgs e)
+    {
+        if (preview.Current is not null)
+        {
+            preview.Stop();
+            return;
+        }
+
+        var voice = ReadFormVoice();
+        if (form.SayAfterText.Length == 0 || voice.ModelId is not { } modelId || (voice.VoiceId ?? DefaultVoice(modelId)) is not { } voiceId)
+            return;
+
+        try
+        {
+            await preview.PlayAsync(modelId, voiceId, voice.Language, voice.Speed, form.SayAfterText);
+        }
+        catch (Exception ex) when (ex is Features.Tts.TtsException or Features.Audio.AudioUnavailableException or IOException)
+        {
+            logger.LogError(ex, "Unable to preview the Say after phrase");
+            await ShowAlertAsync("The phrase could not be played", ex.Message);
+        }
     }
 
     private void CloseForm()
@@ -439,7 +595,8 @@ public partial class CommandSetEditor : ContentView
 
     private void OnFormDone(object? sender, EventArgs e)
     {
-        var command = new VoiceCommand(form.NameText, form.DescriptionText, form.Presses);
+        var phrase = form.SayAfterText;
+        var command = new VoiceCommand(form.NameText, form.DescriptionText, form.Presses, phrase.Length == 0 ? null : phrase, phrase.Length == 0 ? null : ReadFormVoice());
         if (editing is >= 0 and var index)
             commands[index] = command;
         else

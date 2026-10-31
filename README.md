@@ -2,7 +2,7 @@
 
 Local-first push-to-talk dictation for the desktop. Hold a shortcut, speak, let go, and the text is pasted into the app you are working in. Speech recognition and text rewriting run on your computer, so nothing you say leaves it.
 
-Built with C# and .NET 10 MAUI. Version 0.1.0, in development.
+Built with C# and .NET 10 MAUI. Version 0.2.0, in development.
 
 > **Note:** Rambl is an educational project, built to learn and experiment. If you are looking for a mature, feature-rich tool, try one of these open source projects instead:
 >
@@ -27,9 +27,11 @@ Each recording and transcript is saved before the later steps run, so a failed s
 - **Controls:** hold to talk or press to toggle, a start shortcut (`Ctrl+Space` by default) and a cancel shortcut (`Esc`). Shortcuts can use the right, middle and side mouse buttons.
 - **STT Models:** browse a catalog of open speech models (Parakeet, Nemotron, Whisper, Moonshine, Qwen3-ASR and more), download them from Hugging Face without an account, and choose the active one. Downloads resume after an interruption and every file is checked against its SHA-256 hash.
 - **Language Models:** a catalog of local models for polishing, translating and deciding, downloaded the same way.
+- **TTS Models:** download local voices (Kokoro for English, Piper Thorsten for German, Supertonic 3 for 31 languages) and preview them. Read Aloud uses them.
+- **Read Aloud:** select text anywhere and press a profile's shortcut to hear it, optionally rewritten first (for example translated). A small panel follows along word by word; the reader window shows the whole text. A profile can keep its readings in the History.
 - **Post Processing:** processes with a shortcut, a language model, a time limit and a prompt. Processes on one shortcut run in the order you set. Skip one, or let it fail or time out, and your original text is inserted.
 - **Voice Commands:** command sets that press keys by voice, such as `Ctrl+A` or `Home → Shift+End → Delete`, with a Try it panel to test phrases.
-- **History:** every dictation is kept as a WAV file with its transcript. Play, copy, retranscribe or delete recordings, and choose how long they are kept (30 days by default).
+- **History:** every dictation is kept as a WAV file with its transcript, and so is every reading of a profile that saves to the History. Play, copy, retranscribe or delete recordings, and choose how long they are kept (30 days by default).
 - **Audio:** pick the microphone and speaker, watch a live level meter, play start and stop sounds, mute other apps while dictating, and skip silence before transcribing (Silero VAD).
 - **Appearance:** light, dark or system theme, and where the dictation card appears.
 - **Tray:** on Windows, minimize to the tray to keep Rambl running.

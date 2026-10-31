@@ -6,10 +6,12 @@ using Rambl.Features.Dialogs;
 using Rambl.Features.History;
 using Rambl.Features.Models;
 using Rambl.Features.PostProcessing;
+using Rambl.Features.ReadAloud;
 using Rambl.Features.Dictation;
 using Rambl.Features.LanguageModels;
 using Rambl.Features.Settings;
 using Rambl.Features.Stt;
+using Rambl.Features.Tts;
 using Rambl.Features.VoiceCommands;
 using Rambl.Views;
 
@@ -122,12 +124,14 @@ public static class RamblProgram
             new Platforms.Windows.Input.WindowsTextInserter(static () => MainThread.InvokeOnMainThreadAsync(MainWindowHandle))
         );
         builder.Services.AddSingleton<IKeyPresser, Platforms.Windows.Input.WindowsKeyPresser>();
+        builder.Services.AddSingleton<ISelectionReader, Platforms.Windows.Input.WindowsSelectionReader>();
 #else
         builder.Services.AddSingleton<IAudioService, NullAudioService>();
         builder.Services.AddSingleton<IFolderService, NullFolderService>();
         builder.Services.AddSingleton<IConfirmService, AlertConfirmService>();
         builder.Services.AddSingleton<ITextInserter, NullTextInserter>();
         builder.Services.AddSingleton<IKeyPresser, NullKeyPresser>();
+        builder.Services.AddSingleton<ISelectionReader, ClipboardSelectionReader>();
 #endif
         builder.Services.AddSingleton<IResultExecutor>(static services =>
             new InsertTextExecutor((ISettingsSource)Application.Current!, services.GetRequiredService<ITextInserter>())
@@ -179,6 +183,60 @@ public static class RamblProgram
                 services.GetRequiredService<ILogger<LanguageEngine>>()
             )
         );
+        // The text-to-speech runtimes this build has, with their own catalog and folder.
+        builder.Services.AddKeyedSingleton(
+            ModelLibraryKeys.Tts,
+            static (_, _) =>
+                new ModelRuntimeRegistry(
+                    [
+#if SHERPA_ONNX
+                        new Features.Tts.Sherpa.SherpaTtsRuntime(),
+#endif
+                    ]
+                )
+        );
+        builder.Services.AddKeyedSingleton(
+            ModelLibraryKeys.Tts,
+            static (services, _) =>
+                new ModelLibrary(
+                    new ModelCatalogProvider(services.GetRequiredService<ILogger<ModelCatalogProvider>>(), "tts-models.json"),
+                    new ModelStore(Path.Combine(AppDirectory(), "tts-models"), services.GetRequiredService<ILogger<ModelStore>>()),
+                    services.GetRequiredService<ModelDownloader>(),
+                    services.GetRequiredKeyedService<ModelRuntimeRegistry>(ModelLibraryKeys.Tts),
+                    services.GetRequiredService<ILogger<ModelLibrary>>()
+                )
+        );
+        builder.Services.AddSingleton(static services =>
+            new TtsEngine(
+                services.GetRequiredKeyedService<ModelLibrary>(ModelLibraryKeys.Tts),
+                services.GetRequiredKeyedService<ModelRuntimeRegistry>(ModelLibraryKeys.Tts),
+                services.GetRequiredService<ILogger<TtsEngine>>()
+            )
+        );
+        builder.Services.AddSingleton(static services =>
+            new VoicePreview(
+                services.GetRequiredService<TtsEngine>(),
+                services.GetRequiredService<IAudioService>(),
+                (ISettingsSource)Application.Current!,
+                services.GetRequiredService<ILogger<VoicePreview>>()
+            )
+        );
+        builder.Services.AddSingleton(static services =>
+            new ReadAloudStore(Path.Combine(AppDirectory(), "read-aloud"), services.GetRequiredService<ILogger<ReadAloudStore>>())
+        );
+        builder.Services.AddSingleton<ReadAloudLibrary>();
+        builder.Services.AddSingleton<ShortcutUsage>();
+        builder.Services.AddSingleton(static services =>
+            new ReadAloudService(
+                services.GetRequiredService<TtsEngine>(),
+                services.GetRequiredService<PostProcessChain>(),
+                services.GetRequiredService<IAudioService>(),
+                (ISettingsSource)Application.Current!,
+                services.GetRequiredService<ISelectionReader>(),
+                services.GetRequiredService<RecordingHistory>(),
+                services.GetRequiredService<ILogger<ReadAloudService>>()
+            )
+        );
         builder.Services.AddSingleton(static services =>
             new PostProcessStore(
                 Path.Combine(AppDirectory(), "processes"),
@@ -214,10 +272,13 @@ public static class RamblProgram
         builder.Services.AddSingleton<VoiceCommandRunner>();
         builder.Services.AddSingleton<CommandSetEditor>();
         builder.Services.AddSingleton<Views.VoiceCommands>();
+        builder.Services.AddSingleton<ProfileEditor>();
+        builder.Services.AddSingleton<Views.ReadAloud>();
         builder.Services.AddSingleton<ProcessEditor>();
         builder.Services.AddSingleton<Views.PostProcessing>();
         builder.Services.AddSingleton<Models>();
         builder.Services.AddSingleton<Views.LanguageModels>();
+        builder.Services.AddSingleton<TtsModels>();
         builder.Services.AddSingleton<Appearance>();
         builder.Services.AddSingleton<Views.Audio>();
         builder.Services.AddSingleton<Controls>();

@@ -70,6 +70,10 @@ public partial class RamblWindow : Window
                     services.GetRequiredService<Features.PostProcessing.PostProcessChain>(),
                     services.GetRequiredService<Features.VoiceCommands.CommandSetLibrary>(),
                     services.GetRequiredService<Features.VoiceCommands.VoiceCommandRunner>(),
+                    services.GetRequiredService<Features.ReadAloud.ReadAloudLibrary>(),
+                    services.GetRequiredService<Features.ReadAloud.ReadAloudService>(),
+                    services.GetRequiredService<Features.ReadAloud.ISelectionReader>(),
+                    services.GetRequiredService<Features.Tts.TtsEngine>(),
                     services.GetRequiredService<ILogger<Platforms.Windows.Dictation.DictationController>>()
                 );
             }

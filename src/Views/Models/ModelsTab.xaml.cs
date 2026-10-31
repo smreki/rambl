@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Rambl.Components;
+using Rambl.Features.Audio;
 using Rambl.Features.Dialogs;
 using Rambl.Features.Models;
 using Rambl.Features.Settings;
+using Rambl.Features.Tts;
 
 namespace Rambl.Views;
 
@@ -17,6 +19,7 @@ public partial class ModelsTab : ContentView
     private readonly ModelsTabScope scope;
     private readonly ModelLibrary library;
     private readonly IConfirmService confirmations;
+    private readonly VoicePreview preview;
     private readonly ILogger<ModelsTab> logger;
     private readonly List<Entry> entries = [];
     private IReadOnlyList<LanguageOption> languageOptions = [LanguageOption.Any];
@@ -32,6 +35,7 @@ public partial class ModelsTab : ContentView
     /// <param name="scope">Which models to show and which actions the cards offer.</param>
     /// <param name="library">Supplies the models and their download state; the library of the catalog <paramref name="kind"/> names.</param>
     /// <param name="confirmations">Asks before a model is deleted.</param>
+    /// <param name="preview">Plays voice samples on the Local tab of the text-to-speech models.</param>
     /// <param name="logger">The logger for failures.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
     public ModelsTab(
@@ -39,28 +43,39 @@ public partial class ModelsTab : ContentView
         ModelsTabScope scope,
         ModelLibrary library,
         IConfirmService confirmations,
+        VoicePreview preview,
         ILogger<ModelsTab> logger
     )
     {
         ArgumentNullException.ThrowIfNull(library);
         ArgumentNullException.ThrowIfNull(confirmations);
+        ArgumentNullException.ThrowIfNull(preview);
         ArgumentNullException.ThrowIfNull(logger);
         this.kind = kind;
         this.scope = scope;
         this.library = library;
         this.confirmations = confirmations;
+        this.preview = preview;
         this.logger = logger;
         InitializeComponent();
 
-        // Language models are filtered by task instead of by streaming and multilingual support.
+        // Language models are filtered by task instead of by streaming and multilingual support; voice models only by language.
         var language = kind == ModelsTabKind.Language;
-        StreamingFilter.IsVisible = !language;
-        MultilingualFilter.IsVisible = !language;
+        StreamingFilter.IsVisible = kind == ModelsTabKind.Speech;
+        MultilingualFilter.IsVisible = kind == ModelsTabKind.Speech;
         TaskFilter.IsVisible = language;
         if (language)
         {
             EmptyTitle.Text = "No language models downloaded yet";
             EmptyText.Text = "Models you download appear here.";
+        }
+        else if (kind == ModelsTabKind.Tts)
+        {
+            // Without the toggles their columns are empty but still spaced, so the language select starts the row.
+            Grid.SetColumn(LanguageFilter, 0);
+            Grid.SetColumnSpan(LanguageFilter, 3);
+            EmptyTitle.Text = "No voice models downloaded yet";
+            EmptyText.Text = "Voices you download appear here.";
         }
 
         LanguageFilter.SetItems([.. languageOptions.Select(option => option.Label)], 0);
@@ -73,6 +88,8 @@ public partial class ModelsTab : ContentView
 
         library.Changed += OnLibraryChanged;
         CurrentApp.SettingsChanged += (_, _) => RefreshAll();
+        if (kind == ModelsTabKind.Tts && scope == ModelsTabScope.Local)
+            preview.Changed += (_, _) => RefreshAll();
     }
 
     /// <summary>Occurs when the user asks to browse the catalog, so the screen can show the Browse tab.</summary>
@@ -80,12 +97,23 @@ public partial class ModelsTab : ContentView
 
     private static App CurrentApp => (App)Application.Current!;
 
-    // The speech catalog and the language catalog each have their own active model.
+    // The speech catalog and the language catalog each have their own active model; a voice model is never "active",
+    // since voices are chosen one by one.
     private string? ActiveId =>
-        kind == ModelsTabKind.Language ? CurrentApp.Settings.ActiveLanguageModelId : CurrentApp.Settings.ActiveModelId;
+        kind switch
+        {
+            ModelsTabKind.Language => CurrentApp.Settings.ActiveLanguageModelId,
+            ModelsTabKind.Speech => CurrentApp.Settings.ActiveModelId,
+            _ => null,
+        };
 
     private AppSettings WithActive(AppSettings settings, string? id) =>
-        kind == ModelsTabKind.Language ? settings with { ActiveLanguageModelId = id } : settings with { ActiveModelId = id };
+        kind switch
+        {
+            ModelsTabKind.Language => settings with { ActiveLanguageModelId = id },
+            ModelsTabKind.Speech => settings with { ActiveModelId = id },
+            _ => settings,
+        };
 
     private async void OnLoaded(object? sender, EventArgs e)
     {
@@ -165,11 +193,27 @@ public partial class ModelsTab : ContentView
             Size = listing.SizeText,
             AutomationId = $"Model-{listing.Id}",
         };
+        if (kind == ModelsTabKind.Tts)
+        {
+            card.TypeText = listing.VoicesText;
+            card.TypeGlyph = Icons.Users;
+            card.LicenseText = listing.License?.Name ?? string.Empty;
+            card.LanguageRowTitle = "Voice";
+            card.LanguageRowHint = "Preview plays a short sample with this voice.";
+            card.KeepsLanguageRowHint = true;
+        }
+
         SemanticProperties.SetDescription(
             card,
-            kind == ModelsTabKind.Language
-                ? $"{listing.Name}. {listing.TypeLabel}. {listing.PurposeLabel}. {listing.ParametersText}. {(listing.ContextText.Length > 0 ? listing.ContextText + ". " : string.Empty)}{listing.CpuFit.Label}. {listing.SizeText}."
-                : $"{listing.Name}. {listing.PurposeLabel}. {listing.LanguagesLabel}. {(listing.IsStreaming ? "Streaming. " : string.Empty)}{listing.CpuFit.Label}. {listing.SizeText}."
+            kind switch
+            {
+                ModelsTabKind.Language =>
+                    $"{listing.Name}. {listing.TypeLabel}. {listing.PurposeLabel}. {listing.ParametersText}. {(listing.ContextText.Length > 0 ? listing.ContextText + ". " : string.Empty)}{listing.CpuFit.Label}. {listing.SizeText}.",
+                ModelsTabKind.Tts =>
+                    $"{listing.Name}. {listing.PurposeLabel}. {listing.VoicesText}. {listing.LanguagesLabel}. {listing.CpuFit.Label}. {listing.SizeText}. {listing.License?.Name}.",
+                _ =>
+                    $"{listing.Name}. {listing.PurposeLabel}. {listing.LanguagesLabel}. {(listing.IsStreaming ? "Streaming. " : string.Empty)}{listing.CpuFit.Label}. {listing.SizeText}.",
+            }
         );
         card.ActionClicked += (_, _) => OnPrimaryAction(listing);
         card.SecondaryActionClicked += (_, _) => OnDelete(listing);
@@ -270,6 +314,12 @@ public partial class ModelsTab : ContentView
             : string.Empty;
         card.ErrorText = string.Empty;
 
+        if (scope == ModelsTabScope.Local && kind == ModelsTabKind.Tts)
+        {
+            ApplyVoiceState(entry, usability);
+            return;
+        }
+
         if (scope == ModelsTabScope.Local)
         {
             // The active model needs no Use model, and a model nothing here can run cannot be chosen.
@@ -290,6 +340,58 @@ public partial class ModelsTab : ContentView
         }
 
         ApplyBrowseState(entry, state);
+    }
+
+    // A downloaded voice model offers Preview, which turns into Stop while its sample is prepared or played, and Delete.
+    // A model with several voices has the Voice row, which picks the voice Preview plays.
+    private void ApplyVoiceState(Entry entry, ModelUsability usability)
+    {
+        var card = entry.Card;
+        var playing = preview.Current?.ModelId == entry.Listing.Id;
+        card.IsDownloaded = false;
+        card.IsRuntimeSelectVisible = false;
+        card.IsActionVisible = true;
+        (card.ActionText, card.ActionGlyph, card.IsActionEnabled) = playing
+            ? ("Stop", Icons.Square, true)
+            : ("Preview", Icons.Play, usability.IsUsable);
+        card.NoticeText = usability.IsUsable ? string.Empty : usability.Reason ?? string.Empty;
+        card.SecondaryActionName = "Delete";
+        card.SecondaryActionGlyph = Icons.Trash2;
+        card.IsSecondaryActionVisible = true;
+
+        var voices = entry.Listing.Voices ?? [];
+        card.IsLanguageRowVisible = voices.Count > 1;
+        if (voices.Count > 1)
+        {
+            var chosen = PreviewVoice(entry);
+            card.SetLanguageOptions([.. voices.Select(voice => voice.Label)], voices.ToList().FindIndex(voice => voice.Id == chosen));
+        }
+    }
+
+    // The voice Preview plays: the one picked on the card, or the model's default.
+    private static string? PreviewVoice(Entry entry) => entry.PreviewVoice ?? entry.Listing.DefaultVoice;
+
+    private async Task PreviewAsync(ModelListing listing)
+    {
+        if (preview.Current?.ModelId == listing.Id)
+        {
+            preview.Stop();
+            return;
+        }
+
+        var entry = entries.Find(candidate => candidate.Listing.Id == listing.Id);
+        if (entry is null || PreviewVoice(entry) is not { } voiceId)
+            return;
+
+        try
+        {
+            await preview.PlayAsync(listing.Id, voiceId);
+        }
+        catch (Exception ex) when (ex is TtsException or AudioUnavailableException or IOException)
+        {
+            logger.LogError(ex, "Unable to preview a voice of {Model}", listing.Id);
+            await ShowAlertAsync("The voice could not be played", ex.Message);
+        }
     }
 
     // On Browse the card describes one runtime's files: the one picked in the selector, or what Automatic would download.
@@ -408,6 +510,17 @@ public partial class ModelsTab : ContentView
 
     private async void OnLanguageChanged(ModelListing listing, ModelCard card)
     {
+        // A voice model's row picks the voice to preview; it is not saved.
+        if (kind == ModelsTabKind.Tts)
+        {
+            var voices = listing.Voices ?? [];
+            var index = card.SelectedLanguageIndex;
+            if (entries.Find(candidate => candidate.Listing.Id == listing.Id) is { } entry && index >= 0 && index < voices.Count)
+                entry.PreviewVoice = voices[index].Id;
+
+            return;
+        }
+
         try
         {
             var chosenRuntime = CurrentApp.Settings.ModelRuntimes.GetValueOrDefault(listing.Id);
@@ -440,7 +553,11 @@ public partial class ModelsTab : ContentView
         try
         {
             var status = library.GetState(listing.Id).Status;
-            if (scope == ModelsTabScope.Local)
+            if (scope == ModelsTabScope.Local && kind == ModelsTabKind.Tts)
+            {
+                await PreviewAsync(listing);
+            }
+            else if (scope == ModelsTabScope.Local)
             {
                 if (library.GetUsability(listing.Id, CurrentApp.Settings.ModelRuntimes.GetValueOrDefault(listing.Id)).IsUsable)
                     await CurrentApp.UpdateSettingsAsync(settings => WithActive(settings, listing.Id));
@@ -506,6 +623,10 @@ public partial class ModelsTab : ContentView
             );
             if (answer != ConfirmResult.Primary)
                 return;
+
+            // A sample that is playing keeps nothing open in the model folder, but it is about this model.
+            if (preview.Current?.ModelId == listing.Id)
+                preview.Stop();
 
             await library.DeleteAsync(listing.Id, isLastCopy ? null : runtimeId);
             if (isLastCopy && ActiveId == listing.Id)
@@ -694,5 +815,8 @@ public partial class ModelsTab : ContentView
 
         // The runtime picked on the Browse card, which decides whose files Download fetches; null is Automatic.
         public string? BrowseRuntime { get; set; }
+
+        // The voice picked on a voice model's Local card, which Preview plays; null is the model's default.
+        public string? PreviewVoice { get; set; }
     }
 }

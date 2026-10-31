@@ -17,6 +17,9 @@ namespace Rambl.Features.Models;
 /// <param name="ContextLength">Language models only: the trained context length in tokens, where it applies.</param>
 /// <param name="Kind">Language models only: the technical shape (<c>chat</c>, <c>translation</c>, <c>classifier</c>, ...).</param>
 /// <param name="TypeId">Language models only: the model type id (<c>llm</c>, <c>decision</c>, <c>tool-calling</c>).</param>
+/// <param name="License">The model's license.</param>
+/// <param name="Voices">Text-to-speech models only: the voices, A–Z by name.</param>
+/// <param name="DefaultVoice">Text-to-speech models only: the id of the voice chosen until the user picks another.</param>
 public sealed record ModelListing(
     string Id,
     string Name,
@@ -33,9 +36,15 @@ public sealed record ModelListing(
     string? Parameters = null,
     int? ContextLength = null,
     string? Kind = null,
-    string? TypeId = null
+    string? TypeId = null,
+    ModelLicense? License = null,
+    IReadOnlyList<CatalogVoice>? Voices = null,
+    string? DefaultVoice = null
 )
 {
+    /// <summary>Gets the voice count as card text, for example "28 voices"; empty for a model that is not a text-to-speech model.</summary>
+    public string VoicesText => Voices is not { Count: > 0 } voices ? string.Empty : voices.Count == 1 ? "1 voice" : $"{voices.Count} voices";
+
     /// <summary>Gets whether the model is a general language model that can follow a written instruction.</summary>
     public bool IsInstructionModel => TypeId == "llm" && Kind == "chat";
 
@@ -91,7 +100,10 @@ public sealed record ModelListing(
                     model.Parameters,
                     model.ContextLength,
                     model.Kind,
-                    model.ModelType
+                    model.ModelType,
+                    catalog.License(model.License.Id),
+                    model.Voices is null ? null : [.. model.Voices.OrderBy(voice => voice.Name, StringComparer.OrdinalIgnoreCase)],
+                    model.DefaultVoice
                 )
             );
         }

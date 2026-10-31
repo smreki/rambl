@@ -5,8 +5,10 @@ using Rambl.Features.Audio;
 using Rambl.Features.Dictation;
 using Rambl.Features.History;
 using Rambl.Features.PostProcessing;
+using Rambl.Features.ReadAloud;
 using Rambl.Features.Settings;
 using Rambl.Features.Stt;
+using Rambl.Features.Tts;
 using Rambl.Features.VoiceCommands;
 using Rambl.Platforms.Windows.Input;
 
@@ -22,6 +24,7 @@ internal sealed class DictationController : IDisposable
     private readonly OverlaySurface surface;
     private readonly DictationCoordinator coordinator;
     private readonly GlobalInputHook hook;
+    private readonly ReadAloud.ReadAloudController readAloud;
     private bool disposed;
 
     /// <summary>Opens the hidden overlay window and starts listening for the shortcuts.</summary>
@@ -36,6 +39,10 @@ internal sealed class DictationController : IDisposable
     /// <param name="chain">Runs the processes of a shortcut after the dictation.</param>
     /// <param name="commands">The voice command sets, whose shortcuts also start a dictation.</param>
     /// <param name="runner">Runs the command set of a shortcut after its processes.</param>
+    /// <param name="profiles">The read-aloud profiles, whose shortcuts read the selected text aloud.</param>
+    /// <param name="readAloudService">Starts the readings.</param>
+    /// <param name="selection">Gets the selected text.</param>
+    /// <param name="tts">Lists the voices the reader panel offers.</param>
     /// <param name="logger">The logger for audio and transcription failures, which never stop dictation.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
     /// <exception cref="System.ComponentModel.Win32Exception">Windows refused the input hooks.</exception>
@@ -51,6 +58,10 @@ internal sealed class DictationController : IDisposable
         PostProcessChain chain,
         CommandSetLibrary commands,
         VoiceCommandRunner runner,
+        ReadAloudLibrary profiles,
+        ReadAloudService readAloudService,
+        ISelectionReader selection,
+        TtsEngine tts,
         ILogger<DictationController> logger
     )
     {
@@ -58,6 +69,7 @@ internal sealed class DictationController : IDisposable
 
         surface = new(mauiContext);
         coordinator = new(settings, audio, speech, executors, surface, new DispatcherQueueDispatcher(dispatcher), logger, recorder, library, chain, commands, runner);
+        readAloud = new(profiles, readAloudService, selection, tts, coordinator.Tracker, mauiContext, logger);
         hook = new(coordinator.Tracker, result => HandleTracked(result), static () => ShortcutInput.IsCapturing || KeyPressInput.IsCapturing, dispatcher);
         try
         {
@@ -75,6 +87,21 @@ internal sealed class DictationController : IDisposable
     {
         try
         {
+            // Reading aloud has its own shortcuts. It stops when a dictation starts, so the microphone does not hear it,
+            // and the cancel shortcut stops it when no dictation needs it.
+            switch (result.Action)
+            {
+                case ShortcutAction.ReadPressed when result.Binding is { } shortcut:
+                    readAloud.Toggle(shortcut);
+                    return;
+                case ShortcutAction.CancelPressed when readAloud.IsActive && !coordinator.IsActive && !coordinator.IsProcessing:
+                    readAloud.Stop();
+                    return;
+                case ShortcutAction.DictationPressed when readAloud.IsActive:
+                    readAloud.Stop();
+                    break;
+            }
+
             coordinator.HandleAction(result.Action, result.Binding);
         }
         catch (Exception ex)
@@ -92,6 +119,7 @@ internal sealed class DictationController : IDisposable
 
         disposed = true;
         hook.Dispose();
+        readAloud.Dispose();
         coordinator.Dispose();
         surface.Dispose();
     }

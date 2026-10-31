@@ -54,6 +54,13 @@ public interface IAudioService
     /// <exception cref="AudioUnavailableException">There is no output device, or the file cannot be played.</exception>
     IAudioPlayer OpenPlayer(string path, string? outputDeviceId);
 
+    /// <summary>Opens a stream that plays audio written to it while it plays, for example speech.</summary>
+    /// <param name="sampleRate">The samples per second of the audio that will be written.</param>
+    /// <param name="outputDeviceId">The device id, or null for the system default output. A missing device falls back to the default.</param>
+    /// <returns>The stream, already playing silence; the caller disposes it.</returns>
+    /// <exception cref="AudioUnavailableException">There is no output device or it cannot play.</exception>
+    IAudioStream OpenStream(int sampleRate, string? outputDeviceId);
+
     /// <summary>Plays a feedback sound and completes when it has finished.</summary>
     /// <param name="sound">Which sound to play.</param>
     /// <param name="outputDeviceId">The device id, or null for the system default output. A missing device falls back to the default.</param>
