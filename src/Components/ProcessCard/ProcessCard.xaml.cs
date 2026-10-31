@@ -125,6 +125,10 @@ public partial class ProcessCard : ContentView
     /// <summary>Gets or sets the group the card belongs to; cards only trade places inside their own group.</summary>
     public string? GroupKey { get; set; }
 
+    /// <summary>Gets or sets the Lucide glyph before the model line while it needs no attention; the brain by default.</summary>
+    /// <remarks>A read-aloud profile's card shows its voice there, with a speaker.</remarks>
+    public string ModelGlyphText { get; set; } = Icons.Brain;
+
     /// <summary>Gets or sets the process name.</summary>
     public string NameText
     {
@@ -209,7 +213,7 @@ public partial class ProcessCard : ContentView
         DisabledTag.IsVisible = !IsProcessEnabled;
         CardGrid.Opacity = IsProcessEnabled ? 1 : .55;
         SemanticProperties.SetDescription(EnabledSwitch, $"{NameText} enabled");
-        ModelGlyph.Text = HasModelWarning ? Icons.TriangleAlert : Icons.Brain;
+        ModelGlyph.Text = HasModelWarning ? Icons.TriangleAlert : ModelGlyphText;
 
         var glyphColor = HasModelWarning ? "Warning" : "TextMuted";
         ModelGlyph.SetAppThemeColor(Label.TextColorProperty, (Color)resources[glyphColor + "Light"], (Color)resources[glyphColor + "Dark"]);

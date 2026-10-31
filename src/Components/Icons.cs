@@ -6,8 +6,10 @@ namespace Rambl.Components;
 /// </summary>
 public static class Icons
 {
+    public const string ArrowDown = "\ue042";
     public const string ArrowLeft = "\ue048";
     public const string ArrowRight = "";
+    public const string ArrowUp = "\ue04a";
     public const string AudioLines = "";
     public const string Braces = "\ue36a";
     public const string Brain = "\ue3c6";
@@ -30,6 +32,7 @@ public static class Icons
     public const string FolderOpen = "\ue247";
     public const string Gauge = "\ue1bf";
     public const string Globe = "";
+    public const string GripHorizontal = "\ue0ea";
     public const string GripVertical = "";
     public const string Hand = "";
     public const string HardDrive = "";
@@ -42,7 +45,11 @@ public static class Icons
     public const string Layers = "\ue529";
     public const string List = "\ue106";
     public const string ListOrdered = "\ue1d1";
+    public const string LoaderCircle = "\ue10a";
+    public const string LocateFixed = "\ue1db";
+    public const string LocateOff = "\ue282";
     public const string Lock = "";
+    public const string Maximize2 = "\ue113";
     public const string MessageSquareText = "\ue575";
     public const string MessagesSquare = "";
     public const string Mic = "";
@@ -64,7 +71,9 @@ public static class Icons
     public const string Settings = "\ue154";
     public const string Shapes = "\ue4b3";
     public const string SkipForward = "";
+    public const string Sparkles = "\ue412";
     public const string Speech = "\ue51e";
+    public const string Square = "\ue167";
     public const string Sun = "";
     public const string Tags = "\ue35c";
     public const string Target = "";
@@ -73,7 +82,8 @@ public static class Icons
     public const string ToggleRight = "";
     public const string TriangleAlert = "";
     public const string Trash2 ="";
-    public const string Volume2 = "";
+    public const string Users = "";
+    public const string Volume2 ="";
     public const string WandSparkles = "\ue357";
     public const string Wrench = "\ue1b1";
     public const string X = "";
@@ -82,8 +92,10 @@ public static class Icons
 
     private static readonly Dictionary<string, string> ByName = new(StringComparer.Ordinal)
     {
+        ["arrow-down"] = ArrowDown,
         ["arrow-left"] = ArrowLeft,
         ["arrow-right"] = ArrowRight,
+        ["arrow-up"] = ArrowUp,
         ["audio-lines"] = AudioLines,
         ["braces"] = Braces,
         ["brain"] = Brain,
@@ -106,6 +118,7 @@ public static class Icons
         ["folder-open"] = FolderOpen,
         ["gauge"] = Gauge,
         ["globe"] = Globe,
+        ["grip-horizontal"] = GripHorizontal,
         ["grip-vertical"] = GripVertical,
         ["hand"] = Hand,
         ["hard-drive"] = HardDrive,
@@ -118,7 +131,11 @@ public static class Icons
         ["layers"] = Layers,
         ["list"] = List,
         ["list-ordered"] = ListOrdered,
+        ["loader-circle"] = LoaderCircle,
+        ["locate-fixed"] = LocateFixed,
+        ["locate-off"] = LocateOff,
         ["lock"] = Lock,
+        ["maximize-2"] = Maximize2,
         ["message-square-text"] = MessageSquareText,
         ["messages-square"] = MessagesSquare,
         ["mic"] = Mic,
@@ -140,7 +157,9 @@ public static class Icons
         ["settings"] = Settings,
         ["shapes"] = Shapes,
         ["skip-forward"] = SkipForward,
+        ["sparkles"] = Sparkles,
         ["speech"] = Speech,
+        ["square"] = Square,
         ["sun"] = Sun,
         ["tags"] = Tags,
         ["target"] = Target,
@@ -149,6 +168,7 @@ public static class Icons
         ["toggle-right"] = ToggleRight,
         ["triangle-alert"] = TriangleAlert,
         ["trash-2"] = Trash2,
+        ["users"] = Users,
         ["volume-2"] = Volume2,
         ["wand-sparkles"] = WandSparkles,
         ["wrench"] = Wrench,

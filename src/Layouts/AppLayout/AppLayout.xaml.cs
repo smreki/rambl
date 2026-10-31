@@ -26,7 +26,7 @@ public partial class AppLayout : ContentPage
         ArgumentNullException.ThrowIfNull(services);
         InitializeComponent();
         this.services = services;
-        navItems = [HistoryNav, PostProcessingNav, VoiceCommandsNav, LanguageModelsNav, ModelsNav, AppearanceNav, AudioNav, ControlsNav, AboutNav];
+        navItems = [HistoryNav, PostProcessingNav, ReadAloudNav, VoiceCommandsNav, LanguageModelsNav, ModelsNav, TtsModelsNav, AppearanceNav, AudioNav, ControlsNav, AboutNav];
 
         VersionLabel.Text = $"v{AppInfo.Current.Version.ToString(3)}";
         if (Application.Current is App app)

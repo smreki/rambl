@@ -11,8 +11,10 @@ public partial class AppLayout
 
     private ModelLibrary library = null!;
     private ModelLibrary languageLibrary = null!;
+    private ModelLibrary ttsLibrary = null!;
     private IReadOnlyList<ModelListing> listings = [];
     private IReadOnlyList<ModelListing> languageListings = [];
+    private IReadOnlyList<ModelListing> ttsListings = [];
     private readonly Dictionary<string, ModelStatus> lastStatus = [];
     private IDispatcherTimer? completionTimer;
     private bool showCompletion;
@@ -24,7 +26,9 @@ public partial class AppLayout
         library = services.GetRequiredService<ModelLibrary>();
         library.Changed += OnModelChanged;
         languageLibrary = services.GetRequiredKeyedService<ModelLibrary>(ModelLibraryKeys.Language);
-        languageLibrary.Changed += OnLanguageModelChanged;
+        languageLibrary.Changed += (_, modelId) => OnOtherModelChanged(languageLibrary, modelId);
+        ttsLibrary = services.GetRequiredKeyedService<ModelLibrary>(ModelLibraryKeys.Tts);
+        ttsLibrary.Changed += (_, modelId) => OnOtherModelChanged(ttsLibrary, modelId);
         _ = LoadModelsAsync();
     }
 
@@ -40,6 +44,10 @@ public partial class AppLayout
             languageListings = await languageLibrary.GetListingsAsync();
             foreach (var listing in languageListings)
                 lastStatus[listing.Id] = languageLibrary.GetState(listing.Id).Status;
+
+            ttsListings = await ttsLibrary.GetListingsAsync();
+            foreach (var listing in ttsListings)
+                lastStatus[listing.Id] = ttsLibrary.GetState(listing.Id).Status;
 
             UpdateModelStatus();
         }
@@ -63,11 +71,11 @@ public partial class AppLayout
         UpdateModelStatus();
     }
 
-    // Language models are downloaded in the background too, and show in the same indicator. None can be used yet, so
-    // a finished download never changes the active language model.
-    private void OnLanguageModelChanged(object? sender, string modelId)
+    // Language and voice models are downloaded in the background too, and show in the same indicator. A finished download
+    // never changes the active language model or the reading voice.
+    private void OnOtherModelChanged(ModelLibrary source, string modelId)
     {
-        var status = languageLibrary.GetState(modelId).Status;
+        var status = source.GetState(modelId).Status;
         var previous = lastStatus.GetValueOrDefault(modelId, ModelStatus.NotInstalled);
         lastStatus[modelId] = status;
 
@@ -97,11 +105,11 @@ public partial class AppLayout
         && library.GetUsability(modelId, CurrentApp?.Settings.ModelRuntimes.GetValueOrDefault(modelId)).IsUsable;
 
     private string NameOf(string modelId) =>
-        listings.Concat(languageListings).FirstOrDefault(listing => listing.Id == modelId)?.Name ?? modelId;
+        listings.Concat(languageListings).Concat(ttsListings).FirstOrDefault(listing => listing.Id == modelId)?.Name ?? modelId;
 
-    // Every download in progress, of either catalog.
+    // Every download in progress, of any catalog.
     private List<(string ModelId, DownloadProgress Progress)> CurrentDownloads() =>
-        [.. library.GetDownloads(), .. languageLibrary.GetDownloads()];
+        [.. library.GetDownloads(), .. languageLibrary.GetDownloads(), .. ttsLibrary.GetDownloads()];
 
     // Shows the model used for dictation and the progress of any model being downloaded in the background.
     private void UpdateModelStatus()
@@ -176,6 +184,8 @@ public partial class AppLayout
         var modelId = downloading.Count == 1 ? downloading[0].ModelId : null;
         if (modelId is not null && languageListings.Any(listing => listing.Id == modelId))
             ShowLanguageBrowse(modelId);
+        else if (modelId is not null && ttsListings.Any(listing => listing.Id == modelId))
+            Navigate(TtsModelsNav, screen => ((Views.TtsModels)screen).ShowBrowse(modelId));
         else
             ShowBrowse(modelId);
     }

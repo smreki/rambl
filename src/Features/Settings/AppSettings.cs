@@ -67,4 +67,8 @@ public sealed record AppSettings
 
     /// <summary>Gets whether a finished dictation is pasted into the focused app; when off it is only copied to the clipboard.</summary>
     public bool AutoPaste { get; init; } = true;
+
+    /// <summary>Gets whether the reader panel closes by itself when reading finishes, instead of staying open to read again.</summary>
+    /// <remarks>The reader window, when it is open, always stays open.</remarks>
+    public bool CloseReaderWhenFinished { get; init; }
 }

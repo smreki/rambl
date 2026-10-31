@@ -22,6 +22,14 @@
                            TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
                 </HorizontalStackLayout>
                 <components:KeyCaps x:Name="Caps" HorizontalOptions="End" MaxPresses="3" />
+                <!-- The Say after phrase, when the command has one. -->
+                <HorizontalStackLayout x:Name="SpeechRow" Spacing="4" HorizontalOptions="End" IsVisible="False">
+                    <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center" Text="{x:Static components:Icons.Volume2}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                    <Label x:Name="SpeechLabel" FontSize="11" VerticalOptions="Center" MaximumWidthRequest="240"
+                           LineBreakMode="TailTruncation"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                </HorizontalStackLayout>
             </VerticalStackLayout>
             <HorizontalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center">
                 <components:IconButton x:Name="EditButton" Glyph="{x:Static components:Icons.Pencil}" GlyphSize="14"

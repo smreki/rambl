@@ -25,6 +25,11 @@
                                   Text="Post Processing"
                                   Screen="{x:Type views:PostProcessing}"
                                   Tapped="OnNavItemTapped" />
+                <components:NavItem x:Name="ReadAloudNav"
+                                  Glyph="{x:Static components:Icons.Volume2}"
+                                  Text="Read Aloud"
+                                  Screen="{x:Type views:ReadAloud}"
+                                  Tapped="OnNavItemTapped" />
                 <components:NavItem x:Name="VoiceCommandsNav"
                                   Glyph="{x:Static components:Icons.Speech}"
                                   Text="Voice Commands"
@@ -40,6 +45,11 @@
                                   Glyph="{x:Static components:Icons.Captions}"
                                   Text="STT Models"
                                   Screen="{x:Type views:Models}"
+                                  Tapped="OnNavItemTapped" />
+                <components:NavItem x:Name="TtsModelsNav"
+                                  Glyph="{x:Static components:Icons.AudioLines}"
+                                  Text="TTS Models"
+                                  Screen="{x:Type views:TtsModels}"
                                   Tapped="OnNavItemTapped" />
                 <BoxView Style="{StaticResource Divider}" HeightRequest="1" Margin="10,6" />
                 <components:NavItem x:Name="AppearanceNav"

@@ -9,9 +9,10 @@ namespace Rambl.Features.VoiceCommands;
 /// <param name="matcher">Asks the decision model.</param>
 /// <param name="keys">Presses the keys in the focused app.</param>
 /// <param name="models">Names the model for the dictation card.</param>
+/// <param name="speech">Speaks a command's Say after phrase.</param>
 /// <param name="logger">The logger for failures.</param>
 /// <remarks>Call it from the UI thread, as the decision engine must be.</remarks>
-public sealed class VoiceCommandRunner(CommandMatcher matcher, IKeyPresser keys, CommandModels models, ILogger<VoiceCommandRunner> logger)
+public sealed class VoiceCommandRunner(CommandMatcher matcher, IKeyPresser keys, CommandModels models, ReadAloud.ReadAloudService speech, ILogger<VoiceCommandRunner> logger)
 {
     /// <summary>Decides on a command and presses its keys when one matches.</summary>
     /// <param name="set">The command set of the shortcut.</param>
@@ -83,6 +84,9 @@ public sealed class VoiceCommandRunner(CommandMatcher matcher, IKeyPresser keys,
         try
         {
             await keys.PressAsync(command.Keys, CancellationToken.None);
+            if (command.Speaks)
+                _ = SayAfterAsync(command);
+
             return new(set, command, decision, null, Skipped: false);
         }
         catch (Exception ex) when (ex is Win32Exception or InvalidOperationException)
@@ -90,6 +94,19 @@ public sealed class VoiceCommandRunner(CommandMatcher matcher, IKeyPresser keys,
             // Windows refuses synthetic input into an app that runs as administrator.
             logger.LogWarning(ex, "The keys of the command {Command} could not be pressed", command.Name);
             return new(set, null, decision, $"Windows did not let Rambl press {command.KeysText}; the app may run as administrator.", Skipped: false);
+        }
+    }
+
+    // The phrase is spoken while the dictation finishes; a voice that cannot speak only leaves a note in the log.
+    private async Task SayAfterAsync(VoiceCommand command)
+    {
+        try
+        {
+            await speech.SpeakAsync(command.Voice!, command.SayAfter!, CancellationToken.None);
+        }
+        catch (Exception ex) when (ex is Tts.TtsException or Audio.AudioUnavailableException or OperationCanceledException)
+        {
+            logger.LogWarning(ex, "The Say after phrase of {Command} could not be spoken", command.Name);
         }
     }
 }

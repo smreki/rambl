@@ -154,9 +154,11 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
         var models = FindTable(document, "models");
         var languageModels = FindTable(document, "language_models");
         var history = FindTable(document, "history");
+        var readAloud = FindTable(document, "read_aloud");
 
         return new()
         {
+            CloseReaderWhenFinished = ReadBool(readAloud, "read_aloud", "close_when_finished") ?? defaults.CloseReaderWhenFinished,
             HistoryEnabled = ReadBool(history, "history", "enabled") ?? defaults.HistoryEnabled,
             HistoryRetentionDays = ReadInt(history, "history", "retention_days") is >= 0 and var days
                 ? days
@@ -256,6 +258,9 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
         history["enabled"] = settings.HistoryEnabled;
         history["retention_days"] = (long)settings.HistoryRetentionDays;
         SetOrRemove(history, "directory", settings.RecordingsDirectory);
+
+        var readAloud = GetOrAddTable(document, "read_aloud");
+        readAloud["close_when_finished"] = settings.CloseReaderWhenFinished;
 
         // The tables only exist while there is something in them, so a config that never used them stays free of them.
         var languageModels = FindTable(document, "language_models");

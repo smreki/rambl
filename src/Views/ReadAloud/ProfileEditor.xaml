@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.ProfileEditor"
+             SizeChanged="OnSizeChanged">
+    <Grid x:Name="Root">
+        <ScrollView x:Name="Scroll" Padding="0,0,16,0">
+            <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                    <components:IconButton Glyph="{x:Static components:Icons.ArrowLeft}" GlyphSize="14" WidthRequest="32"
+                                           IsOutlined="True" VerticalOptions="Start" AccessibleName="Back to Read Aloud"
+                                           AutomationId="ProfileBack" Clicked="OnBackClicked" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                        <Label x:Name="TitleLabel" Style="{StaticResource PageTitle}" Text="Edit profile"
+                               SemanticProperties.HeadingLevel="Level1" />
+                        <Label Style="{StaticResource PageSubtitle}"
+                               Text="Its shortcut reads the selected text, or the clipboard, after the optional steps." />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Profile -->
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Profile" FontFamily="InterSemiBold" FontSize="15" SemanticProperties.HeadingLevel="Level2" />
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Enabled" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}" Text="When off, the shortcut does nothing." />
+                        </VerticalStackLayout>
+                        <Switch x:Name="EnabledToggle" Grid.Column="1" Style="{StaticResource SettingToggle}" HorizontalOptions="End"
+                                IsToggled="True" AutomationId="ProfileEnabled" SemanticProperties.Description="Enabled"
+                                Toggled="OnEnabledToggled" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Shortcut" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="Profiles may share a shortcut; they then read one after another. Dictation, processes, command sets and cancel can't use it." />
+                        </VerticalStackLayout>
+                        <components:ShortcutInput x:Name="ShortcutInput" Grid.Column="1" WidthRequest="360"
+                                                  SettingName="read-aloud shortcut" DefaultShortcut="{x:Null}" Shortcut="{x:Null}"
+                                                  AutomationId="ProfileShortcut" ShortcutChanged="OnShortcutChanged" />
+                    </Grid>
+
+                    <components:SharedShortcutNotice x:Name="ShortcutNotice" IsVisible="False" Glyph="{x:Static components:Icons.Volume2}"
+                                                     LinkText="Change the order in Read Aloud" LinkClicked="OnBackClicked" />
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Name" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}" Text="Shown in the list and on the reader panel." />
+                        </VerticalStackLayout>
+                        <components:TextInput x:Name="NameInput" Grid.Column="1" WidthRequest="360" MaxLength="60"
+                                              Placeholder="For example, Translate to German" AccessibleName="Profile name"
+                                              AutomationId="ProfileName" PropertyChanged="OnInputPropertyChanged" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="Short description" FontFamily="InterMedium" FontSize="13" />
+                                <Label Text="Optional" FontSize="12" VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                            </HorizontalStackLayout>
+                            <Label Style="{StaticResource SettingHelp}" Text="Only for you, to tell profiles apart. It is never sent to a model." />
+                        </VerticalStackLayout>
+                        <components:TextInput x:Name="DescriptionInput" Grid.Column="1" WidthRequest="360" MaxLength="120"
+                                              Placeholder="What this profile is for" AccessibleName="Profile description"
+                                              AutomationId="ProfileDescription" PropertyChanged="OnInputPropertyChanged" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Copy result to clipboard" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="Puts the text that is read, after the steps, on the clipboard so you can paste it, for example the translation." />
+                        </VerticalStackLayout>
+                        <Switch x:Name="CopyToggle" Grid.Column="1" Style="{StaticResource SettingToggle}" HorizontalOptions="End"
+                                AutomationId="ProfileCopyResult" SemanticProperties.Description="Copy result to clipboard"
+                                Toggled="OnCopyToggled" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Save to History" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="Keeps each reading in the History, like a dictation: the spoken audio as a WAV file, the selected text and the result of the steps. It is deleted with the History's other recordings." />
+                        </VerticalStackLayout>
+                        <Switch x:Name="HistoryToggle" Grid.Column="1" Style="{StaticResource SettingToggle}" HorizontalOptions="End"
+                                AutomationId="ProfileSaveToHistory" SemanticProperties.Description="Save to History"
+                                Toggled="OnHistoryToggled" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <!-- Pre-processing -->
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Pre-processing" FontFamily="InterSemiBold" FontSize="15" SemanticProperties.HeadingLevel="Level2" />
+                    <Label Style="{StaticResource SettingHelp}" LineBreakMode="WordWrap"
+                           Text="Optional steps that rewrite the text before it is read, in order, each on the result of the one before. Without steps the text is read as it is. If a step fails or takes too long, the selected text is read instead." />
+                    <VerticalStackLayout x:Name="StepList" Spacing="12" />
+                    <components:IconButton HeightRequest="32" HorizontalOptions="Start" Glyph="{x:Static components:Icons.Plus}" GlyphSize="14"
+                                           Text="Add step" IsOutlined="True" AccessibleName="Add a pre-processing step"
+                                           AutomationId="AddStep" Clicked="OnAddStepClicked" />
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <!-- Voice -->
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Voice" FontFamily="InterSemiBold" FontSize="15" SemanticProperties.HeadingLevel="Level2" />
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Provider" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}" Text="Runs on this PC. No text leaves it." />
+                        </VerticalStackLayout>
+                        <components:SelectInput x:Name="VoiceProviderSelect" Grid.Column="1" WidthRequest="360"
+                                                Glyph="{x:Static components:Icons.Cpu}" AccessibleName="Voice provider" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Model" FontFamily="InterMedium" FontSize="13" />
+                            <Label x:Name="VoiceHelp" Style="{StaticResource SettingHelp}" Text="Downloaded voice models. Get more in TTS Models." />
+                        </VerticalStackLayout>
+                        <components:SelectInput x:Name="VoiceModelSelect" Grid.Column="1" WidthRequest="360"
+                                                Glyph="{x:Static components:Icons.AudioLines}" AccessibleName="Voice model"
+                                                AutomationId="ProfileVoiceModel" SelectedIndexChanged="OnVoiceModelChanged" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Voice" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}" Text="The voices of that model." />
+                        </VerticalStackLayout>
+                        <components:SelectInput x:Name="VoiceSelect" Grid.Column="1" WidthRequest="360"
+                                                Glyph="{x:Static components:Icons.Users}" AccessibleName="Voice"
+                                                AutomationId="ProfileVoice" SelectedIndexChanged="OnVoiceChanged" />
+                    </Grid>
+
+                    <Grid x:Name="LanguageRow" ColumnDefinitions="*,360" ColumnSpacing="16" IsVisible="False">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Language" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="The language this voice speaks the text in. Shown for voices that speak several languages." />
+                        </VerticalStackLayout>
+                        <components:SelectInput x:Name="LanguageSelect" Grid.Column="1" WidthRequest="360"
+                                                Glyph="{x:Static components:Icons.Languages}" AccessibleName="Language"
+                                                AutomationId="ProfileLanguage" SelectedIndexChanged="OnLanguageChanged" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Speed" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}" Text="How fast the voice reads. The reader panel can change it while reading." />
+                        </VerticalStackLayout>
+                        <components:SelectInput x:Name="SpeedSelect" Grid.Column="1" WidthRequest="360"
+                                                Glyph="{x:Static components:Icons.Gauge}" AccessibleName="Speed"
+                                                AutomationId="ProfileSpeed" SelectedIndexChanged="OnSpeedChanged" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Volume" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}" Text="On top of the system volume." />
+                        </VerticalStackLayout>
+                        <components:SelectInput x:Name="VolumeSelect" Grid.Column="1" WidthRequest="360"
+                                                Glyph="{x:Static components:Icons.Volume2}" AccessibleName="Volume"
+                                                AutomationId="ProfileVolume" SelectedIndexChanged="OnVolumeChanged" />
+                    </Grid>
+
+                    <HorizontalStackLayout Spacing="12">
+                        <components:IconButton x:Name="PreviewButton" HeightRequest="36" Glyph="{x:Static components:Icons.Play}" GlyphSize="14"
+                                               Text="Preview voice" IsOutlined="True" AccessibleName="Preview voice"
+                                               AutomationId="ProfilePreview" Clicked="OnPreviewClicked" />
+                        <Label x:Name="PreviewHint" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+                    <components:IconButton x:Name="DeleteButton" HeightRequest="36" Glyph="{x:Static components:Icons.Trash2}"
+                                           GlyphSize="14" Text="Delete profile" IsOutlined="True" IsDestructive="True"
+                                           AccessibleName="Delete profile" AutomationId="DeleteProfile" Clicked="OnDeleteClicked" />
+                    <components:IconButton x:Name="RevertButton" Grid.Column="2" HeightRequest="36" WidthRequest="88" Text="Revert"
+                                           IsOutlined="True" AccessibleName="Revert changes" AutomationId="RevertProfile"
+                                           Clicked="OnRevertClicked" />
+                    <components:IconButton x:Name="SaveButton" Grid.Column="3" HeightRequest="36" WidthRequest="88" Text="Save"
+                                           IsPrimary="True" AccessibleName="Save profile" AutomationId="SaveProfile"
+                                           Clicked="OnSaveClicked" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Model menu layer for the steps: a nearly transparent backdrop closes the menu when anything else is clicked. -->
+        <Grid x:Name="MenuLayer" IsVisible="False">
+            <Grid BackgroundColor="#01000000">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnMenuBackdropTapped" />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <components:OptionMenu x:Name="ModelMenu" HorizontalOptions="Start" VerticalOptions="Start" OptionChosen="OnModelChosen" />
+        </Grid>
+    </Grid>
+</ContentView>

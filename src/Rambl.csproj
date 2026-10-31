@@ -27,12 +27,12 @@
 		<ApplicationId>jam.rambl</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
+		<ApplicationVersion>2</ApplicationVersion>
 
 	</PropertyGroup>
 
-	<!-- sherpa-onnx (Features/Stt/Sherpa) is not tied to Windows, but its NuGet package has no Mac Catalyst native library
+	<!-- sherpa-onnx (Features/Stt/Sherpa, Features/Tts/Sherpa) is not tied to Windows, but its NuGet package has no Mac Catalyst native library
 	     yet. Set this to true for a target once the library has been checked to load there. -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<UseSherpaOnnx>true</UseSherpaOnnx>
@@ -48,6 +48,7 @@
 
 	<ItemGroup Condition="'$(UseSherpaOnnx)' != 'true'">
 		<Compile Remove="Features\Stt\Sherpa\**" />
+		<Compile Remove="Features\Tts\Sherpa\**" />
 	</ItemGroup>
 
 	<!-- ONNX Runtime (Features/Decisions/Laya) runs the Laya decision models for voice commands. The native onnxruntime.dll
@@ -261,6 +262,8 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Indiko.Maui.Controls.Markdown" Version="1.10.0" />
+		<!-- Common/Text reads text that is read aloud as Markdown; the same version the Markdown control brings. -->
+		<PackageReference Include="Markdig" Version="1.3.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 		<PackageReference Include="Tomlyn" Version="2.10.1" />
 	</ItemGroup>

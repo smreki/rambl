@@ -13,6 +13,7 @@ namespace Rambl.Features.Dictation;
 /// Keys are named as in <see cref="Shortcut.Key"/>, including mouse buttons such as <c>MouseX2</c>.
 /// A shortcut starts dictation when it equals <see cref="Dictation"/> or one of <see cref="ProcessShortcuts"/> or
 /// <see cref="CommandShortcuts"/>; the result says which, so the dictation can run what is on that shortcut afterwards.
+/// A read-aloud shortcut (<see cref="ReadShortcuts"/>) is reported once when pressed, never as held.
 /// </remarks>
 public sealed class ShortcutTracker
 {
@@ -23,6 +24,8 @@ public sealed class ShortcutTracker
     private Shortcut cancel = Shortcut.DefaultCancel;
     private IReadOnlyCollection<Shortcut> commandShortcuts = [];
     private IReadOnlyCollection<Shortcut> processShortcuts = [];
+    private IReadOnlyCollection<Shortcut> readShortcuts = [];
+    private bool readCancelEnabled;
     private Shortcut dictation = Shortcut.DefaultDictation;
 
     /// <summary>Gets or sets the shortcut that starts dictation.</summary>
@@ -44,6 +47,20 @@ public sealed class ShortcutTracker
     {
         get { lock (gate) return commandShortcuts; }
         set { lock (gate) commandShortcuts = value; }
+    }
+
+    /// <summary>Gets or sets the shortcuts of the read-aloud profiles; each reads aloud instead of dictating.</summary>
+    public IReadOnlyCollection<Shortcut> ReadShortcuts
+    {
+        get { lock (gate) return readShortcuts; }
+        set { lock (gate) readShortcuts = value; }
+    }
+
+    /// <summary>Gets or sets whether the cancel shortcut is recognized because text is being read aloud.</summary>
+    public bool ReadCancelEnabled
+    {
+        get { lock (gate) return readCancelEnabled; }
+        set { lock (gate) readCancelEnabled = value; }
     }
 
     /// <summary>Gets or sets the shortcut that cancels dictation; it is only recognized while <see cref="CancelEnabled"/>.</summary>
@@ -71,6 +88,12 @@ public sealed class ShortcutTracker
             if (swallowed.Contains(key))
                 return new(ShortcutAction.None, true);
 
+            if (FindReadBinding(key, held) is { } read)
+            {
+                swallowed.Add(key);
+                return new(ShortcutAction.ReadPressed, true, read);
+            }
+
             if (FindBinding(key, held) is { } binding)
             {
                 swallowed.Add(key);
@@ -78,7 +101,7 @@ public sealed class ShortcutTracker
                 return new(ShortcutAction.DictationPressed, true, binding);
             }
 
-            if (cancelEnabled && key == cancel.Key && held == cancel.Modifiers)
+            if ((cancelEnabled || readCancelEnabled) && key == cancel.Key && held == cancel.Modifiers)
             {
                 swallowed.Add(key);
                 return new(ShortcutAction.CancelPressed, true);
@@ -133,6 +156,16 @@ public sealed class ShortcutTracker
             swallowed.Clear();
             heldBinding = null;
         }
+    }
+
+    // A shortcut never both dictates and reads; dictation wins should a file say otherwise.
+    private Shortcut? FindReadBinding(string key, ShortcutModifiers held)
+    {
+        if (key == dictation.Key && held == dictation.Modifiers)
+            return null;
+
+        return readShortcuts.FirstOrDefault(shortcut => key == shortcut.Key && held == shortcut.Modifiers
+            && !processShortcuts.Contains(shortcut) && !commandShortcuts.Contains(shortcut));
     }
 
     // Modifiers must match exactly, so at most one shortcut matches a press; when a process or a command set uses the

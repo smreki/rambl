@@ -4,7 +4,7 @@ using Rambl.Common.Audio;
 
 namespace Rambl.Features.History;
 
-/// <summary>A recording in progress: microphone audio goes in, and a 16 kHz mono WAV file comes out.</summary>
+/// <summary>A recording in progress: audio goes in, and a mono WAV file comes out, at 16 kHz for a dictation.</summary>
 /// <remarks>
 /// <see cref="Write"/> is safe to call from the capture thread: it only queues the audio, and a background task resamples
 /// and writes it. Call <see cref="Complete"/> to keep the recording or <see cref="Discard"/> to throw it away; either way
@@ -13,7 +13,7 @@ namespace Rambl.Features.History;
 /// </remarks>
 public sealed class RecordingSession : IDisposable
 {
-    /// <summary>The sample rate recordings are saved at: what speech models work with, so a stored recording transcribes as it did live.</summary>
+    /// <summary>The sample rate dictations are saved at: what speech models work with, so a stored recording transcribes as it did live.</summary>
     public const int SampleRate = 16000;
 
     /// <summary>The shortest recording that is kept.</summary>
@@ -24,13 +24,15 @@ public sealed class RecordingSession : IDisposable
     private readonly string partPath;
     private readonly string audioPath;
     private readonly Action onEnded;
+    private readonly int sampleRate;
 
-    internal RecordingSession(string id, DateTimeOffset createdAt, string partPath, string audioPath, Action onEnded)
+    internal RecordingSession(string id, DateTimeOffset createdAt, string partPath, string audioPath, int sampleRate, Action onEnded)
     {
         Id = id;
         CreatedAt = createdAt;
         this.partPath = partPath;
         this.audioPath = audioPath;
+        this.sampleRate = sampleRate;
         this.onEnded = onEnded;
         Outcome = Task.Run(RunAsync);
     }
@@ -47,7 +49,7 @@ public sealed class RecordingSession : IDisposable
     /// </summary>
     public Task<RecordingInfo?> Outcome { get; }
 
-    /// <summary>Queues a block of microphone audio. Blocks queued after <see cref="Complete"/> or <see cref="Discard"/> are ignored.</summary>
+    /// <summary>Queues a block of audio. Blocks queued after <see cref="Complete"/> or <see cref="Discard"/> are ignored.</summary>
     /// <param name="samples">Mono samples from -1 to 1; they are copied.</param>
     /// <param name="sampleRate">The sample rate of the block in hertz.</param>
     public void Write(ReadOnlySpan<float> samples, int sampleRate) => chunks.Writer.TryWrite(new(samples.ToArray(), sampleRate));
@@ -81,14 +83,14 @@ public sealed class RecordingSession : IDisposable
 
             await foreach (var chunk in chunks.Reader.ReadAllAsync(token).ConfigureAwait(false))
             {
-                writer ??= new WavWriter(partPath, SampleRate);
+                writer ??= new WavWriter(partPath, sampleRate);
                 if (chunk.SampleRate != currentRate)
                 {
                     if (resampler is not null)
                         WriteFlushed(writer, resampler, converted);
 
                     currentRate = chunk.SampleRate;
-                    resampler = currentRate == SampleRate ? null : new StreamingResampler(currentRate, SampleRate);
+                    resampler = currentRate == sampleRate ? null : new StreamingResampler(currentRate, sampleRate);
                 }
 
                 if (resampler is null)
@@ -107,7 +109,7 @@ public sealed class RecordingSession : IDisposable
             if (writer is not null && resampler is not null)
                 WriteFlushed(writer, resampler, converted);
 
-            if (writer is null || writer.SampleCount < MinimumDuration.TotalSeconds * SampleRate)
+            if (writer is null || writer.SampleCount < MinimumDuration.TotalSeconds * sampleRate)
             {
                 writer?.Dispose();
                 writer = null;
@@ -120,7 +122,7 @@ public sealed class RecordingSession : IDisposable
             writer.Dispose();
             writer = null;
             File.Move(partPath, audioPath, overwrite: true);
-            return new RecordingInfo(Id, CreatedAt, TimeSpan.FromSeconds((double)samples / SampleRate), null, null, audioPath);
+            return new RecordingInfo(Id, CreatedAt, TimeSpan.FromSeconds((double)samples / sampleRate), null, null, audioPath);
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
         {

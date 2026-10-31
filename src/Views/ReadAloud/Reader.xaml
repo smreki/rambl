@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.Reader"
+             BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- Play, stop, how far reading has got, Follow, speed and voice. -->
+        <Grid Padding="20,10" ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+            <Grid WidthRequest="32" HeightRequest="32" VerticalOptions="Center">
+                <Border x:Name="PlayCircle" StrokeThickness="0" StrokeShape="RoundRectangle 16"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SpeakingLight}, Dark={StaticResource SpeakingDark}}" />
+                <Label x:Name="PlayGlyph" Style="{StaticResource Icon}" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}" />
+                <Button x:Name="PlayButton" Style="{StaticResource GhostButton}" WidthRequest="32" HeightRequest="32"
+                        MinimumWidthRequest="32" MinimumHeightRequest="32" Padding="0" CornerRadius="16"
+                        Clicked="OnPlayClicked" />
+            </Grid>
+            <components:IconButton Grid.Column="1" Glyph="{x:Static components:Icons.Square}" GlyphSize="14" WidthRequest="32"
+                                   AccessibleName="Stop and go back to the start" VerticalOptions="Center" Clicked="OnStopClicked" />
+            <VerticalStackLayout Grid.Column="2" Spacing="6" Padding="8,0" VerticalOptions="Center">
+                <Label x:Name="PositionLabel" FontSize="12"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                <Grid x:Name="ProgressTrack" HeightRequest="3" SizeChanged="OnProgressTrackSizeChanged">
+                    <BoxView CornerRadius="2" Color="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}" />
+                    <BoxView x:Name="ProgressFill" CornerRadius="2" HorizontalOptions="Start" WidthRequest="0"
+                             Color="{AppThemeBinding Light={StaticResource SpeakingLight}, Dark={StaticResource SpeakingDark}}" />
+                </Grid>
+            </VerticalStackLayout>
+            <!-- On: the sentence being read stays in view. Scrolling away turns it off. -->
+            <Grid Grid.Column="3" VerticalOptions="Center">
+                <Border x:Name="FollowBox" HeightRequest="30" Padding="10,0" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Label x:Name="FollowGlyph" Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.LocateFixed}" />
+                        <Label x:Name="FollowLabel" Text="Follow" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+                <Button x:Name="FollowButton" Style="{StaticResource GhostButton}" HeightRequest="30" MinimumHeightRequest="30"
+                        Padding="0" CornerRadius="6" Clicked="OnFollowClicked" />
+            </Grid>
+            <components:SelectInput x:Name="SpeedSelect" Grid.Column="4" IsCompact="True" WidthRequest="96"
+                                    AccessibleName="Speed" VerticalOptions="Center"
+                                    SelectedIndexChanged="OnSpeedChanged" />
+            <components:SelectInput x:Name="ModelSelect" Grid.Column="5" IsCompact="True" WidthRequest="170"
+                                    Glyph="{x:Static components:Icons.AudioLines}" AccessibleName="Voice model" VerticalOptions="Center"
+                                    SelectedIndexChanged="OnModelChanged" />
+            <components:SelectInput x:Name="VoiceSelect" Grid.Column="6" IsCompact="True" WidthRequest="150"
+                                    AccessibleName="Voice" VerticalOptions="Center"
+                                    SelectedIndexChanged="OnVoiceChanged" />
+        </Grid>
+        <BoxView Grid.Row="1" Style="{StaticResource Divider}" HeightRequest="1" />
+
+        <ScrollView x:Name="Scroller" Grid.Row="2" Scrolled="OnScrolled">
+            <VerticalStackLayout Padding="56,28" Spacing="14" MaximumWidthRequest="860">
+                <Label x:Name="NoticeLabel" FontSize="13" LineBreakMode="WordWrap" IsVisible="False"
+                       TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                <Label x:Name="WaitingLabel" FontSize="14" IsVisible="False"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                <components:SpeechDocumentView x:Name="DocumentView" SentenceTapped="OnSentenceTapped" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

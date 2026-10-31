@@ -4,8 +4,8 @@ using System.Text.Json.Serialization.Metadata;
 namespace Rambl.Features.Models;
 
 /// <summary>
-/// The validated contents of one catalog file (<c>stt-models.json</c> or <c>language-models.json</c>) together with what
-/// the catalogs share (<c>models.json</c>).
+/// The validated contents of one catalog file (<c>stt-models.json</c>, <c>language-models.json</c> or
+/// <c>tts-models.json</c>) together with what the catalogs share (<c>models.json</c>).
 /// </summary>
 public sealed class ModelCatalog
 {
@@ -126,6 +126,16 @@ public sealed class ModelCatalog
             {
                 if (!taskIds.Contains(task))
                     throw new InvalidDataException($"Model {model.Id} has unknown task '{task}'.");
+            }
+
+            if (model.Voices is { } voices)
+            {
+                if (voices.Count == 0 || voices.Select(voice => voice.Id).Distinct(StringComparer.Ordinal).Count() != voices.Count)
+                    throw new InvalidDataException($"Model {model.Id} has no voices or lists a voice twice.");
+                if (voices.Any(voice => voice.Speaker < 0))
+                    throw new InvalidDataException($"Model {model.Id} has a voice with a negative speaker number.");
+                if (model.DefaultVoice is null || !voices.Any(voice => voice.Id == model.DefaultVoice))
+                    throw new InvalidDataException($"Model {model.Id} has no default voice among its voices.");
             }
 
             if (model.Artifacts.Count == 0)

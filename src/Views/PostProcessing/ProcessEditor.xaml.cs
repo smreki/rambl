@@ -25,6 +25,7 @@ public partial class ProcessEditor : ContentView
 
     private readonly PostProcessLibrary library;
     private readonly ProcessModels models;
+    private readonly Features.ReadAloud.ShortcutUsage shortcuts;
     private readonly IConfirmService confirmations;
     private readonly ILogger<ProcessEditor> logger;
     private PostProcess? original;
@@ -41,18 +42,22 @@ public partial class ProcessEditor : ContentView
     /// <summary>Creates the screen.</summary>
     /// <param name="library">Stores the processes.</param>
     /// <param name="models">Lists the language models a process can use.</param>
+    /// <param name="shortcuts">Keeps the read-aloud shortcuts out of the process's.</param>
     /// <param name="confirmations">Asks before a change is discarded or a process deleted.</param>
     /// <param name="logger">The logger for failures.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
     public ProcessEditor(
         PostProcessLibrary library,
         ProcessModels models,
+        Features.ReadAloud.ShortcutUsage shortcuts,
         IConfirmService confirmations,
         ILogger<ProcessEditor> logger
     )
     {
         ArgumentNullException.ThrowIfNull(library);
         ArgumentNullException.ThrowIfNull(models);
+        ArgumentNullException.ThrowIfNull(shortcuts);
+        this.shortcuts = shortcuts;
         ArgumentNullException.ThrowIfNull(confirmations);
         ArgumentNullException.ThrowIfNull(logger);
         this.library = library;
@@ -407,7 +412,7 @@ public partial class ProcessEditor : ContentView
         if (proposed is not null)
         {
             _ = await library.GetAllAsync();
-            if (PostProcessLibrary.FindConflict(proposed, CurrentApp.Settings) is { } conflict)
+            if ((PostProcessLibrary.FindConflict(proposed, CurrentApp.Settings) ?? await shortcuts.FindDictationConflictAsync(proposed)) is { } conflict)
             {
                 await ShowAlertAsync("Shortcut already in use", $"{proposed} {conflict}. Choose a different shortcut.");
                 return;

@@ -12,7 +12,7 @@
                     <Label Style="{StaticResource PageTitle}" Text="History"
                            SemanticProperties.HeadingLevel="Level1" />
                     <Label Style="{StaticResource PageSubtitle}"
-                           Text="Replay, copy or re-run your recent dictations. Audio stays on this device." />
+                           Text="Replay, copy or re-run your recent dictations, and replay the readings of profiles that save them. Audio stays on this device." />
                 </VerticalStackLayout>
                 <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Start">
                     <components:IconButton x:Name="DeleteAllButton" Glyph="{x:Static components:Icons.Trash2}"

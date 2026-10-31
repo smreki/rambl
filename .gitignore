@@ -290,3 +290,4 @@ __pycache__/
 
 # Native libraries fetched at build time (see UseParakeetCpp in src/Rambl.csproj)
 .native/
+.tmp/

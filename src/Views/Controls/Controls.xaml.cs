@@ -3,6 +3,7 @@ using Rambl.Common.Input;
 using Rambl.Components;
 using Rambl.Features.Models;
 using Rambl.Features.PostProcessing;
+using Rambl.Features.ReadAloud;
 using Rambl.Features.Settings;
 
 namespace Rambl.Views;
@@ -12,6 +13,7 @@ public partial class Controls : ContentView
 {
     private readonly PostProcessLibrary library;
     private readonly ModelLibrary models;
+    private readonly ShortcutUsage shortcuts;
     private readonly ILogger<Controls> logger;
     private bool syncing = true;
     private bool subscribed;
@@ -22,13 +24,15 @@ public partial class Controls : ContentView
     /// <param name="models">The speech models, for the active model and the choice of another.</param>
     /// <param name="logger">The logger for settings and alert failures.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
-    public Controls(PostProcessLibrary library, ModelLibrary models, ILogger<Controls> logger)
+    public Controls(PostProcessLibrary library, ModelLibrary models, ShortcutUsage shortcuts, ILogger<Controls> logger)
     {
         ArgumentNullException.ThrowIfNull(library);
         ArgumentNullException.ThrowIfNull(models);
+        ArgumentNullException.ThrowIfNull(shortcuts);
         ArgumentNullException.ThrowIfNull(logger);
         this.library = library;
         this.models = models;
+        this.shortcuts = shortcuts;
         this.logger = logger;
         InitializeComponent();
         Sync();
@@ -140,7 +144,7 @@ public partial class Controls : ContentView
 
     private async void OnDictationShortcutChanged(object? sender, Shortcut? shortcut)
     {
-        if (shortcut is null)
+        if (shortcut is null || await RejectReadAloudShortcutAsync(shortcut))
             return;
 
         var conflict = false;
@@ -159,7 +163,7 @@ public partial class Controls : ContentView
 
     private async void OnCancelShortcutChanged(object? sender, Shortcut? shortcut)
     {
-        if (shortcut is null)
+        if (shortcut is null || await RejectReadAloudShortcutAsync(shortcut))
             return;
 
         var conflict = false;
@@ -174,6 +178,17 @@ public partial class Controls : ContentView
                 "Shortcut already in use",
                 $"{shortcut} already starts dictation. Choose a different shortcut."
             );
+    }
+
+    // A read-aloud profile's shortcut never dictates.
+    private async Task<bool> RejectReadAloudShortcutAsync(Shortcut shortcut)
+    {
+        if (await shortcuts.FindDictationConflictAsync(shortcut) is not { } conflict)
+            return false;
+
+        Sync();
+        await ShowAlertAsync("Shortcut already in use", $"{shortcut} {conflict}. Choose a different shortcut.");
+        return true;
     }
 
     private async Task SaveAsync(Func<AppSettings, AppSettings> update)

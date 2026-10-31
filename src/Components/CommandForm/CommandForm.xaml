@@ -44,6 +44,38 @@
                 <FlexLayout x:Name="PressList" Wrap="Wrap" AlignItems="Center" />
             </VerticalStackLayout>
 
+            <!-- Optional: a phrase spoken after the keys are pressed, with its own voice settings, shown once there is a phrase. -->
+            <VerticalStackLayout Spacing="8">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="Say after" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center" />
+                    <Label Text="Optional · spoken after the keys are pressed" FontSize="12" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                </HorizontalStackLayout>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <components:TextInput x:Name="SayAfterInput" MaxLength="200" Placeholder="For example, Saved"
+                                          AccessibleName="Say after" AutomationId="CommandSayAfter"
+                                          PropertyChanged="OnSayAfterPropertyChanged" />
+                    <components:IconButton x:Name="PreviewButton" Grid.Column="1" HeightRequest="36" Glyph="{x:Static components:Icons.Play}"
+                                           GlyphSize="14" Text="Preview" IsOutlined="True" AccessibleName="Preview the phrase"
+                                           AutomationId="CommandSayAfterPreview" Clicked="OnPreviewClicked" />
+                </Grid>
+                <Grid x:Name="VoiceRow" ColumnDefinitions="*,*,Auto,Auto,Auto" ColumnSpacing="8" IsVisible="False">
+                    <components:SelectInput x:Name="ModelSelect" IsCompact="True"
+                                            Glyph="{x:Static components:Icons.AudioLines}" AccessibleName="Voice model for the phrase"
+                                            SelectedIndexChanged="OnModelChanged" />
+                    <components:SelectInput x:Name="VoiceSelect" Grid.Column="1" IsCompact="True"
+                                            Glyph="{x:Static components:Icons.Users}" AccessibleName="Voice for the phrase"
+                                            SelectedIndexChanged="OnVoiceChanged" />
+                    <components:SelectInput x:Name="LanguageSelect" Grid.Column="2" IsCompact="True" WidthRequest="150"
+                                            Glyph="{x:Static components:Icons.Languages}" AccessibleName="Language of the phrase"
+                                            IsVisible="False" />
+                    <components:SelectInput x:Name="SpeedSelect" Grid.Column="3" IsCompact="True" WidthRequest="112"
+                                            Glyph="{x:Static components:Icons.Gauge}" AccessibleName="Speed of the phrase" />
+                    <components:SelectInput x:Name="VolumeSelect" Grid.Column="4" IsCompact="True" WidthRequest="126"
+                                            Glyph="{x:Static components:Icons.Volume2}" AccessibleName="Volume of the phrase" />
+                </Grid>
+            </VerticalStackLayout>
+
             <HorizontalStackLayout x:Name="ValidationRow" Spacing="6" IsVisible="False">
                 <Label Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center" Text="{x:Static components:Icons.TriangleAlert}"
                        TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />

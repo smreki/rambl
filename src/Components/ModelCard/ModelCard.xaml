@@ -20,7 +20,7 @@
                                 <Label Style="{StaticResource Icon}" FontSize="12" VerticalOptions="Center"
                                        Text="{x:Static components:Icons.Check}"
                                        TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
-                                <Label Text="Active" FontFamily="InterMedium" FontSize="11" VerticalOptions="Center"
+                                <Label x:Name="ActiveBadgeLabel" Text="Active" FontFamily="InterMedium" FontSize="11" VerticalOptions="Center"
                                        TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
                             </HorizontalStackLayout>
                         </Border>
@@ -34,11 +34,11 @@
                                TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
                     </HorizontalStackLayout>
 
-                    <!-- The tags, in one row that wraps when the window is narrow: the model type (language models), languages
-                         or parameters, streaming or context length, CPU fit, size. -->
+                    <!-- The tags, in one row that wraps when the window is narrow: the model type (language models) or voice count
+                         (voice models), languages or parameters, streaming or context length, CPU fit, size, license. -->
                     <FlexLayout Wrap="Wrap" Direction="Row" AlignItems="Center">
                         <HorizontalStackLayout x:Name="TypeItem" Spacing="6" Margin="0,0,18,4" IsVisible="False">
-                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Shapes}" />
+                            <Label x:Name="TypeGlyphLabel" Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Shapes}" />
                             <Label x:Name="TypeLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
                         </HorizontalStackLayout>
                         <HorizontalStackLayout Spacing="6" Margin="0,0,18,4">
@@ -59,9 +59,13 @@
                                    Text="{x:Static components:Icons.Cpu}" />
                             <Label x:Name="CpuFitLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
                         </HorizontalStackLayout>
-                        <HorizontalStackLayout Spacing="6" Margin="0,0,0,4">
+                        <HorizontalStackLayout Spacing="6" Margin="0,0,18,4">
                             <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.HardDrive}" />
                             <Label x:Name="SizeLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout x:Name="LicenseItem" Spacing="6" Margin="0,0,0,4" IsVisible="False">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Scale}" />
+                            <Label x:Name="LicenseLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
                         </HorizontalStackLayout>
                     </FlexLayout>
                 </VerticalStackLayout>
@@ -86,10 +90,12 @@
                 </HorizontalStackLayout>
             </Grid>
 
-            <!-- Local only, and only for a model that takes a language. It has its own row because the actions have no room
-                 for a third control. The hint explains Auto-detect and goes away once a language is chosen. -->
+            <!-- Local only, and only for a model that takes a language (or, for a voice model, has more than one voice). It
+                 has its own row because the actions have no room for a third control. The language hint explains
+                 Auto-detect and goes away once a language is chosen; a voice hint stays. -->
             <HorizontalStackLayout x:Name="LanguageRow" Spacing="12" IsVisible="False">
-                <Label Style="{StaticResource SettingHelp}" FontFamily="InterMedium" Text="Language" VerticalOptions="Center" />
+                <Label x:Name="LanguageRowLabel" Style="{StaticResource SettingHelp}" FontFamily="InterMedium" Text="Language"
+                       VerticalOptions="Center" />
                 <components:SelectInput x:Name="LanguageSelect" WidthRequest="176"
                                         SelectedIndexChanged="OnLanguageSelectChanged" />
                 <Label x:Name="LanguageHintLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"

@@ -43,6 +43,12 @@
       "commercialUse": true
     },
     {
+      "id": "CC0-1.0",
+      "name": "Creative Commons Zero 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "commercialUse": true
+    },
+    {
       "id": "CC-BY-NC-4.0",
       "name": "Creative Commons Attribution-NonCommercial 4.0",
       "url": "https://creativecommons.org/licenses/by-nc/4.0/",
@@ -52,6 +58,12 @@
       "id": "NVIDIA-Open-Model-License",
       "name": "NVIDIA Open Model License Agreement",
       "url": "https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/",
+      "commercialUse": true
+    },
+    {
+      "id": "OpenRAIL-M",
+      "name": "Open RAIL-M License",
+      "url": "https://huggingface.co/Supertone/supertonic-3/blob/main/LICENSE",
       "commercialUse": true
     },
     {

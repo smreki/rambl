@@ -46,11 +46,13 @@ public sealed class RecordingStore
 
     /// <summary>Starts a recording.</summary>
     /// <param name="startedAt">When it starts, which names its files and month folder.</param>
+    /// <param name="sampleRate">The sample rate the audio is saved at.</param>
     /// <returns>The session that receives the audio.</returns>
     /// <exception cref="IOException">The folder cannot be created.</exception>
     /// <exception cref="UnauthorizedAccessException">Access to the folder is denied.</exception>
-    public RecordingSession Begin(DateTimeOffset startedAt)
+    public RecordingSession Begin(DateTimeOffset startedAt, int sampleRate = RecordingSession.SampleRate)
     {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(sampleRate);
         var local = startedAt.ToLocalTime();
         var id = $"{local.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}-{Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(3))}";
         var folder = Path.Combine(Root, local.ToString("yyyy-MM", CultureInfo.InvariantCulture));
@@ -61,7 +63,7 @@ public sealed class RecordingStore
         lock (activeGate)
             _ = activeParts.Add(partPath);
 
-        return new(id, startedAt, partPath, audioPath, () =>
+        return new(id, startedAt, partPath, audioPath, sampleRate, () =>
         {
             lock (activeGate)
                 _ = activeParts.Remove(partPath);
@@ -210,7 +212,8 @@ public sealed class RecordingStore
             metadata.Result,
             metadata.Action,
             metadata.Processes,
-            metadata.ProcessingError
+            metadata.ProcessingError,
+            metadata.Reading
         );
     }
 
@@ -249,7 +252,8 @@ public sealed class RecordingStore
             recording.Result,
             recording.Action,
             recording.ProcessIds is { Count: > 0 } ids ? [.. ids] : null,
-            recording.ProcessingError
+            recording.ProcessingError,
+            recording.Reading
         );
         var temporary = $"{recording.MetadataPath}.{Guid.NewGuid():N}.tmp";
         try

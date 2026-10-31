@@ -32,6 +32,11 @@ public sealed class NullAudioService : IAudioService
         throw new AudioUnavailableException("Audio output is not supported on this platform yet.");
 
     /// <inheritdoc/>
+    /// <exception cref="AudioUnavailableException">Always, because this platform cannot play audio.</exception>
+    public IAudioStream OpenStream(int sampleRate, string? outputDeviceId) =>
+        throw new AudioUnavailableException("Audio output is not supported on this platform yet.");
+
+    /// <inheritdoc/>
     /// <exception cref="AudioUnavailableException">Always, because this platform cannot capture input.</exception>
     public IDisposable StartCapture(string? inputDeviceId, int? channel, AudioBlockHandler onBlock) =>
         throw new AudioUnavailableException("Audio input is not supported on this platform yet.");
