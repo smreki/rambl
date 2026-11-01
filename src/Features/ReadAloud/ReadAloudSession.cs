@@ -30,6 +30,8 @@ public sealed class ReadAloudSession : IDisposable
     private const int MaximumAhead = 2;
     private const int PollMilliseconds = 40;
     private const double BlockPauseSeconds = 0.25;
+    private const int OpeningTransmissionIndex = -1;
+    private const int ClosingTransmissionIndex = -2;
 
     private readonly IReadOnlyList<ReadAloudProfile> profiles;
     private readonly string original;
@@ -51,6 +53,7 @@ public sealed class ReadAloudSession : IDisposable
     private int jumpTo = -1;
     private bool replay;
     private bool disposed;
+    private bool transmissionStarted;
 
     /// <summary>Creates a session; <see cref="RunAsync"/> starts it.</summary>
     /// <param name="profiles">The profiles on the shortcut that are on, in order; at least one.</param>
@@ -321,6 +324,7 @@ public sealed class ReadAloudSession : IDisposable
     // Reads a profile's text, keeping what is spoken when the profile saves to the History; it is saved however reading ends.
     private async Task ReadAndKeepAsync(int index, Prepared current)
     {
+        transmissionStarted = false;
         var keep = profiles[index].SaveToHistory && !kept[index];
         spoken = keep ? new SpokenAudio() : null;
         var startedAt = DateTimeOffset.Now;
@@ -380,6 +384,10 @@ public sealed class ReadAloudSession : IDisposable
     private async Task ProduceAsync(SpeechDocument document, int from, CancellationToken token)
     {
         var previousBlock = -1;
+        VoiceEffectProcessor? effect = null;
+        var radioSettings = Profile.Radio;
+        var robotSettings = Profile.Robot;
+        var spacesuitSettings = Profile.Spacesuit;
         for (var index = from; index < document.Sentences.Count; index++)
         {
             while (Ahead() >= MaximumAhead)
@@ -391,10 +399,22 @@ public sealed class ReadAloudSession : IDisposable
                 throw new TtsException($"{Profile.Name} has no voice. Choose one in Read Aloud.");
 
             var audio = await tts.SynthesizeAsync(voice.ModelId, voice.VoiceId, sentence.Text, voice.Language, (float)Speed, token);
+            if (radioSettings is { Enabled: true } || robotSettings is { Enabled: true } || spacesuitSettings is { Enabled: true })
+            {
+                if (effect?.SampleRate != audio.SampleRate)
+                    effect = new VoiceEffectProcessor(radioSettings, robotSettings, audio.SampleRate, spacesuitSettings);
+                audio = await Task.Run(() => effect.Process(audio, token), token);
+            }
             token.ThrowIfCancellationRequested();
             Record(sentence.Index, audio);
 
             var output = EnsureStream(audio.SampleRate, voice.Volume);
+            if (!transmissionStarted)
+            {
+                transmissionStarted = true;
+                if (effect is not null)
+                    WriteTransmission(effect.Transmission(opening: true), output, OpeningTransmissionIndex);
+            }
             var samples = Convert(audio, output.SampleRate);
             if (previousBlock >= 0 && sentence.BlockIndex != previousBlock)
                 output.Write(new float[(int)(output.SampleRate * BlockPauseSeconds)]);
@@ -407,6 +427,19 @@ public sealed class ReadAloudSession : IDisposable
 
             previousBlock = sentence.BlockIndex;
         }
+
+        token.ThrowIfCancellationRequested();
+        if (effect is not null && stream is { } outputStream)
+            WriteTransmission(effect.Transmission(opening: false), outputStream, ClosingTransmissionIndex);
+    }
+
+    private void WriteTransmission(TtsAudio burst, IAudioStream output, int recordingIndex)
+    {
+        if (burst.Samples.Length == 0)
+            return;
+
+        Record(recordingIndex, burst);
+        output.Write(Convert(burst, output.SampleRate));
     }
 
     private void Record(int sentence, TtsAudio audio)
@@ -445,7 +478,12 @@ public sealed class ReadAloudSession : IDisposable
                     if (recorded.Read(sentence.Index) is not { } audio)
                         continue;
 
-                    recording ??= history.BeginReading(startedAt, audio.SampleRate);
+                    if (recording is null)
+                    {
+                        recording = history.BeginReading(startedAt, audio.SampleRate);
+                        if (recording is not null && recorded.Read(OpeningTransmissionIndex) is { } opening)
+                            recording.Write(opening.Samples, opening.SampleRate);
+                    }
                     if (recording is null)
                         return;
 
@@ -459,6 +497,8 @@ public sealed class ReadAloudSession : IDisposable
                 if (recording is null)
                     return;
 
+                if (recorded.Read(ClosingTransmissionIndex) is { } closing)
+                    recording.Write(closing.Samples, closing.SampleRate);
                 recording.Complete();
                 if (await recording.Outcome is { } saved)
                 {
@@ -505,10 +545,12 @@ public sealed class ReadAloudSession : IDisposable
 
             Segment? current;
             long played;
+            long written;
             int count;
             lock (gate)
             {
                 played = stream?.Played ?? 0;
+                written = stream?.Written ?? 0;
                 current = segments.LastOrDefault(segment => segment.Start <= played);
                 count = segments.Count;
             }
@@ -533,7 +575,7 @@ public sealed class ReadAloudSession : IDisposable
             }
 
             var last = current.Sentence == document.Sentences.Count - 1;
-            if (producer.IsCompleted && last && played >= current.Start + current.Length && count > 0)
+            if (producer.IsCompleted && last && played >= written && count > 0)
             {
                 Progress = 1;
                 return true;

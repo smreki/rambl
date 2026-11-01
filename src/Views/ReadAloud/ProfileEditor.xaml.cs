@@ -39,12 +39,15 @@ public partial class ProfileEditor : ContentView
     private bool copyResult;
     private bool saveToHistory;
     private TtsVoiceSettings voice = TtsVoiceSettings.None;
+    private RadioVoiceSettings radio = new();
+    private RobotVoiceSettings robot = new();
+    private SpacesuitVoiceSettings spacesuit = new();
     private IReadOnlyList<VoiceChoice> voices = [];
     private IReadOnlyList<string> languages = [];
     private IReadOnlyList<ProcessModelChoice> choices = [];
     private StepState? menuStep;
     private string baseline = string.Empty;
-    private bool syncing;
+    private bool syncing = true;
     private bool subscribed;
 
     /// <summary>Creates the screen.</summary>
@@ -103,6 +106,16 @@ public partial class ProfileEditor : ContentView
         copyResult = profile?.CopyResult ?? false;
         saveToHistory = profile?.SaveToHistory ?? false;
         voice = profile?.Voice ?? TtsVoiceSettings.None;
+        radio = (profile?.Radio ?? new RadioVoiceSettings()).Clamped();
+        robot = (profile?.Robot ?? new RobotVoiceSettings()).Clamped();
+        spacesuit = (profile?.Spacesuit ?? new SpacesuitVoiceSettings()).Clamped();
+        if (spacesuit.Enabled)
+        {
+            radio = radio with { Enabled = false };
+            robot = robot with { Enabled = false };
+        }
+        else if (robot.Enabled)
+            radio = radio with { Enabled = false };
         steps.Clear();
         steps.AddRange((profile?.Steps ?? []).Select(step => new StepState(step.ModelId, step.Instruction, step.TimeoutSeconds)));
 
@@ -122,6 +135,7 @@ public partial class ProfileEditor : ContentView
         }
 
         preview.Stop();
+        ShowEffects();
         HideMenu();
         RebuildSteps();
         baseline = original is null ? string.Empty : Capture();
@@ -499,10 +513,26 @@ public partial class ProfileEditor : ContentView
         var playing = preview.Current is not null;
         PreviewButton.Text = playing ? "Stop" : "Preview voice";
         PreviewButton.Glyph = playing ? Icons.Square : Icons.Play;
+        PreviewButton.AccessibleName = playing ? "Stop voice preview" : "Preview voice";
         var usable = voice.ModelId is not null && voices.Any(choice => choice.ModelId == voice.ModelId);
         PreviewButton.IsEnabled = playing || usable;
+        RadioPreviewButton.Text = playing ? "Stop" : "Preview radio voice";
+        RadioPreviewButton.Glyph = playing ? Icons.Square : Icons.Play;
+        RadioPreviewButton.AccessibleName = playing ? "Stop voice preview" : "Preview radio voice";
+        RadioPreviewButton.IsEnabled = playing || usable;
+        RobotPreviewButton.Text = playing ? "Stop" : "Preview robot voice";
+        RobotPreviewButton.Glyph = playing ? Icons.Square : Icons.Play;
+        RobotPreviewButton.AccessibleName = playing ? "Stop voice preview" : "Preview robot voice";
+        RobotPreviewButton.IsEnabled = playing || usable;
+        SpacesuitPreviewButton.Text = playing ? "Stop" : "Preview headset voice";
+        SpacesuitPreviewButton.Glyph = playing ? Icons.Square : Icons.Play;
+        SpacesuitPreviewButton.AccessibleName = playing ? "Stop voice preview" : "Preview headset voice";
+        SpacesuitPreviewButton.IsEnabled = playing || usable;
         var language = voice.Language ?? (voice.ModelId is null ? null : tts.LanguageOf(voice.ModelId, voice.VoiceId));
         PreviewHint.Text = usable && language is not null ? $"Reads a sample sentence in {LanguageNames.Of(language)}." : string.Empty;
+        RadioPreviewHint.Text = PreviewHint.Text;
+        RobotPreviewHint.Text = PreviewHint.Text;
+        SpacesuitPreviewHint.Text = PreviewHint.Text;
     }
 
     private async void OnPreviewClicked(object? sender, EventArgs e)
@@ -518,13 +548,171 @@ public partial class ProfileEditor : ContentView
 
         try
         {
-            await preview.PlayAsync(modelId, voiceId, voice.Language, voice.Speed);
+            await preview.PlayAsync(modelId, voiceId, voice.Language, voice.Speed,
+                radio: ReferenceEquals(sender, RadioPreviewButton) ? radio : null, volume: voice.Volume,
+                robot: ReferenceEquals(sender, RobotPreviewButton) ? robot : null,
+                spacesuit: ReferenceEquals(sender, SpacesuitPreviewButton) ? spacesuit : null);
         }
         catch (Exception ex) when (ex is TtsException or AudioUnavailableException or IOException)
         {
             logger.LogError(ex, "Unable to preview the profile's voice");
             await ShowAlertAsync("The voice could not be played", ex.Message);
         }
+    }
+
+    // ---- voice effects
+
+    private void ShowEffects()
+    {
+        syncing = true;
+        try
+        {
+            EffectSelect.SetItems(["None", "Robot", "Spacesuit / Mission Control", "Walkie-talkie"], spacesuit.Enabled ? 2 : robot.Enabled ? 1 : radio.Enabled ? 3 : 0);
+            RobotControls.IsVisible = robot.Enabled;
+            RadioControls.IsVisible = radio.Enabled;
+            SpacesuitControls.IsVisible = spacesuit.Enabled;
+            SpacesuitToneSlider.Value = spacesuit.Tone;
+            SpacesuitStaticSlider.Value = spacesuit.Static;
+            SpacesuitBeepToggle.IsToggled = spacesuit.TransmissionBeep;
+            ShowSpacesuitValues();
+            RobotModulationSlider.Value = robot.Modulation;
+            RobotPitchSlider.Value = robot.Pitch;
+            RobotIntensitySlider.Value = robot.Intensity;
+            ShowRobotValues();
+            RadioToneSlider.Value = radio.Tone;
+            RadioCompressionSlider.Value = radio.Compression;
+            RadioDistortionSlider.Value = radio.Distortion;
+            RadioStaticSlider.Value = radio.Static;
+            RadioClickToggle.IsToggled = radio.TransmissionClick;
+            ShowRadioValues();
+        }
+        finally
+        {
+            syncing = false;
+        }
+    }
+
+    private void ShowRadioValues()
+    {
+        RadioToneValue.Text = $"{radio.Tone} %";
+        RadioCompressionValue.Text = $"{radio.Compression} %";
+        RadioDistortionValue.Text = $"{radio.Distortion} %";
+        RadioStaticValue.Text = $"{radio.Static} %";
+    }
+
+    private void OnEffectChanged(object? sender, EventArgs e)
+    {
+        if (syncing || EffectSelect.SelectedIndex < 0)
+            return;
+
+        radio = radio with { Enabled = EffectSelect.SelectedIndex == 3 };
+        robot = robot with { Enabled = EffectSelect.SelectedIndex == 1 };
+        spacesuit = spacesuit with { Enabled = EffectSelect.SelectedIndex == 2 };
+        RadioControls.IsVisible = radio.Enabled;
+        RobotControls.IsVisible = robot.Enabled;
+        SpacesuitControls.IsVisible = spacesuit.Enabled;
+        preview.Stop();
+        UpdateState();
+    }
+
+    private void OnRadioValueChanged(object? sender, ValueChangedEventArgs e)
+    {
+        if (syncing)
+            return;
+
+        radio = radio with
+        {
+            Tone = (int)Math.Round(RadioToneSlider.Value),
+            Compression = (int)Math.Round(RadioCompressionSlider.Value),
+            Distortion = (int)Math.Round(RadioDistortionSlider.Value),
+            Static = (int)Math.Round(RadioStaticSlider.Value),
+        };
+        ShowRadioValues();
+        UpdateState();
+    }
+
+    private void OnRadioClickToggled(object? sender, ToggledEventArgs e)
+    {
+        if (syncing)
+            return;
+
+        radio = radio with { TransmissionClick = e.Value };
+        UpdateState();
+    }
+
+    private void OnResetRadioClicked(object? sender, EventArgs e)
+    {
+        radio = new RadioVoiceSettings(Enabled: radio.Enabled);
+        preview.Stop();
+        ShowEffects();
+        UpdateState();
+    }
+
+    private void ShowRobotValues()
+    {
+        RobotModulationValue.Text = $"{robot.Modulation} %";
+        RobotPitchValue.Text = $"{robot.Pitch} Hz";
+        RobotIntensityValue.Text = $"{robot.Intensity} %";
+    }
+
+    private void OnRobotValueChanged(object? sender, ValueChangedEventArgs e)
+    {
+        if (syncing)
+            return;
+
+        robot = robot with
+        {
+            Modulation = (int)Math.Round(RobotModulationSlider.Value),
+            Pitch = (int)Math.Round(RobotPitchSlider.Value),
+            Intensity = (int)Math.Round(RobotIntensitySlider.Value),
+        };
+        ShowRobotValues();
+        UpdateState();
+    }
+
+    private void OnResetRobotClicked(object? sender, EventArgs e)
+    {
+        robot = new RobotVoiceSettings(Enabled: robot.Enabled);
+        preview.Stop();
+        ShowEffects();
+        UpdateState();
+    }
+
+    private void ShowSpacesuitValues()
+    {
+        SpacesuitToneValue.Text = $"{spacesuit.Tone} %";
+        SpacesuitStaticValue.Text = $"{spacesuit.Static} %";
+    }
+
+    private void OnSpacesuitValueChanged(object? sender, ValueChangedEventArgs e)
+    {
+        if (syncing)
+            return;
+
+        spacesuit = spacesuit with
+        {
+            Tone = (int)Math.Round(SpacesuitToneSlider.Value),
+            Static = (int)Math.Round(SpacesuitStaticSlider.Value),
+        };
+        ShowSpacesuitValues();
+        UpdateState();
+    }
+
+    private void OnSpacesuitBeepToggled(object? sender, ToggledEventArgs e)
+    {
+        if (syncing)
+            return;
+
+        spacesuit = spacesuit with { TransmissionBeep = e.Value };
+        UpdateState();
+    }
+
+    private void OnResetSpacesuitClicked(object? sender, EventArgs e)
+    {
+        spacesuit = new SpacesuitVoiceSettings(Enabled: spacesuit.Enabled);
+        preview.Stop();
+        ShowEffects();
+        UpdateState();
     }
 
     // ---- the shortcut
@@ -642,6 +830,9 @@ public partial class ProfileEditor : ContentView
             copyResult,
             saveToHistory,
             voice,
+            radio,
+            robot,
+            spacesuit,
             string.Join("\u001e", steps.Select(step => $"{step.ModelId}\u001d{step.Instruction}\u001d{step.TimeoutSeconds}"))
         );
 
@@ -730,7 +921,10 @@ public partial class ProfileEditor : ContentView
             copyResult,
             original?.Order ?? int.MaxValue,
             enabled,
-            saveToHistory
+            saveToHistory,
+            radio == new RadioVoiceSettings() ? null : radio,
+            robot == new RobotVoiceSettings() ? null : robot,
+            spacesuit == new SpacesuitVoiceSettings() ? null : spacesuit
         );
 
         try

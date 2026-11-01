@@ -20,6 +20,9 @@ namespace Rambl.Features.ReadAloud;
 /// <param name="Order">Its position among the profiles that share its shortcut, lowest first.</param>
 /// <param name="Enabled">Whether the profile is on; one that is off is kept and listed, and its shortcut does nothing.</param>
 /// <param name="SaveToHistory">Whether each reading is kept in the History: the spoken audio, the selected text and the result of the steps.</param>
+/// <param name="Radio">The optional radio voice effect and remembered controls.</param>
+/// <param name="Robot">The optional robot voice effect and remembered controls.</param>
+/// <param name="Spacesuit">The optional communications headset effect and remembered controls.</param>
 public sealed record ReadAloudProfile(
     string Id,
     string Name,
@@ -30,5 +33,8 @@ public sealed record ReadAloudProfile(
     bool CopyResult = false,
     int Order = int.MaxValue,
     bool Enabled = true,
-    bool SaveToHistory = false
+    bool SaveToHistory = false,
+    RadioVoiceSettings? Radio = null,
+    RobotVoiceSettings? Robot = null,
+    SpacesuitVoiceSettings? Spacesuit = null
 );

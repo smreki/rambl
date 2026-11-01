@@ -14,6 +14,9 @@ namespace Rambl.Features.ReadAloud;
 /// <param name="Order">The position among the profiles that share the shortcut, or null.</param>
 /// <param name="Enabled">False for a profile that is off; null (not written) for one that is on.</param>
 /// <param name="SaveToHistory">True when readings are kept in the History; null (not written) when they are not.</param>
+/// <param name="Radio">The radio effect and its remembered controls, or null for the original audio.</param>
+/// <param name="Robot">The robot effect and its remembered controls, or null.</param>
+/// <param name="Spacesuit">The headset effect and its remembered controls, or null.</param>
 internal sealed record ReadAloudProfileFile(
     int SchemaVersion,
     string Id,
@@ -25,7 +28,10 @@ internal sealed record ReadAloudProfileFile(
     bool? CopyResult = null,
     int? Order = null,
     bool? Enabled = null,
-    bool? SaveToHistory = null
+    bool? SaveToHistory = null,
+    RadioVoiceSettings? Radio = null,
+    RobotVoiceSettings? Robot = null,
+    SpacesuitVoiceSettings? Spacesuit = null
 )
 {
     /// <summary>The layout this version of Rambl writes.</summary>

@@ -2,6 +2,16 @@
 
 All notable changes to Rambl are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - Unreleased
+
+Adjustable local voice effects for read-aloud profiles.
+
+### Added
+
+- Read-aloud voice effects that work with every supported TTS model: Walkie-talkie (radio tone, compression, distortion, static and optional transmission squelches), Robot (metallic modulation, carrier pitch and intensity), and Spacesuit / Mission Control (headset tone, static and optional transmission beeps).
+- Each profile remembers its effect controls when switching effects or selecting None, with preview and reset controls. Effects are applied locally before playback and History saving; transmission sounds play once at the start and end of a reading.
+- Voice effect designs in light and dark themes, and an effects checklist with Copilot and Pilot & ATC radio settings in `docs/tts-effects.md`.
+
 ## [0.2.0] - Unreleased
 
 Rambl speaks: local text-to-speech voices, read-aloud profiles and spoken replies to voice commands.

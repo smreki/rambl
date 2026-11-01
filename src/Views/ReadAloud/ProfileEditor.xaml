@@ -4,6 +4,12 @@
              xmlns:components="clr-namespace:Rambl.Components"
              x:Class="Rambl.Views.ProfileEditor"
              SizeChanged="OnSizeChanged">
+    <ContentView.Resources>
+        <Style x:Key="RadioSlider" TargetType="Slider" BasedOn="{StaticResource SettingSlider}">
+            <Setter Property="MinimumTrackColor" Value="{AppThemeBinding Light={StaticResource SpeakingLight}, Dark={StaticResource SpeakingDark}}" />
+            <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource SpeakingLight}, Dark={StaticResource SpeakingDark}}" />
+        </Style>
+    </ContentView.Resources>
     <Grid x:Name="Root">
         <ScrollView x:Name="Scroll" Padding="0,0,16,0">
             <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
@@ -179,6 +185,188 @@
                                                AutomationId="ProfilePreview" Clicked="OnPreviewClicked" />
                         <Label x:Name="PreviewHint" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
                     </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Voice effect" FontFamily="InterSemiBold" FontSize="15" SemanticProperties.HeadingLevel="Level2" />
+                    <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Effect" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}" Text="Change how the voice sounds. Works with any model." />
+                        </VerticalStackLayout>
+                        <components:SelectInput x:Name="EffectSelect" Grid.Column="1" WidthRequest="360"
+                                                AccessibleName="Voice effect" AutomationId="ProfileVoiceEffect"
+                                                SelectedIndexChanged="OnEffectChanged" />
+                    </Grid>
+                    <VerticalStackLayout x:Name="RobotControls" Spacing="16" IsVisible="False">
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Modulation" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Smooth metallic tone to a harsher robotic buzz." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="RobotModulationSlider" Style="{StaticResource RadioSlider}" Minimum="0" Maximum="100"
+                                        SemanticProperties.Description="Modulation percentage" AutomationId="ProfileRobotModulation"
+                                        ValueChanged="OnRobotValueChanged" />
+                                <Label x:Name="RobotModulationValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Robot pitch" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Frequency of the metallic tone, in Hz." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="RobotPitchSlider" Style="{StaticResource RadioSlider}" Minimum="30" Maximum="180"
+                                        SemanticProperties.Description="Robot pitch in Hertz" AutomationId="ProfileRobotPitch"
+                                        ValueChanged="OnRobotValueChanged" />
+                                <Label x:Name="RobotPitchValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Intensity" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Blend the robot effect with the original voice." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="RobotIntensitySlider" Style="{StaticResource RadioSlider}" Minimum="0" Maximum="100"
+                                        SemanticProperties.Description="Intensity percentage" AutomationId="ProfileRobotIntensity"
+                                        ValueChanged="OnRobotValueChanged" />
+                                <Label x:Name="RobotIntensityValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+                        <HorizontalStackLayout Spacing="12">
+                            <components:IconButton x:Name="RobotPreviewButton" HeightRequest="36" Glyph="{x:Static components:Icons.Play}"
+                                                   GlyphSize="14" Text="Preview robot voice" IsOutlined="True"
+                                                   AccessibleName="Preview robot voice" AutomationId="ProfileRobotPreview" Clicked="OnPreviewClicked" />
+                            <components:IconButton HeightRequest="36" Text="Reset effect" IsOutlined="True"
+                                                   AccessibleName="Reset robot effect" AutomationId="ProfileRobotReset" Clicked="OnResetRobotClicked" />
+                            <Label x:Name="RobotPreviewHint" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="SpacesuitControls" Spacing="16" IsVisible="False">
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Headset tone" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Higher values make the headset sound narrower and more muffled." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="SpacesuitToneSlider" Style="{StaticResource RadioSlider}" Minimum="0" Maximum="100"
+                                        SemanticProperties.Description="Headset tone percentage" AutomationId="ProfileSpacesuitTone"
+                                        ValueChanged="OnSpacesuitValueChanged" />
+                                <Label x:Name="SpacesuitToneValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Static" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Add a little radio hiss while the voice speaks." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="SpacesuitStaticSlider" Style="{StaticResource RadioSlider}" Minimum="0" Maximum="100"
+                                        SemanticProperties.Description="Static percentage" AutomationId="ProfileSpacesuitStatic"
+                                        ValueChanged="OnSpacesuitValueChanged" />
+                                <Label x:Name="SpacesuitStaticValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Transmission beep" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Play a brief beep at the start and end of each reading." />
+                            </VerticalStackLayout>
+                            <Switch x:Name="SpacesuitBeepToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                    OnColor="{AppThemeBinding Light={StaticResource SpeakingLight}, Dark={StaticResource SpeakingDark}}"
+                                    HorizontalOptions="End" SemanticProperties.Description="Transmission beep"
+                                    AutomationId="ProfileSpacesuitBeep" Toggled="OnSpacesuitBeepToggled" />
+                        </Grid>
+                        <HorizontalStackLayout Spacing="12">
+                            <components:IconButton x:Name="SpacesuitPreviewButton" HeightRequest="36" Glyph="{x:Static components:Icons.Play}"
+                                                   GlyphSize="14" Text="Preview headset voice" IsOutlined="True"
+                                                   AccessibleName="Preview headset voice" AutomationId="ProfileSpacesuitPreview" Clicked="OnPreviewClicked" />
+                            <components:IconButton HeightRequest="36" Text="Reset effect" IsOutlined="True"
+                                                   AccessibleName="Reset headset effect" AutomationId="ProfileSpacesuitReset" Clicked="OnResetSpacesuitClicked" />
+                            <Label x:Name="SpacesuitPreviewHint" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="RadioControls" Spacing="16" IsVisible="False">
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Radio tone" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Higher values make the voice thinner and more muffled." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="RadioToneSlider" Style="{StaticResource RadioSlider}" Minimum="0" Maximum="100"
+                                        SemanticProperties.Description="Radio tone percentage" AutomationId="ProfileRadioTone"
+                                        ValueChanged="OnRadioValueChanged" />
+                                <Label x:Name="RadioToneValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Compression" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Even out quiet and loud speech for a steady radio sound." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="RadioCompressionSlider" Style="{StaticResource RadioSlider}" Minimum="0" Maximum="100"
+                                        SemanticProperties.Description="Compression percentage" AutomationId="ProfileRadioCompression"
+                                        ValueChanged="OnRadioValueChanged" />
+                                <Label x:Name="RadioCompressionValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Distortion" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Add a rough edge to the voice." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="RadioDistortionSlider" Style="{StaticResource RadioSlider}" Minimum="0" Maximum="100"
+                                        SemanticProperties.Description="Distortion percentage" AutomationId="ProfileRadioDistortion"
+                                        ValueChanged="OnRadioValueChanged" />
+                                <Label x:Name="RadioDistortionValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Static" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Mix a little radio hiss into the speech." />
+                            </VerticalStackLayout>
+                            <Grid Grid.Column="1" ColumnDefinitions="*,50" ColumnSpacing="12">
+                                <Slider x:Name="RadioStaticSlider" Style="{StaticResource RadioSlider}" Minimum="0" Maximum="100"
+                                        SemanticProperties.Description="Static percentage" AutomationId="ProfileRadioStatic"
+                                        ValueChanged="OnRadioValueChanged" />
+                                <Label x:Name="RadioStaticValue" Grid.Column="1" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                            </Grid>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                            <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Label Text="Transmission click" FontFamily="InterMedium" FontSize="13" />
+                                <Label Style="{StaticResource SettingHelp}" Text="Play a short squelch at the start and end of each reading." />
+                            </VerticalStackLayout>
+                            <Switch x:Name="RadioClickToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                    OnColor="{AppThemeBinding Light={StaticResource SpeakingLight}, Dark={StaticResource SpeakingDark}}"
+                                    HorizontalOptions="End" SemanticProperties.Description="Transmission click"
+                                    AutomationId="ProfileRadioClick" Toggled="OnRadioClickToggled" />
+                        </Grid>
+                        <HorizontalStackLayout Spacing="12">
+                            <components:IconButton x:Name="RadioPreviewButton" HeightRequest="36" Glyph="{x:Static components:Icons.Play}"
+                                                   GlyphSize="14" Text="Preview radio voice" IsOutlined="True"
+                                                   AccessibleName="Preview radio voice" AutomationId="ProfileRadioPreview" Clicked="OnPreviewClicked" />
+                            <components:IconButton HeightRequest="36" Text="Reset effect" IsOutlined="True"
+                                                   AccessibleName="Reset radio effect" AutomationId="ProfileRadioReset" Clicked="OnResetRadioClicked" />
+                            <Label x:Name="RadioPreviewHint" Style="{StaticResource SettingHelp}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
                 </VerticalStackLayout>
 
                 <BoxView Style="{StaticResource Divider}" HeightRequest="1" />

@@ -2,7 +2,7 @@
 
 Local-first push-to-talk dictation for the desktop. Hold a shortcut, speak, let go, and the text is pasted into the app you are working in. Speech recognition and text rewriting run on your computer, so nothing you say leaves it.
 
-Built with C# and .NET 10 MAUI. Version 0.2.0, in development.
+Built with C# and .NET 10 MAUI. Version 0.3.0, in development.
 
 > **Note:** Rambl is an educational project, built to learn and experiment. If you are looking for a mature, feature-rich tool, try one of these open source projects instead:
 >

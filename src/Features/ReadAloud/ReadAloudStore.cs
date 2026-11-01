@@ -74,7 +74,10 @@ public sealed class ReadAloudStore(string directory, ILogger<ReadAloudStore> log
             profile.CopyResult ? true : null,
             profile.Order == int.MaxValue ? null : profile.Order,
             profile.Enabled ? null : false,
-            profile.SaveToHistory ? true : null
+            profile.SaveToHistory ? true : null,
+            profile.Radio?.Clamped(),
+            profile.Robot?.Clamped(),
+            profile.Spacesuit?.Clamped()
         );
 
         var path = PathOf(profile.Id);
@@ -126,6 +129,9 @@ public sealed class ReadAloudStore(string directory, ILogger<ReadAloudStore> log
             file.CopyResult ?? false,
             file.Order is >= 0 ? file.Order.Value : int.MaxValue,
             file.Enabled ?? true,
-            file.SaveToHistory ?? false
+            file.SaveToHistory ?? false,
+            file.Radio?.Clamped(),
+            file.Robot?.Clamped(),
+            file.Spacesuit?.Clamped()
         );
 }

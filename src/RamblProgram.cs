@@ -60,6 +60,10 @@ public static class RamblProgram
             "HandCursor",
             static (handler, _) => Platforms.Windows.Handlers.HandCursor.Apply(handler.PlatformView)
         );
+        Microsoft.Maui.Handlers.SliderHandler.Mapper.AppendToMapping(
+            "HandCursor",
+            static (handler, _) => Platforms.Windows.Handlers.HandCursor.Apply(handler.PlatformView)
+        );
 #endif
 
         builder.Services.AddSingleton(static services =>

@@ -22105,8 +22105,8 @@
       "x": 0,
       "y": 14423,
       "name": "05 Read Aloud",
-      "width": 2920,
-      "height": 6268,
+      "width": 5320,
+      "height": 6788,
       "fill": "#8080800F",
       "cornerRadius": 32,
       "stroke": "#80808033",
@@ -22582,7 +22582,7 @@
           "type": "text",
           "id": "CQzrv",
           "x": 120,
-          "y": 4755,
+          "y": 5275,
           "name": "States and notes Label",
           "fill": "$text-secondary",
           "content": "STATES AND NOTES",
@@ -22595,7 +22595,7 @@
           "type": "frame",
           "id": "kJmAj",
           "x": 120,
-          "y": 4819,
+          "y": 5339,
           "name": "Reader Panel States",
           "context": "The reader panel shown whenever a read-aloud profile's shortcut is pressed: its states in light and dark, and where it opens. Pressing the shortcut again stops and closes it.",
           "theme": {
@@ -26879,7 +26879,7 @@
           },
           "clip": true,
           "width": 1280,
-          "height": 1890,
+          "height": 2410,
           "fill": "$window-bg",
           "cornerRadius": 8,
           "stroke": "$border",
@@ -27617,7 +27617,7 @@
                           "type": "frame",
                           "id": "N2eK2f",
                           "name": "Process Settings",
-                          "context": "One process, for both Edit and New process: the header reads Edit process for a saved one and New process for a new one, and a new process starts with empty fields and a Create button in place of Save. Nothing is applied until Save; Revert goes back to the saved values, and both are dimmed while nothing has changed. The open model select is documented by the Process Model Select Menu component.",
+                          "context": "Edit or create a read-aloud profile. Nothing is applied until Save (Create for new profiles). Revert restores all saved fields, including voice effect settings. Save and Revert are dimmed when unchanged.",
                           "width": "fill_container",
                           "layout": "vertical",
                           "gap": 24,
@@ -29611,6 +29611,704 @@
                             },
                             {
                               "type": "frame",
+                              "id": "fgZ30",
+                              "name": "Voice Effect Section",
+                              "context": "Effect choices: None (default), Robot, Spacesuit / Mission Control, Walkie-talkie. Only the selected effect runs. Switching effects remembers each effect's controls. Preview uses unsaved settings; Save applies them; Reset restores only the selected effect's defaults.",
+                              "width": "fill_container",
+                              "fill": "$content-bg",
+                              "layout": "vertical",
+                              "gap": 16,
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "erSUS",
+                                  "name": "Voice Effect Divider",
+                                  "fill": "$border",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "FCAlN",
+                                  "name": "Voice Effect Heading",
+                                  "fill": "$text-primary",
+                                  "content": "Voice effect",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "wAfyb",
+                                  "name": "Effect Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "fF5vG",
+                                      "name": "Effect Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "JN9fE",
+                                          "name": "Effect Label",
+                                          "fill": "$text-primary",
+                                          "content": "Effect",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "A3kksx",
+                                          "name": "Effect Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Change how the voice sounds. Works with any model.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "ecEl4",
+                                      "name": "Voice Effect Select",
+                                      "context": "None, then effects A–Z: Robot, Spacesuit / Mission Control, Walkie-talkie. Show only the selected effect's controls.",
+                                      "width": 360,
+                                      "height": 36,
+                                      "cornerRadius": 6,
+                                      "stroke": "$border",
+                                      "strokeWidth": 1,
+                                      "gap": 8,
+                                      "padding": [
+                                        0,
+                                        12
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "m2JZv0",
+                                          "name": "Effect Selected Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Walkie-talkie",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "icon",
+                                          "id": "U77MJ",
+                                          "name": "Effect Select Chevron",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "chevron-down",
+                                          "library": "lucide",
+                                          "fill": "$text-muted"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "VB8DH",
+                                  "name": "Radio tone Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "Dc45P",
+                                      "name": "Radio tone Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "rb7D3",
+                                          "name": "Radio tone Label",
+                                          "fill": "$text-primary",
+                                          "content": "Radio tone",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "bwxPI",
+                                          "name": "Radio tone Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Higher values make the voice thinner and more muffled.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "i7JioX",
+                                      "name": "Radio tone Control",
+                                      "context": "Adjustable 0–100%, keyboard arrow keys adjust by 1%. Shown value is the recommended default. Static is gated to the transmission; output is limited to avoid clipping.",
+                                      "width": 360,
+                                      "gap": 12,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "bCjEv",
+                                          "name": "Radio tone Slider Track",
+                                          "width": "fill_container",
+                                          "height": 16,
+                                          "cornerRadius": 2,
+                                          "layout": "none",
+                                          "children": [
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "ZlWmk",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Radio tone Slider Rail",
+                                              "fill": "$border",
+                                              "width": 298,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "UK0TR",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Radio tone Slider Fill",
+                                              "fill": "$speaking",
+                                              "width": 194,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "ellipse",
+                                              "id": "oeGBs",
+                                              "x": 188,
+                                              "y": 2,
+                                              "name": "Radio tone Slider Thumb",
+                                              "fill": "$speaking",
+                                              "width": 12,
+                                              "height": 12
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "t3yWz",
+                                          "name": "Radio tone Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": 50,
+                                          "content": "65 %",
+                                          "textAlign": "right",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "BsZX9",
+                                  "name": "Compression Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "VZHVM",
+                                      "name": "Compression Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "Gm7MQ",
+                                          "name": "Compression Label",
+                                          "fill": "$text-primary",
+                                          "content": "Compression",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Vs1WJ",
+                                          "name": "Compression Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Even out quiet and loud speech for a steady radio sound.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "VV5Ow",
+                                      "name": "Compression Control",
+                                      "context": "Adjustable 0–100%, keyboard arrow keys adjust by 1%. Shown value is the recommended default. Static is gated to the transmission; output is limited to avoid clipping.",
+                                      "width": 360,
+                                      "gap": 12,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "CqSkW",
+                                          "name": "Compression Slider Track",
+                                          "width": "fill_container",
+                                          "height": 16,
+                                          "cornerRadius": 2,
+                                          "layout": "none",
+                                          "children": [
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "iyU8c",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Compression Slider Rail",
+                                              "fill": "$border",
+                                              "width": 298,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "A0GjKZ",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Compression Slider Fill",
+                                              "fill": "$speaking",
+                                              "width": 179,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "ellipse",
+                                              "id": "V4uBgC",
+                                              "x": 173,
+                                              "y": 2,
+                                              "name": "Compression Slider Thumb",
+                                              "fill": "$speaking",
+                                              "width": 12,
+                                              "height": 12
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "m1fdEP",
+                                          "name": "Compression Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": 50,
+                                          "content": "60 %",
+                                          "textAlign": "right",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "HghsZ",
+                                  "name": "Distortion Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "Na7l3",
+                                      "name": "Distortion Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "fSIZd",
+                                          "name": "Distortion Label",
+                                          "fill": "$text-primary",
+                                          "content": "Distortion",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Vkc8r",
+                                          "name": "Distortion Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Add a rough edge to the voice.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "A2Ajo",
+                                      "name": "Distortion Control",
+                                      "context": "Adjustable 0–100%, keyboard arrow keys adjust by 1%. Shown value is the recommended default. Static is gated to the transmission; output is limited to avoid clipping.",
+                                      "width": 360,
+                                      "gap": 12,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "B3o0q",
+                                          "name": "Distortion Slider Track",
+                                          "width": "fill_container",
+                                          "height": 16,
+                                          "cornerRadius": 2,
+                                          "layout": "none",
+                                          "children": [
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "h4fUP",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Distortion Slider Rail",
+                                              "fill": "$border",
+                                              "width": 298,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "nObiD",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Distortion Slider Fill",
+                                              "fill": "$speaking",
+                                              "width": 60,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "ellipse",
+                                              "id": "oJ3tL",
+                                              "x": 54,
+                                              "y": 2,
+                                              "name": "Distortion Slider Thumb",
+                                              "fill": "$speaking",
+                                              "width": 12,
+                                              "height": 12
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Sou3A",
+                                          "name": "Distortion Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": 50,
+                                          "content": "20 %",
+                                          "textAlign": "right",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "thaeM",
+                                  "name": "Static Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "kBXfy",
+                                      "name": "Static Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "PjNB1",
+                                          "name": "Static Label",
+                                          "fill": "$text-primary",
+                                          "content": "Static",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "hLpPm",
+                                          "name": "Static Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Mix a little radio hiss into the speech.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "P06T5",
+                                      "name": "Static Control",
+                                      "context": "Adjustable 0–100%, keyboard arrow keys adjust by 1%. Shown value is the recommended default. Static is gated to the transmission; output is limited to avoid clipping.",
+                                      "width": 360,
+                                      "gap": 12,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "RtDZL",
+                                          "name": "Static Slider Track",
+                                          "width": "fill_container",
+                                          "height": 16,
+                                          "cornerRadius": 2,
+                                          "layout": "none",
+                                          "children": [
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "wayYF",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Static Slider Rail",
+                                              "fill": "$border",
+                                              "width": 298,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "pzjy5",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Static Slider Fill",
+                                              "fill": "$speaking",
+                                              "width": 24,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "ellipse",
+                                              "id": "SBWWk",
+                                              "x": 18,
+                                              "y": 2,
+                                              "name": "Static Slider Thumb",
+                                              "fill": "$speaking",
+                                              "width": 12,
+                                              "height": 12
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "vvymK",
+                                          "name": "Static Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": 50,
+                                          "content": "8 %",
+                                          "textAlign": "right",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "tvYBG",
+                                  "name": "Transmission click Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "c7V0pv",
+                                      "name": "Transmission click Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "h3IZbL",
+                                          "name": "Transmission click Label",
+                                          "fill": "$text-primary",
+                                          "content": "Transmission click",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "F2GWzi",
+                                          "name": "Transmission click Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Play a short squelch at the start and end of each reading.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "MnTAS",
+                                      "name": "Transmission Click Toggle Area",
+                                      "width": 360,
+                                      "justifyContent": "end",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "Caj4x",
+                                          "name": "Transmission Click Toggle — On",
+                                          "context": "Default on. One opening and closing burst per reading, never per sentence. Stop cancels pending audio.",
+                                          "width": 36,
+                                          "height": 20,
+                                          "fill": "$speaking",
+                                          "cornerRadius": 10,
+                                          "padding": 2,
+                                          "justifyContent": "end",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "ellipse",
+                                              "id": "u4kHyk",
+                                              "name": "Transmission Click Toggle Thumb",
+                                              "fill": "$content-bg",
+                                              "width": 16,
+                                              "height": 16
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "o5yg6f",
+                                  "name": "Radio Preview Actions",
+                                  "width": "fill_container",
+                                  "gap": 12,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "gDjhq",
+                                      "name": "Preview Radio Voice Button",
+                                      "context": "Reads a sample in the chosen language using current unsaved voice and effect values. Becomes Stop while playing. Does not save changes.",
+                                      "height": 36,
+                                      "cornerRadius": 6,
+                                      "stroke": "$border",
+                                      "strokeWidth": 1,
+                                      "gap": 6,
+                                      "padding": [
+                                        0,
+                                        12
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "BMe3w",
+                                          "name": "Preview Radio Play Icon",
+                                          "width": 14,
+                                          "height": 14,
+                                          "icon": "play",
+                                          "library": "lucide",
+                                          "fill": "$speaking"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "jJZbB",
+                                          "name": "Preview Radio Voice Label",
+                                          "fill": "$text-primary",
+                                          "content": "Preview radio voice",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "H0J4j",
+                                      "name": "Radio Reset Defaults Button",
+                                      "context": "Restores tone 65%, compression 60%, distortion 20%, static 8%, transmission click on. Does not change voice, speed or volume. Takes effect on Save.",
+                                      "fill": "$text-secondary",
+                                      "content": "Reset effect",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "rpPsb",
+                                      "name": "Radio Preview Language Hint",
+                                      "fill": "$text-secondary",
+                                      "content": "Sample sentence in German.",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
                               "id": "v1do4t",
                               "name": "Process Actions",
                               "width": "fill_container",
@@ -29969,7 +30667,7 @@
           },
           "clip": true,
           "width": 1280,
-          "height": 1890,
+          "height": 2410,
           "fill": "$window-bg",
           "cornerRadius": 8,
           "stroke": "$border",
@@ -30707,7 +31405,7 @@
                           "type": "frame",
                           "id": "ABbBH",
                           "name": "Process Settings",
-                          "context": "One process, for both Edit and New process: the header reads Edit process for a saved one and New process for a new one, and a new process starts with empty fields and a Create button in place of Save. Nothing is applied until Save; Revert goes back to the saved values, and both are dimmed while nothing has changed. The open model select is documented by the Process Model Select Menu component.",
+                          "context": "Edit or create a read-aloud profile. Nothing is applied until Save. Revert restores all saved fields, including voice effect settings.",
                           "width": "fill_container",
                           "layout": "vertical",
                           "gap": 24,
@@ -32701,6 +33399,704 @@
                             },
                             {
                               "type": "frame",
+                              "id": "Jh5p7",
+                              "name": "Voice Effect Section",
+                              "context": "Effect choices: None (default), Robot, Spacesuit / Mission Control, Walkie-talkie. Only the selected effect runs. Switching effects remembers each effect's controls. Preview uses unsaved settings; Save applies them; Reset restores only the selected effect's defaults.",
+                              "width": "fill_container",
+                              "fill": "$content-bg",
+                              "layout": "vertical",
+                              "gap": 16,
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "LDNzG",
+                                  "name": "Voice Effect Divider",
+                                  "fill": "$border",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "PGWkN",
+                                  "name": "Voice Effect Heading",
+                                  "fill": "$text-primary",
+                                  "content": "Voice effect",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "pdHuy",
+                                  "name": "Effect Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "inpmO",
+                                      "name": "Effect Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "kkCim",
+                                          "name": "Effect Label",
+                                          "fill": "$text-primary",
+                                          "content": "Effect",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "iqMWI",
+                                          "name": "Effect Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Change how the voice sounds. Works with any model.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "J7It6",
+                                      "name": "Voice Effect Select",
+                                      "context": "None, then effects A–Z: Robot, Spacesuit / Mission Control, Walkie-talkie. Show only the selected effect's controls.",
+                                      "width": 360,
+                                      "height": 36,
+                                      "cornerRadius": 6,
+                                      "stroke": "$border",
+                                      "strokeWidth": 1,
+                                      "gap": 8,
+                                      "padding": [
+                                        0,
+                                        12
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "kFmAv",
+                                          "name": "Effect Selected Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Walkie-talkie",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "icon",
+                                          "id": "HQMkg",
+                                          "name": "Effect Select Chevron",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "chevron-down",
+                                          "library": "lucide",
+                                          "fill": "$text-muted"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "IFlQA",
+                                  "name": "Radio tone Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "XlcSI",
+                                      "name": "Radio tone Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "aEKDu",
+                                          "name": "Radio tone Label",
+                                          "fill": "$text-primary",
+                                          "content": "Radio tone",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Tiqjr",
+                                          "name": "Radio tone Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Higher values make the voice thinner and more muffled.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "Y0FsGA",
+                                      "name": "Radio tone Control",
+                                      "context": "Adjustable 0–100%, keyboard arrow keys adjust by 1%. Shown value is the recommended default. Static is gated to the transmission; output is limited to avoid clipping.",
+                                      "width": 360,
+                                      "gap": 12,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "rTnk9",
+                                          "name": "Radio tone Slider Track",
+                                          "width": "fill_container",
+                                          "height": 16,
+                                          "cornerRadius": 2,
+                                          "layout": "none",
+                                          "children": [
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "pmFqp",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Radio tone Slider Rail",
+                                              "fill": "$border",
+                                              "width": 298,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "K17S3",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Radio tone Slider Fill",
+                                              "fill": "$speaking",
+                                              "width": 194,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "ellipse",
+                                              "id": "K8XZ4j",
+                                              "x": 188,
+                                              "y": 2,
+                                              "name": "Radio tone Slider Thumb",
+                                              "fill": "$speaking",
+                                              "width": 12,
+                                              "height": 12
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "v715Q2",
+                                          "name": "Radio tone Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": 50,
+                                          "content": "65 %",
+                                          "textAlign": "right",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "n0MfD",
+                                  "name": "Compression Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "TWM4N",
+                                      "name": "Compression Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "iGImK",
+                                          "name": "Compression Label",
+                                          "fill": "$text-primary",
+                                          "content": "Compression",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "G8onWx",
+                                          "name": "Compression Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Even out quiet and loud speech for a steady radio sound.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "MVmWF",
+                                      "name": "Compression Control",
+                                      "context": "Adjustable 0–100%, keyboard arrow keys adjust by 1%. Shown value is the recommended default. Static is gated to the transmission; output is limited to avoid clipping.",
+                                      "width": 360,
+                                      "gap": 12,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "ImJNK",
+                                          "name": "Compression Slider Track",
+                                          "width": "fill_container",
+                                          "height": 16,
+                                          "cornerRadius": 2,
+                                          "layout": "none",
+                                          "children": [
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "U0TU8",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Compression Slider Rail",
+                                              "fill": "$border",
+                                              "width": 298,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "uyJbC",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Compression Slider Fill",
+                                              "fill": "$speaking",
+                                              "width": 179,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "ellipse",
+                                              "id": "gUI4P",
+                                              "x": 173,
+                                              "y": 2,
+                                              "name": "Compression Slider Thumb",
+                                              "fill": "$speaking",
+                                              "width": 12,
+                                              "height": 12
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "shHgL",
+                                          "name": "Compression Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": 50,
+                                          "content": "60 %",
+                                          "textAlign": "right",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "QUl6v",
+                                  "name": "Distortion Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "VRSQF",
+                                      "name": "Distortion Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "MpxTF",
+                                          "name": "Distortion Label",
+                                          "fill": "$text-primary",
+                                          "content": "Distortion",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "oHrFb",
+                                          "name": "Distortion Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Add a rough edge to the voice.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "j510hO",
+                                      "name": "Distortion Control",
+                                      "context": "Adjustable 0–100%, keyboard arrow keys adjust by 1%. Shown value is the recommended default. Static is gated to the transmission; output is limited to avoid clipping.",
+                                      "width": 360,
+                                      "gap": 12,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "eNmsH",
+                                          "name": "Distortion Slider Track",
+                                          "width": "fill_container",
+                                          "height": 16,
+                                          "cornerRadius": 2,
+                                          "layout": "none",
+                                          "children": [
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "fpJvE",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Distortion Slider Rail",
+                                              "fill": "$border",
+                                              "width": 298,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "i0TH5",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Distortion Slider Fill",
+                                              "fill": "$speaking",
+                                              "width": 60,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "ellipse",
+                                              "id": "aca1N",
+                                              "x": 54,
+                                              "y": 2,
+                                              "name": "Distortion Slider Thumb",
+                                              "fill": "$speaking",
+                                              "width": 12,
+                                              "height": 12
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "OZKbx",
+                                          "name": "Distortion Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": 50,
+                                          "content": "20 %",
+                                          "textAlign": "right",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "l9OMw",
+                                  "name": "Static Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "SFrK4",
+                                      "name": "Static Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "T8STZG",
+                                          "name": "Static Label",
+                                          "fill": "$text-primary",
+                                          "content": "Static",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Wk6k2",
+                                          "name": "Static Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Mix a little radio hiss into the speech.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "ry11A",
+                                      "name": "Static Control",
+                                      "context": "Adjustable 0–100%, keyboard arrow keys adjust by 1%. Shown value is the recommended default. Static is gated to the transmission; output is limited to avoid clipping.",
+                                      "width": 360,
+                                      "gap": 12,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "suVdu",
+                                          "name": "Static Slider Track",
+                                          "width": "fill_container",
+                                          "height": 16,
+                                          "cornerRadius": 2,
+                                          "layout": "none",
+                                          "children": [
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "vKjVW",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Static Slider Rail",
+                                              "fill": "$border",
+                                              "width": 298,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "rectangle",
+                                              "cornerRadius": 2,
+                                              "id": "fRLf3",
+                                              "x": 0,
+                                              "y": 6,
+                                              "name": "Static Slider Fill",
+                                              "fill": "$speaking",
+                                              "width": 24,
+                                              "height": 4
+                                            },
+                                            {
+                                              "type": "ellipse",
+                                              "id": "p16UH",
+                                              "x": 18,
+                                              "y": 2,
+                                              "name": "Static Slider Thumb",
+                                              "fill": "$speaking",
+                                              "width": 12,
+                                              "height": 12
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "t4fkrY",
+                                          "name": "Static Value",
+                                          "fill": "$text-primary",
+                                          "textGrowth": "fixed-width",
+                                          "width": 50,
+                                          "content": "8 %",
+                                          "textAlign": "right",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "SVqFY",
+                                  "name": "Transmission click Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "hubIk",
+                                      "name": "Transmission click Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "HF3TF",
+                                          "name": "Transmission click Label",
+                                          "fill": "$text-primary",
+                                          "content": "Transmission click",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "nFNdM",
+                                          "name": "Transmission click Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Play a short squelch at the start and end of each reading.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "b4JqUD",
+                                      "name": "Transmission Click Toggle Area",
+                                      "width": 360,
+                                      "justifyContent": "end",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "jGfHV",
+                                          "name": "Transmission Click Toggle — On",
+                                          "context": "Default on. One opening and closing burst per reading, never per sentence. Stop cancels pending audio.",
+                                          "width": 36,
+                                          "height": 20,
+                                          "fill": "$speaking",
+                                          "cornerRadius": 10,
+                                          "padding": 2,
+                                          "justifyContent": "end",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "ellipse",
+                                              "id": "gcYx0",
+                                              "name": "Transmission Click Toggle Thumb",
+                                              "fill": "$content-bg",
+                                              "width": 16,
+                                              "height": 16
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "C82MF",
+                                  "name": "Radio Preview Actions",
+                                  "width": "fill_container",
+                                  "gap": 12,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "okcSQ",
+                                      "name": "Preview Radio Voice Button",
+                                      "context": "Reads a sample in the chosen language using current unsaved voice and effect values. Becomes Stop while playing. Does not save changes.",
+                                      "height": 36,
+                                      "cornerRadius": 6,
+                                      "stroke": "$border",
+                                      "strokeWidth": 1,
+                                      "gap": 6,
+                                      "padding": [
+                                        0,
+                                        12
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "DCvrC",
+                                          "name": "Preview Radio Play Icon",
+                                          "width": 14,
+                                          "height": 14,
+                                          "icon": "play",
+                                          "library": "lucide",
+                                          "fill": "$speaking"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "FqN6N",
+                                          "name": "Preview Radio Voice Label",
+                                          "fill": "$text-primary",
+                                          "content": "Preview radio voice",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "n8lXa",
+                                      "name": "Radio Reset Defaults Button",
+                                      "context": "Restores tone 65%, compression 60%, distortion 20%, static 8%, transmission click on. Does not change voice, speed or volume. Takes effect on Save.",
+                                      "fill": "$text-secondary",
+                                      "content": "Reset effect",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "OJdEX",
+                                      "name": "Radio Preview Language Hint",
+                                      "fill": "$text-secondary",
+                                      "content": "Sample sentence in German.",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
                               "id": "ZfRJ4",
                               "name": "Process Actions",
                               "width": "fill_container",
@@ -33052,7 +34448,7 @@
           "type": "frame",
           "id": "TL959",
           "x": 120,
-          "y": 3995,
+          "y": 4515,
           "name": "Reader Window — Light",
           "context": "A normal, resizable window opened from the reader panel's Open in window button. It shows the whole text being read, rendered as Markdown (headings, lists, emphasis, code, links), so formatted text copied from a page or written by a step reads naturally; only the plain words are spoken, not the Markdown symbols. Text already read is muted, the current sentence is highlighted and the current word underlined. Follow keeps the current sentence in view; scrolling away turns it off, and clicking a sentence starts reading there. Closing the window stops reading. Remembers its size and position.",
           "theme": {
@@ -33735,7 +35131,7 @@
           "type": "frame",
           "id": "GSCFL",
           "x": 1200,
-          "y": 3995,
+          "y": 4515,
           "name": "Reader Window — Dark",
           "context": "A normal, resizable window opened from the reader panel's Open in window button. It shows the whole text being read, rendered as Markdown (headings, lists, emphasis, code, links), so formatted text copied from a page or written by a step reads naturally; only the plain words are spoken, not the Markdown symbols. Text already read is muted, the current sentence is highlighted and the current word underlined. Follow keeps the current sentence in view; scrolling away turns it off, and clicking a sentence starts reading there. Closing the window stops reading. Remembers its size and position.",
           "theme": {
@@ -34426,6 +35822,2058 @@
           "fontSize": 22,
           "fontWeight": "600",
           "letterSpacing": 2
+        },
+        {
+          "type": "text",
+          "id": "G5qln",
+          "x": 3040,
+          "y": 1855,
+          "name": "Robot Effect States Label",
+          "fill": "$text-secondary",
+          "content": "VOICE EFFECT · ROBOT · LIGHT AND DARK",
+          "fontFamily": "Inter",
+          "fontSize": 22,
+          "fontWeight": "600",
+          "letterSpacing": 2
+        },
+        {
+          "type": "frame",
+          "id": "W6PagH",
+          "x": 3040,
+          "y": 1959,
+          "name": "Profile · Robot Effect — light",
+          "theme": {
+            "mode": "light"
+          },
+          "width": 1020,
+          "fill": "$content-bg",
+          "cornerRadius": 8,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "padding": 30,
+          "children": [
+            {
+              "type": "frame",
+              "id": "B59Ac",
+              "name": "Robot Voice Effect Section",
+              "context": "Effect choices: None (default), Robot, Spacesuit / Mission Control, Walkie-talkie. Only the selected effect runs. Switching effects remembers each effect's controls. Preview uses unsaved settings; Save applies them; Reset restores only the selected effect's defaults.",
+              "width": "fill_container",
+              "fill": "$content-bg",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eck0G",
+                  "name": "Voice Effect Heading",
+                  "fill": "$text-primary",
+                  "content": "Voice effect",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "s7DeV",
+                  "name": "Effect Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "PH6Wj",
+                      "name": "Effect Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Y168M",
+                          "name": "Effect Label",
+                          "fill": "$text-primary",
+                          "content": "Effect",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Hk2mk",
+                          "name": "Effect Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Change how the voice sounds. Works with any model.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FmReu",
+                      "name": "Voice Effect Select",
+                      "context": "None, then effects A–Z: Robot, Spacesuit / Mission Control, Walkie-talkie. Show only the selected effect's controls.",
+                      "width": 360,
+                      "height": 36,
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "j1IZL",
+                          "name": "Effect Selected Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Robot",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "fgRIC",
+                          "name": "Effect Select Chevron",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$text-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DGkFs",
+                  "name": "Modulation Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "MgUJo",
+                      "name": "Radio tone Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g2FO1",
+                          "name": "Modulation Label",
+                          "fill": "$text-primary",
+                          "content": "Modulation",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "iStrA",
+                          "name": "Modulation Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Smooth metallic tone to a harsher robotic buzz.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QxDzm",
+                      "name": "Radio tone Control",
+                      "context": "0–100%, steps of 1%. Intensity 0% preserves the original samples.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "FMKIY",
+                          "name": "Radio tone Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "wNbrH",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Radio tone Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "WYgXI",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Radio tone Slider Fill",
+                              "fill": "$speaking",
+                              "width": 178.8,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "iLTbb",
+                              "x": 172.8,
+                              "y": 2,
+                              "name": "Radio tone Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "hoyqZ",
+                          "name": "Modulation Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "60 %",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DgXZZ",
+                  "name": "Robot pitch Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "r3MDu8",
+                      "name": "Compression Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SThrj",
+                          "name": "Robot pitch Label",
+                          "fill": "$text-primary",
+                          "content": "Robot pitch",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "MaBsk",
+                          "name": "Robot pitch Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Frequency of the metallic tone, in Hz.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "LZKcv",
+                      "name": "Compression Control",
+                      "context": "30–180 Hz, steps of 1 Hz; this is the carrier tone, not a pitch shift of the speaker.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "otEo3",
+                          "name": "Compression Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "TEPQY",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Compression Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "k8V0rv",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Compression Slider Fill",
+                              "fill": "$speaking",
+                              "width": 79.46676599999999,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "u3kq7L",
+                              "x": 73.46676599999999,
+                              "y": 2,
+                              "name": "Compression Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "yVVzO",
+                          "name": "Robot pitch Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "70 Hz",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "EVWq4",
+                  "name": "Intensity Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "EM8Rd",
+                      "name": "Distortion Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "bqG1l",
+                          "name": "Intensity Label",
+                          "fill": "$text-primary",
+                          "content": "Intensity",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZB4vo",
+                          "name": "Intensity Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Blend the robot effect with the original voice.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wsdvC",
+                      "name": "Distortion Control",
+                      "context": "0–100%, steps of 1%. Intensity 0% preserves the original samples.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "zuFLT",
+                          "name": "Distortion Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "N0byi",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Distortion Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "eeVXV",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Distortion Slider Fill",
+                              "fill": "$speaking",
+                              "width": 223.5,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "lnywa",
+                              "x": 217.5,
+                              "y": 2,
+                              "name": "Distortion Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Fimy1",
+                          "name": "Intensity Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "75 %",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "G1YIfw",
+                  "name": "Robot Preview Actions",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "V8W5B",
+                      "name": "Preview Radio Voice Button",
+                      "context": "Reads a sample in the chosen language using current unsaved voice and effect values. Becomes Stop while playing. Does not save changes.",
+                      "height": 36,
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "r0wTv",
+                          "name": "Preview Radio Play Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "play",
+                          "library": "lucide",
+                          "fill": "$speaking"
+                        },
+                        {
+                          "type": "text",
+                          "id": "r1xoI",
+                          "name": "Preview Robot Voice Label",
+                          "fill": "$text-primary",
+                          "content": "Preview robot voice",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "NFcrd",
+                      "name": "Robot Reset Defaults Button",
+                      "context": "Restores modulation 60%, robot pitch 70 Hz, intensity 75%. Does not change the selected voice, speed or volume.",
+                      "fill": "$text-secondary",
+                      "content": "Reset effect",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "L3Xpk7",
+                      "name": "Radio Preview Language Hint",
+                      "fill": "$text-secondary",
+                      "content": "Sample sentence in German.",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "SBwRW",
+          "x": 4180,
+          "y": 1959,
+          "name": "Profile · Robot Effect — dark",
+          "theme": {
+            "mode": "dark"
+          },
+          "width": 1020,
+          "fill": "$content-bg",
+          "cornerRadius": 8,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "padding": 30,
+          "children": [
+            {
+              "type": "frame",
+              "id": "ehNBN",
+              "name": "Robot Voice Effect Section",
+              "context": "Effect choices: None (default), Robot, Spacesuit / Mission Control, Walkie-talkie. Only the selected effect runs. Switching effects remembers each effect's controls. Preview uses unsaved settings; Save applies them; Reset restores only the selected effect's defaults.",
+              "width": "fill_container",
+              "fill": "$content-bg",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "btvmH",
+                  "name": "Voice Effect Heading",
+                  "fill": "$text-primary",
+                  "content": "Voice effect",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "d8zUvp",
+                  "name": "Effect Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "IktwG",
+                      "name": "Effect Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "VFRSA",
+                          "name": "Effect Label",
+                          "fill": "$text-primary",
+                          "content": "Effect",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "iIXR1",
+                          "name": "Effect Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Change how the voice sounds. Works with any model.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CsdR0",
+                      "name": "Voice Effect Select",
+                      "context": "None, then effects A–Z: Robot, Spacesuit / Mission Control, Walkie-talkie. Show only the selected effect's controls.",
+                      "width": 360,
+                      "height": 36,
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "TPH34",
+                          "name": "Effect Selected Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Robot",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "opohl",
+                          "name": "Effect Select Chevron",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$text-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "c2V4G",
+                  "name": "Modulation Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "eA2YC",
+                      "name": "Radio tone Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "P3MRz",
+                          "name": "Modulation Label",
+                          "fill": "$text-primary",
+                          "content": "Modulation",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "wdgXX",
+                          "name": "Modulation Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Smooth metallic tone to a harsher robotic buzz.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gcIcv",
+                      "name": "Radio tone Control",
+                      "context": "0–100%, steps of 1%. Intensity 0% preserves the original samples.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "a4Atx",
+                          "name": "Radio tone Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "RozPD",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Radio tone Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "Y3j4IP",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Radio tone Slider Fill",
+                              "fill": "$speaking",
+                              "width": 178.8,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "X8soX",
+                              "x": 172.8,
+                              "y": 2,
+                              "name": "Radio tone Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "bHJm7",
+                          "name": "Modulation Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "60 %",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "M6vFd",
+                  "name": "Robot pitch Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "TEXWE",
+                      "name": "Compression Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "h1PaW",
+                          "name": "Robot pitch Label",
+                          "fill": "$text-primary",
+                          "content": "Robot pitch",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "TVbN4",
+                          "name": "Robot pitch Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Frequency of the metallic tone, in Hz.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UdrnR",
+                      "name": "Compression Control",
+                      "context": "30–180 Hz, steps of 1 Hz; this is the carrier tone, not a pitch shift of the speaker.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "rv0eB",
+                          "name": "Compression Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "xpNBF",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Compression Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "WxStF",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Compression Slider Fill",
+                              "fill": "$speaking",
+                              "width": 79.46676599999999,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "n0OJI",
+                              "x": 73.46676599999999,
+                              "y": 2,
+                              "name": "Compression Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Z34vsj",
+                          "name": "Robot pitch Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "70 Hz",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "kPnyF",
+                  "name": "Intensity Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "mIssc",
+                      "name": "Distortion Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FGAZt",
+                          "name": "Intensity Label",
+                          "fill": "$text-primary",
+                          "content": "Intensity",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "YVcl3",
+                          "name": "Intensity Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Blend the robot effect with the original voice.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "AMiCO",
+                      "name": "Distortion Control",
+                      "context": "0–100%, steps of 1%. Intensity 0% preserves the original samples.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "mYTdE",
+                          "name": "Distortion Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "W3Vsw2",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Distortion Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "EUTMV",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Distortion Slider Fill",
+                              "fill": "$speaking",
+                              "width": 223.5,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "hJ5sB",
+                              "x": 217.5,
+                              "y": 2,
+                              "name": "Distortion Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "PlGpB",
+                          "name": "Intensity Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "75 %",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DU5FY",
+                  "name": "Robot Preview Actions",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "A93lmZ",
+                      "name": "Preview Radio Voice Button",
+                      "context": "Reads a sample in the chosen language using current unsaved voice and effect values. Becomes Stop while playing. Does not save changes.",
+                      "height": 36,
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "yXMUK",
+                          "name": "Preview Radio Play Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "play",
+                          "library": "lucide",
+                          "fill": "$speaking"
+                        },
+                        {
+                          "type": "text",
+                          "id": "duf0T",
+                          "name": "Preview Robot Voice Label",
+                          "fill": "$text-primary",
+                          "content": "Preview robot voice",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "v5JtCx",
+                      "name": "Robot Reset Defaults Button",
+                      "context": "Restores modulation 60%, robot pitch 70 Hz, intensity 75%. Does not change the selected voice, speed or volume.",
+                      "fill": "$text-secondary",
+                      "content": "Reset effect",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fn58h",
+                      "name": "Radio Preview Language Hint",
+                      "fill": "$text-secondary",
+                      "content": "Sample sentence in German.",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "yj42V",
+          "x": 3040,
+          "y": 2410,
+          "name": "Spacesuit Effect States Label",
+          "fill": "$text-secondary",
+          "content": "VOICE EFFECT · SPACESUIT / MISSION CONTROL",
+          "fontFamily": "Inter",
+          "fontSize": 22,
+          "fontWeight": "600",
+          "letterSpacing": 2
+        },
+        {
+          "type": "frame",
+          "id": "VWnpe",
+          "x": 3040,
+          "y": 2470,
+          "name": "Profile · Spacesuit Effect — light",
+          "theme": {
+            "mode": "light"
+          },
+          "width": 1020,
+          "fill": "$content-bg",
+          "cornerRadius": 8,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "padding": 30,
+          "children": [
+            {
+              "type": "frame",
+              "id": "Qa1dG",
+              "name": "Spacesuit Voice Effect Section",
+              "context": "Effect choices: None (default), Robot, Spacesuit / Mission Control, Walkie-talkie. Only the selected effect runs. Switching effects remembers each effect's controls. Preview uses unsaved settings; Save applies them; Reset restores only the selected effect's defaults.",
+              "width": "fill_container",
+              "fill": "$content-bg",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "vNY5E",
+                  "name": "Voice Effect Heading",
+                  "fill": "$text-primary",
+                  "content": "Voice effect",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "nzE9W",
+                  "name": "Effect Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "LfQcH",
+                      "name": "Effect Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I9G9v",
+                          "name": "Effect Label",
+                          "fill": "$text-primary",
+                          "content": "Effect",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "iaoUo",
+                          "name": "Effect Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Change how the voice sounds. Works with any model.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h7teop",
+                      "name": "Voice Effect Select",
+                      "context": "None, then effects A–Z: Robot, Spacesuit / Mission Control, Walkie-talkie. Show only the selected effect's controls.",
+                      "width": 360,
+                      "height": 36,
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Y0wxM",
+                          "name": "Effect Selected Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Spacesuit / Mission Control",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "Vxps4",
+                          "name": "Effect Select Chevron",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$text-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "R1tOa",
+                  "name": "Headset tone Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ZnvFI",
+                      "name": "Radio tone Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "RPvKV",
+                          "name": "Headset tone Label",
+                          "fill": "$text-primary",
+                          "content": "Headset tone",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "g8a6el",
+                          "name": "Headset tone Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Higher values make the headset sound narrower and more muffled.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ioHHX",
+                      "name": "Radio tone Control",
+                      "context": "0–100%, keyboard arrows adjust by 1%. Static is gated to speech. The headset keeps speech clear with gentle fixed compression and minimal distortion.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "D4req",
+                          "name": "Radio tone Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "GlEc5",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Radio tone Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "AvnBl",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Radio tone Slider Fill",
+                              "fill": "$speaking",
+                              "width": 163.9,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "gqJdU",
+                              "x": 157.9,
+                              "y": 2,
+                              "name": "Radio tone Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "nkk5a",
+                          "name": "Headset tone Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "55 %",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KcA30",
+                  "name": "Static Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "J5Fep9",
+                      "name": "Compression Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ugQ0D",
+                          "name": "Static Label",
+                          "fill": "$text-primary",
+                          "content": "Static",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "plshe",
+                          "name": "Static Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Add a little radio hiss while the voice speaks.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "I3hE5",
+                      "name": "Compression Control",
+                      "context": "0–100%, keyboard arrows adjust by 1%. Static is gated to speech. The headset keeps speech clear with gentle fixed compression and minimal distortion.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "hzysx",
+                          "name": "Compression Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "b4p54",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Compression Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "MFX5U",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Compression Slider Fill",
+                              "fill": "$speaking",
+                              "width": 8.94,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "P1sAvW",
+                              "x": 2.9399999999999995,
+                              "y": 2,
+                              "name": "Compression Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Gtl9h",
+                          "name": "Static Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "3 %",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "bNmBF",
+                  "name": "Transmission Beep Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "g0JOo",
+                      "name": "Transmission click Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uqwh6",
+                          "name": "Transmission click Label",
+                          "fill": "$text-primary",
+                          "content": "Transmission click",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "rZ5mx",
+                          "name": "Transmission click Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Play a short squelch at the start and end of each reading.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XhCCJ",
+                      "name": "Transmission Click Toggle Area",
+                      "width": 360,
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "I83Xz",
+                          "name": "Transmission Click Toggle — On",
+                          "context": "Default on. One opening and closing burst per reading, never per sentence. Stop cancels pending audio.",
+                          "width": 36,
+                          "height": 20,
+                          "fill": "$speaking",
+                          "cornerRadius": 10,
+                          "padding": 2,
+                          "justifyContent": "end",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "lnaH9",
+                              "name": "Transmission Click Toggle Thumb",
+                              "fill": "$content-bg",
+                              "width": 16,
+                              "height": 16
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "su3Hb",
+                  "name": "Robot Preview Actions",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QovGl",
+                      "name": "Preview Radio Voice Button",
+                      "context": "Reads a sample in the chosen language using current unsaved voice and effect values. Becomes Stop while playing. Does not save changes.",
+                      "height": 36,
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "BF03G",
+                          "name": "Preview Radio Play Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "play",
+                          "library": "lucide",
+                          "fill": "$speaking"
+                        },
+                        {
+                          "type": "text",
+                          "id": "h2hTe",
+                          "name": "Preview Headset Voice Label",
+                          "fill": "$text-primary",
+                          "content": "Preview headset voice",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "h310w",
+                      "name": "Spacesuit Reset Defaults Button",
+                      "context": "Restores headset tone 55%, static 3%, transmission beep on. Only applies to this effect; Save commits changes.",
+                      "fill": "$text-secondary",
+                      "content": "Reset effect",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "olW0d",
+                      "name": "Radio Preview Language Hint",
+                      "fill": "$text-secondary",
+                      "content": "Sample sentence in German.",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "gWt0U",
+          "x": 4180,
+          "y": 2470,
+          "name": "Profile · Spacesuit Effect — dark",
+          "theme": {
+            "mode": "dark"
+          },
+          "width": 1020,
+          "fill": "$content-bg",
+          "cornerRadius": 8,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "padding": 30,
+          "children": [
+            {
+              "type": "frame",
+              "id": "yCmAJ",
+              "name": "Spacesuit Voice Effect Section",
+              "context": "Effect choices: None (default), Robot, Spacesuit / Mission Control, Walkie-talkie. Only the selected effect runs. Switching effects remembers each effect's controls. Preview uses unsaved settings; Save applies them; Reset restores only the selected effect's defaults.",
+              "width": "fill_container",
+              "fill": "$content-bg",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "a2bCxw",
+                  "name": "Voice Effect Heading",
+                  "fill": "$text-primary",
+                  "content": "Voice effect",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "zcSn5",
+                  "name": "Effect Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "pKnK7",
+                      "name": "Effect Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vVyXg",
+                          "name": "Effect Label",
+                          "fill": "$text-primary",
+                          "content": "Effect",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "T6TUc",
+                          "name": "Effect Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Change how the voice sounds. Works with any model.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "y8vCBI",
+                      "name": "Voice Effect Select",
+                      "context": "None, then effects A–Z: Robot, Spacesuit / Mission Control, Walkie-talkie. Show only the selected effect's controls.",
+                      "width": 360,
+                      "height": 36,
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "qDQrL",
+                          "name": "Effect Selected Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Spacesuit / Mission Control",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "R2tCmr",
+                          "name": "Effect Select Chevron",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$text-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "x1IC0",
+                  "name": "Headset tone Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "DUS8a",
+                      "name": "Radio tone Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "d6g32",
+                          "name": "Headset tone Label",
+                          "fill": "$text-primary",
+                          "content": "Headset tone",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "a0kA6M",
+                          "name": "Headset tone Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Higher values make the headset sound narrower and more muffled.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YvRgQ",
+                      "name": "Radio tone Control",
+                      "context": "0–100%, keyboard arrows adjust by 1%. Static is gated to speech. The headset keeps speech clear with gentle fixed compression and minimal distortion.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "MjZ8D",
+                          "name": "Radio tone Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "M5RBu",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Radio tone Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "IaCqW",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Radio tone Slider Fill",
+                              "fill": "$speaking",
+                              "width": 163.9,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "swTOU",
+                              "x": 157.9,
+                              "y": 2,
+                              "name": "Radio tone Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "ESEVy",
+                          "name": "Headset tone Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "55 %",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "qU8xa",
+                  "name": "Static Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "m8IDNn",
+                      "name": "Compression Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zx7vD",
+                          "name": "Static Label",
+                          "fill": "$text-primary",
+                          "content": "Static",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "cyd0v",
+                          "name": "Static Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Add a little radio hiss while the voice speaks.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zmpZr",
+                      "name": "Compression Control",
+                      "context": "0–100%, keyboard arrows adjust by 1%. Static is gated to speech. The headset keeps speech clear with gentle fixed compression and minimal distortion.",
+                      "width": 360,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "xxXvv",
+                          "name": "Compression Slider Track",
+                          "width": "fill_container",
+                          "height": 16,
+                          "cornerRadius": 2,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "Y0LBWy",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Compression Slider Rail",
+                              "fill": "$border",
+                              "width": 298,
+                              "height": 4
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 2,
+                              "id": "WzRyT",
+                              "x": 0,
+                              "y": 6,
+                              "name": "Compression Slider Fill",
+                              "fill": "$speaking",
+                              "width": 8.94,
+                              "height": 4
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "D6N2N6",
+                              "x": 2.9399999999999995,
+                              "y": 2,
+                              "name": "Compression Slider Thumb",
+                              "fill": "$speaking",
+                              "width": 12,
+                              "height": 12
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "ALRjV",
+                          "name": "Static Value",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 50,
+                          "content": "3 %",
+                          "textAlign": "right",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lfdGK",
+                  "name": "Transmission Beep Row",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Zv2Uc",
+                      "name": "Transmission click Details",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 5,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Znurq",
+                          "name": "Transmission click Label",
+                          "fill": "$text-primary",
+                          "content": "Transmission click",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gBMOw",
+                          "name": "Transmission click Hint",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Play a short squelch at the start and end of each reading.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PefWc",
+                      "name": "Transmission Click Toggle Area",
+                      "width": 360,
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "y7v2pJ",
+                          "name": "Transmission Click Toggle — On",
+                          "context": "Default on. One opening and closing burst per reading, never per sentence. Stop cancels pending audio.",
+                          "width": 36,
+                          "height": 20,
+                          "fill": "$speaking",
+                          "cornerRadius": 10,
+                          "padding": 2,
+                          "justifyContent": "end",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "K2tYoG",
+                              "name": "Transmission Click Toggle Thumb",
+                              "fill": "$content-bg",
+                              "width": 16,
+                              "height": 16
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "n7qR6",
+                  "name": "Robot Preview Actions",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "y2cO8Q",
+                      "name": "Preview Radio Voice Button",
+                      "context": "Reads a sample in the chosen language using current unsaved voice and effect values. Becomes Stop while playing. Does not save changes.",
+                      "height": 36,
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "X1QYed",
+                          "name": "Preview Radio Play Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "play",
+                          "library": "lucide",
+                          "fill": "$speaking"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Ukk4f",
+                          "name": "Preview Headset Voice Label",
+                          "fill": "$text-primary",
+                          "content": "Preview headset voice",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "k215Nm",
+                      "name": "Spacesuit Reset Defaults Button",
+                      "context": "Restores headset tone 55%, static 3%, transmission beep on. Only applies to this effect; Save commits changes.",
+                      "fill": "$text-secondary",
+                      "content": "Reset effect",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "GCdV1",
+                      "name": "Radio Preview Language Hint",
+                      "fill": "$text-secondary",
+                      "content": "Sample sentence in German.",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -34433,7 +37881,7 @@
       "type": "frame",
       "id": "FFArJ",
       "x": 0,
-      "y": 20931,
+      "y": 21451,
       "name": "06 Voice Commands",
       "width": 2920,
       "height": 5351,
@@ -46693,7 +50141,7 @@
       "type": "frame",
       "id": "ddIBz",
       "x": 0,
-      "y": 26682,
+      "y": 27202,
       "name": "07 Models",
       "width": 2920,
       "height": 10450,
@@ -71583,7 +75031,7 @@
       "type": "frame",
       "id": "AnbSJ",
       "x": 0,
-      "y": 37532,
+      "y": 38052,
       "name": "08 Settings",
       "width": 2920,
       "height": 4551,
@@ -85386,7 +88834,7 @@
       "type": "frame",
       "id": "SXIOh",
       "x": 0,
-      "y": 42483,
+      "y": 43003,
       "name": "09 About",
       "width": 2920,
       "height": 1724,

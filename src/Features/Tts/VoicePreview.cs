@@ -34,11 +34,15 @@ public sealed class VoicePreview(TtsEngine engine, IAudioService audio, ISetting
     /// <param name="language">The language to speak the sample in, for a voice that speaks several, or null for the voice's own.</param>
     /// <param name="speed">How fast to speak it.</param>
     /// <param name="text">What to say, or null for the sample sentence in the language.</param>
+    /// <param name="radio">The optional radio effect, including transmission clicks.</param>
+    /// <param name="volume">The preview volume in percent, on top of the system volume.</param>
+    /// <param name="robot">The optional robot effect; takes precedence over radio.</param>
+    /// <param name="spacesuit">The optional headset effect; takes precedence over other effects.</param>
     /// <returns>A task that completes when playback has started, or when it was stopped before that.</returns>
     /// <exception cref="TtsException">The voice could not speak the sample.</exception>
     /// <exception cref="AudioUnavailableException">There is no output device or it cannot play.</exception>
     /// <exception cref="IOException">The temporary file could not be written.</exception>
-    public async Task PlayAsync(string modelId, string voiceId, string? language = null, double speed = 1, string? text = null)
+    public async Task PlayAsync(string modelId, string voiceId, string? language = null, double speed = 1, string? text = null, RadioVoiceSettings? radio = null, int volume = 100, RobotVoiceSettings? robot = null, SpacesuitVoiceSettings? spacesuit = null)
     {
         ArgumentNullException.ThrowIfNull(modelId);
         ArgumentNullException.ThrowIfNull(voiceId);
@@ -49,6 +53,7 @@ public sealed class VoicePreview(TtsEngine engine, IAudioService audio, ISetting
         preparing = cancel;
         Current = (modelId, voiceId);
         Changed?.Invoke(this, EventArgs.Empty);
+        string? temporary = null;
         try
         {
             var spokenLanguage = language ?? engine.LanguageOf(modelId, voiceId) ?? throw new TtsException("This voice is not downloaded.");
@@ -57,17 +62,36 @@ public sealed class VoicePreview(TtsEngine engine, IAudioService audio, ISetting
                 return;
 
             var path = Path.Combine(Path.GetTempPath(), $"rambl-voice-{Guid.NewGuid():N}.wav");
+            temporary = path;
             await Task.Run(() =>
             {
+                cancel.Token.ThrowIfCancellationRequested();
                 using var writer = new WavWriter(path, spoken.SampleRate);
-                writer.Write(spoken.Samples);
+                if (radio is { Enabled: true } || robot is { Enabled: true } || spacesuit is { Enabled: true })
+                {
+                    var processor = new VoiceEffectProcessor(radio, robot, spoken.SampleRate, spacesuit);
+                    Write(processor.Transmission(opening: true).Samples);
+                    Write(processor.Process(spoken, cancel.Token).Samples);
+                    Write(processor.Transmission(opening: false).Samples);
+                }
+                else
+                {
+                    Write(spoken.Samples);
+                }
                 writer.Complete();
+
+                void Write(float[] samples)
+                {
+                    var gain = Math.Clamp(volume, 0, 200) / 100f;
+                    if (gain != 1)
+                    {
+                        samples = [.. samples.Select(sample => Math.Clamp(sample * gain, -1, 1))];
+                    }
+                    writer.Write(samples);
+                }
             });
             if (cancel.IsCancellationRequested)
-            {
-                DeleteFile(path);
                 return;
-            }
 
             file = path;
             var opened = audio.OpenPlayer(path, settings.Settings.OutputDeviceId);
@@ -84,6 +108,8 @@ public sealed class VoicePreview(TtsEngine engine, IAudioService audio, ISetting
         }
         finally
         {
+            if (temporary is not null && temporary != file)
+                DeleteFile(temporary);
             cancel.Dispose();
         }
     }
