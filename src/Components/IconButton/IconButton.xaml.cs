@@ -13,7 +13,12 @@ public partial class IconButton : ContentView
         typeof(string),
         typeof(IconButton),
         string.Empty,
-        propertyChanged: static (bindable, _, value) => ((IconButton)bindable).GlyphLabel.Text = (string)value
+        propertyChanged: static (bindable, _, value) =>
+        {
+            var button = (IconButton)bindable;
+            button.GlyphLabel.Text = (string)value;
+            button.GlyphLabel.IsVisible = !string.IsNullOrEmpty((string)value);
+        }
     );
 
     /// <summary>Identifies the size of the glyph.</summary>
@@ -82,6 +87,7 @@ public partial class IconButton : ContentView
     public IconButton()
     {
         InitializeComponent();
+        GlyphLabel.IsVisible = false;
         TextLabel.IsVisible = false;
     }
 
