@@ -53,7 +53,8 @@
       "source": "https://huggingface.co/hexgrad/Kokoro-82M",
       "notes": [
         "sherpa-onnx's int8 export of Kokoro v1.0. Only the English voices (speaker ids 0-27) are listed; the package also has Chinese and other voices.",
-        "American voices load lexicon-us-en.txt with espeak-ng voice en-us, British voices lexicon-gb-en.txt with en; the Chinese lexicon and jieba dict are not downloaded."
+        "American voices load lexicon-us-en.txt with espeak-ng voice en-us, British voices lexicon-gb-en.txt with en; the Chinese lexicon and jieba dict are not downloaded.",
+        "CPU uses the installed sherpa-onnx artifact when available. Choosing GPU downloads the audio.cpp Q8_0 GGUF and uses Vulkan; Automatic prefers audio.cpp once downloaded. The same 28 English voice IDs work in both runtimes. audio.cpp uses its native speed control and bundled eSpeak phonemizer."
       ],
       "defaultVoice": "af_heart",
       "voices": [
@@ -2069,6 +2070,28 @@
               "path": "voices.bin",
               "bytes": 28200960,
               "sha256": "1c5a5b983d3d50d8586d437a51f3faa2da7919ce76a013c081e65671a3447c29"
+            }
+          ]
+        },
+        {
+          "id": "audio-cpp-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "audio.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "audio-cpp/audio.cpp-gguf",
+            "revision": "0918f432446f013c09e7bb42926d1dc98810fee1"
+          },
+          "files": [
+            {
+              "path": "Kokoro-82M-GGUF/kokoro-82m-q8_0.gguf",
+              "bytes": 189550976,
+              "sha256": "9a4ca6176460cdc8c7845b804c0bbe85a4791ee3ffff568a3fdadbb708c63f47"
             }
           ]
         }

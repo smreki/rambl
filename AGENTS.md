@@ -4,7 +4,7 @@ Rambl is a local-first push-to-talk dictation app (C# / .NET 10 MAUI). A shortcu
 
 ## Validate
 
-- Windows: `dotnet build src\Rambl.csproj -f net10.0-windows10.0.19041.0`. The first build needs internet: it downloads pinned native releases (parakeet.cpp, transcribe.cpp, llama.cpp, audio.cpp, the Silero VAD model) into `.native/` and checks each against a SHA-256 in `Rambl.csproj`.
+- Windows: `dotnet build src\Rambl.csproj -f net10.0-windows10.0.19041.0`. The first build needs internet: it downloads pinned native releases (parakeet.cpp, transcribe.cpp, llama.cpp, audio.cpp, Kokoro's eSpeak phonemizer, the Silero VAD model) into `.native/` and checks each against a SHA-256 in `Rambl.csproj`.
 - macOS: `dotnet build src/Rambl.csproj -f net10.0-maccatalyst -r maccatalyst-arm64` (`maccatalyst-x64` on Intel).
 - There is no test project. Check UI changes by running the app (`src\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Rambl.exe`).
 - When a change makes a fact here untrue, fix this file in the same change.
@@ -30,6 +30,7 @@ Rambl is a local-first push-to-talk dictation app (C# / .NET 10 MAUI). A shortcu
 - The dictation card (`DictationOverlayWindow`) is a plain WinUI window shown with `WS_EX_NOACTIVATE`. Never activate it, or the app being dictated into loses focus and the paste goes nowhere. The reader panel (`ReaderPanelWindow`) is shown the same way; its selects open lists inside the panel instead of pop-ups.
 - `llama-server` runs out of process on purpose (its ggml must not clash with parakeet.dll's, and a crashing model must not take Rambl down). transcribe.cpp cannot run two sessions of one model at once; keep its `Gate`.
 - Qwen3-TTS CustomVoice runs in an audio.cpp server process, also isolated from the other ggml runtimes. Its processor preference supports Automatic, CPU and GPU (Vulkan), saved by model id in `[models.devices]`. Automatic tries Vulkan device 0 and falls back to CPU if loading fails; explicit GPU reports failures without falling back. A changed preference reloads the model on its next synthesis. The server stays loaded between sentences and is ended on cancellation, failure, idle unload or app exit; the next request starts fresh. Its WAV output is mono 24 kHz; speed changes use local pitch-preserving overlap-add. Keep `AudioCppSynthesizer.ExpectedVersion` in step with `AudioCppVersion` and its archive hash.
+- Kokoro has both sherpa-onnx CPU and audio.cpp GGUF artifacts under the same model id and voice ids. Its per-model processor preference controls the runtime: CPU prefers the installed sherpa artifact; GPU downloads the extra GGUF if needed, and Automatic prefers audio.cpp once downloaded. A pending download offers Cancel and leaves the prior preference unchanged on cancellation or failure. audio.cpp uses Kokoro's native speed control and the voice's full language code (`en-us` / `en-gb`). Its eSpeak DLL and matching dictionaries are extracted from the pinned espeakng-loader wheel and shipped only beside the server, with their GPL license and source notice; no Python installation is needed.
 - The managed ONNX Runtime (`Microsoft.ML.OnnxRuntime.Managed`) runs on the `onnxruntime.dll` that sherpa-onnx ships. Keep both on the same minor version, and never add a second native ONNX Runtime.
 - Updating a native runtime pin means changing its version, its SHA-256 and the version or ABI constant the code checks (`ParakeetNative.AbiVersion`, `TranscribeNative.Version`).
 
@@ -38,6 +39,7 @@ Rambl is a local-first push-to-talk dictation app (C# / .NET 10 MAUI). A shortcu
 - `src/Resources/Raw/stt-models.json`, `language-models.json`, `tts-models.json` and the shared `models.json`. List only anonymously downloadable, ungated Hugging Face repositories, pinned to a 40-character commit, with each file's size and SHA-256.
 - Never hand-edit hashes or revisions; regenerate them from the Hugging Face API.
 - Regenerate the Qwen3-TTS CustomVoice catalog entry with `tools/Update-QwenTtsCatalog.ps1`.
+- Regenerate Kokoro's additional audio.cpp artifact with `tools/Update-KokoroTtsCatalog.ps1`.
 - Laya (voice commands) is sensitive to wording. `CommandMatcher` asks with a fixed instruction, `The user said: "…"` and a built-in "None" option, and `LayaSettings` never uses a temperature below 1. These were measured against the model's reference code; re-measure before changing them.
 
 ## UI and design

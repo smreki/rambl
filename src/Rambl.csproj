@@ -269,6 +269,38 @@
 			<None Include="@(AudioCppFile)" Link="audio.cpp\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
 			<!-- Model specs supply family-specific options to the server. -->
 			<None Include="$(AudioCppBinDir)model_specs\qwen3_tts.json" Link="audio.cpp\model_specs\qwen3_tts.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<None Include="$(AudioCppBinDir)model_specs\kokoro_tts.json" Link="audio.cpp\model_specs\kokoro_tts.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Only the native DLL and dictionaries are extracted from this wheel; Python is not installed or run.
+	     Kokoro's server loads them explicitly, so neither its DLL nor its process-global state enters Rambl. -->
+	<PropertyGroup Condition="'$(UseAudioCpp)' == 'true'">
+		<EspeakLoaderVersion>0.2.4</EspeakLoaderVersion>
+		<EspeakLoaderSha256>41f1e08ac9deda2efd1ea9de0b81dab9f5ae3c4b24284f76533d0a7b1dd7abd7</EspeakLoaderSha256>
+		<EspeakLoaderUrl>https://files.pythonhosted.org/packages/9d/ed/a3d872fbad4f3a3f3db0e8c31768ab14e77cd77306de16b8b20b1e1df7ea/espeakng_loader-$(EspeakLoaderVersion)-py3-none-win_amd64.whl</EspeakLoaderUrl>
+		<EspeakLoaderCacheDir>$(MSBuildProjectDirectory)\..\.native\espeakng-loader\$(EspeakLoaderVersion)\</EspeakLoaderCacheDir>
+	</PropertyGroup>
+
+	<Target Name="FetchKokoroPhonemizer" BeforeTargets="AssignTargetPaths" Condition="'$(UseAudioCpp)' == 'true'">
+		<PropertyGroup>
+			<EspeakLoaderArchive>$(EspeakLoaderCacheDir)espeakng_loader-$(EspeakLoaderVersion)-py3-none-win_amd64.whl</EspeakLoaderArchive>
+			<EspeakLoaderChecked>$(EspeakLoaderCacheDir)$(EspeakLoaderSha256).checked</EspeakLoaderChecked>
+			<EspeakLoaderFiles>$(EspeakLoaderCacheDir)espeakng_loader\</EspeakLoaderFiles>
+		</PropertyGroup>
+		<DownloadFile Condition="!Exists('$(EspeakLoaderChecked)')" SourceUrl="$(EspeakLoaderUrl)" DestinationFolder="$(EspeakLoaderCacheDir)" SkipUnchangedFiles="true" />
+		<GetFileHash Condition="!Exists('$(EspeakLoaderChecked)')" Files="$(EspeakLoaderArchive)" Algorithm="SHA256">
+			<Output TaskParameter="Items" ItemName="EspeakLoaderHash" />
+		</GetFileHash>
+		<Error Condition="!Exists('$(EspeakLoaderChecked)') And '%(EspeakLoaderHash.FileHash)' != '$(EspeakLoaderSha256)'" Text="The downloaded Kokoro phonemizer does not match the pinned SHA-256." />
+		<Unzip Condition="!Exists('$(EspeakLoaderChecked)')" SourceFiles="$(EspeakLoaderArchive)" DestinationFolder="$(EspeakLoaderCacheDir)" />
+		<Touch Condition="!Exists('$(EspeakLoaderChecked)')" Files="$(EspeakLoaderChecked)" AlwaysCreate="true" />
+		<ItemGroup>
+			<None Include="$(EspeakLoaderFiles)espeak-ng.dll" Link="audio.cpp\espeak\espeak-ng.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<KokoroEspeakData Include="$(EspeakLoaderFiles)espeak-ng-data\**\*" />
+			<None Include="@(KokoroEspeakData)" Link="audio.cpp\espeak\espeak-ng-data\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<None Include="..\tools\licenses\espeak-ng-COPYING.txt" Link="audio.cpp\espeak\licenses\COPYING.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<None Include="..\tools\licenses\espeak-ng-NOTICE.txt" Link="audio.cpp\espeak\licenses\NOTICE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
 		</ItemGroup>
 	</Target>
 
