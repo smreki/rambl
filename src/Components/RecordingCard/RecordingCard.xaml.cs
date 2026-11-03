@@ -56,6 +56,8 @@ public partial class RecordingCard : ContentView
         get => OriginalLabel.Text ?? string.Empty;
         set
         {
+            if (OriginalText == value)
+                return;
             OriginalLabel.Text = value;
             if (string.IsNullOrEmpty(value))
                 originalExpanded = false;
@@ -70,6 +72,8 @@ public partial class RecordingCard : ContentView
         get => ProcessingNoteLabel.Text ?? string.Empty;
         set
         {
+            if (ProcessingNote == value)
+                return;
             ProcessingNoteLabel.Text = value;
             ShowProcessing();
         }
@@ -81,6 +85,8 @@ public partial class RecordingCard : ContentView
         get => ActionTitleLabel.Text ?? string.Empty;
         set
         {
+            if (ActionTitle == value)
+                return;
             ActionTitleLabel.Text = value;
             ActionBlock.IsVisible = !string.IsNullOrEmpty(value);
         }
@@ -92,6 +98,8 @@ public partial class RecordingCard : ContentView
         get => ActionDetailLabel.Text ?? string.Empty;
         set
         {
+            if (ActionDetail == value)
+                return;
             ActionDetailLabel.Text = value;
             ActionDetailLabel.IsVisible = !string.IsNullOrEmpty(value);
         }
@@ -106,6 +114,8 @@ public partial class RecordingCard : ContentView
         get => TranscriptLabel.Text ?? string.Empty;
         set
         {
+            if (Transcript == value)
+                return;
             TranscriptLabel.Text = value;
             TranscriptLabel.IsVisible = !string.IsNullOrEmpty(value);
         }
@@ -117,6 +127,8 @@ public partial class RecordingCard : ContentView
         get => NoteLabel.Text ?? string.Empty;
         set
         {
+            if (NoteText == value)
+                return;
             NoteLabel.Text = value;
             NoteLabel.IsVisible = !string.IsNullOrEmpty(value);
         }
@@ -128,6 +140,8 @@ public partial class RecordingCard : ContentView
         get => ErrorLabel.Text ?? string.Empty;
         set
         {
+            if (ErrorText == value)
+                return;
             ErrorLabel.Text = value;
             ErrorLabel.IsVisible = !string.IsNullOrEmpty(value);
         }
@@ -139,6 +153,8 @@ public partial class RecordingCard : ContentView
         get => timeText;
         set
         {
+            if (timeText == value)
+                return;
             timeText = value;
             TimeLabel.Text = value;
             UpdateNames();
@@ -151,6 +167,8 @@ public partial class RecordingCard : ContentView
         get => DurationLabel.Text ?? string.Empty;
         set
         {
+            if (DurationText == value)
+                return;
             DurationLabel.Text = value;
             TotalLabel.Text = value;
         }
@@ -199,14 +217,10 @@ public partial class RecordingCard : ContentView
         get => isActive;
         set
         {
+            if (isActive == value)
+                return;
             isActive = value;
-            var key = !value ? "Border" : isReading ? "Speaking" : "Accent";
-            var resources = Application.Current!.Resources;
-            Outline.SetAppTheme<Brush>(
-                Border.StrokeProperty,
-                new SolidColorBrush((Color)resources[key + "Light"]),
-                new SolidColorBrush((Color)resources[key + "Dark"])
-            );
+            ShowActiveStroke();
         }
     }
 
@@ -216,6 +230,8 @@ public partial class RecordingCard : ContentView
         get => isCopied;
         set
         {
+            if (isCopied == value)
+                return;
             isCopied = value;
             ShowCopyGlyph();
         }
@@ -245,7 +261,7 @@ public partial class RecordingCard : ContentView
             var resources = Application.Current!.Resources;
             PlayDisc.SetAppThemeColor(BackgroundColorProperty, (Color)resources[tone + "SoftLight"], (Color)resources[tone + "SoftDark"]);
             PlayGlyph.SetAppThemeColor(Label.TextColorProperty, (Color)resources[tone + "Light"], (Color)resources[tone + "Dark"]);
-            IsActive = isActive;
+            ShowActiveStroke();
             ShowProcessing();
             UpdateNames();
         }
@@ -257,6 +273,8 @@ public partial class RecordingCard : ContentView
         get => SourceLabel.Text ?? string.Empty;
         set
         {
+            if (SourceText == value)
+                return;
             SourceLabel.Text = value;
             SourceRow.IsVisible = !string.IsNullOrEmpty(value);
         }
@@ -284,11 +302,24 @@ public partial class RecordingCard : ContentView
         // An empty text still opens an empty tooltip on Windows, so "none" has to clear the property.
         set
         {
+            if (RetranscribeToolTip == value)
+                return;
             if (string.IsNullOrEmpty(value))
                 RetranscribeButton.ClearValue(ToolTipProperties.TextProperty);
             else
                 ToolTipProperties.SetText(RetranscribeButton, value);
         }
+    }
+
+    private void ShowActiveStroke()
+    {
+        var key = !isActive ? "Border" : isReading ? "Speaking" : "Accent";
+        var resources = Application.Current!.Resources;
+        Outline.SetAppTheme<Brush>(
+            Border.StrokeProperty,
+            new SolidColorBrush((Color)resources[key + "Light"]),
+            new SolidColorBrush((Color)resources[key + "Dark"])
+        );
     }
 
     // The row under the text: Show original for a processed dictation, or the warning when post-processing did not finish.

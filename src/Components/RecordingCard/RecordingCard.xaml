@@ -9,7 +9,7 @@
         <VerticalStackLayout Spacing="12">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
                 <VerticalStackLayout Spacing="10">
-                    <Label x:Name="TranscriptLabel" FontSize="13" MaxLines="2" LineBreakMode="TailTruncation"
+                    <Label x:Name="TranscriptLabel" IsVisible="False" FontSize="13" MaxLines="2" LineBreakMode="TailTruncation"
                            LineHeight="1.35"
                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
                     <!-- Shown instead of text when there is none, and why a transcription failed. -->

@@ -17,6 +17,7 @@ namespace Rambl.Views;
 /// </remarks>
 public partial class History : ContentView
 {
+    private const int PageSize = 10;
     private readonly RecordingHistory history;
     private readonly IAudioService audio;
     private readonly IFolderService folders;
@@ -29,6 +30,8 @@ public partial class History : ContentView
     private IDispatcherTimer? progressTimer;
     private readonly HistorySettings settings;
     private bool subscribed;
+    private int pageIndex;
+    private int pageCount = 1;
 
     /// <summary>Creates the screen.</summary>
     /// <param name="history">Supplies the recordings and does the work on them.</param>
@@ -67,7 +70,11 @@ public partial class History : ContentView
         Search.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(SearchField.Text))
+            {
+                pageIndex = 0;
                 Rebuild();
+                _ = ListScroll.ScrollToAsync(0, 0, animated: false);
+            }
         };
     }
 
@@ -75,6 +82,7 @@ public partial class History : ContentView
 
     private async void OnLoaded(object? sender, EventArgs e)
     {
+        pageIndex = 0;
         if (!subscribed)
         {
             subscribed = true;
@@ -127,17 +135,28 @@ public partial class History : ContentView
     private void Rebuild()
     {
         var query = Search.Text?.Trim() ?? string.Empty;
-        var visible = recordings
+        var matches = recordings
             .Where(recording =>
                 query.Length == 0
                 || (recording.Transcript?.Contains(query, StringComparison.CurrentCultureIgnoreCase) ?? false)
                 || (recording.Result?.Contains(query, StringComparison.CurrentCultureIgnoreCase) ?? false)
                 || (recording.Action?.Title.Contains(query, StringComparison.CurrentCultureIgnoreCase) ?? false)
             )
+            .OrderByDescending(recording => recording.CreatedAt)
+            .ThenBy(recording => recording.Id, StringComparer.Ordinal)
             .ToList();
 
+        pageCount = Math.Max(1, (matches.Count + PageSize - 1) / PageSize);
+        pageIndex = Math.Clamp(pageIndex, 0, pageCount - 1);
+        var visible = matches.Skip(pageIndex * PageSize).Take(PageSize).ToList();
+        Pagination.IsVisible = matches.Count > PageSize;
+        PreviousPageButton.IsEnabled = pageIndex > 0;
+        NextPageButton.IsEnabled = pageIndex + 1 < pageCount;
+        PageLabel.Text = $"Page {pageIndex + 1} of {pageCount} · {matches.Count} recordings";
+
         var known = recordings.Select(recording => recording.Id).ToHashSet();
-        foreach (var gone in entries.Keys.Where(id => !known.Contains(id)).ToList())
+        var onPage = visible.Select(recording => recording.Id).ToHashSet();
+        foreach (var gone in entries.Keys.Where(id => !known.Contains(id) || (!onPage.Contains(id) && playerId != id)).ToList())
         {
             if (playerId == gone)
                 StopPlayback();
@@ -186,6 +205,17 @@ public partial class History : ContentView
         {
             MessageLabel.IsVisible = false;
         }
+    }
+
+    private void OnPreviousPageClicked(object? sender, EventArgs e) => ChangePage(pageIndex - 1);
+
+    private void OnNextPageClicked(object? sender, EventArgs e) => ChangePage(pageIndex + 1);
+
+    private void ChangePage(int index)
+    {
+        pageIndex = Math.Clamp(index, 0, pageCount - 1);
+        Rebuild();
+        _ = ListScroll.ScrollToAsync(0, 0, animated: false);
     }
 
     private void ShowMessage(string text)
