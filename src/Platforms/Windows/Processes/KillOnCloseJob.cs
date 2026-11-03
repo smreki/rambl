@@ -1,13 +1,13 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Rambl.Features.LanguageModels.LlamaCpp;
+using Rambl.Common.Processes;
 
 namespace Rambl.Platforms.Windows.Processes;
 
 /// <summary>A Windows job object that ends every process assigned to it when Rambl exits, however it exits.</summary>
 /// <remarks>
-/// The language model server holds gigabytes of memory, so it must not stay behind when Rambl is killed or crashes.
+/// Model servers hold gigabytes of memory, so they must not stay behind when Rambl is killed or crashes.
 /// The job's handle is kept for the life of the app; Windows closes it with the process, which ends the job's processes.
 /// </remarks>
 internal sealed class KillOnCloseJob : IChildProcessGuard

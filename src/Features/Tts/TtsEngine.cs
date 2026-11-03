@@ -1,18 +1,20 @@
 using Microsoft.Extensions.Logging;
 using Rambl.Features.Models;
+using Rambl.Features.Settings;
 
 namespace Rambl.Features.Tts;
 
 /// <summary>Loads a text-to-speech model when it is asked to speak, keeps it loaded between requests and unloads it when idle.</summary>
 /// <remarks>
-/// Loading takes about a second, so a model stays loaded for a few minutes after its last use and is then released.
+/// A model stays loaded for a few minutes after its last use and is then released.
 /// Asking for a different model replaces it, and requests are spoken one at a time. Call <see cref="SynthesizeAsync"/>
 /// from the UI thread, as the model library must be used there; the work itself runs in the background.
 /// </remarks>
 /// <param name="library">Says which text-to-speech models are downloaded and which runtime runs them.</param>
 /// <param name="runtimes">The text-to-speech runtimes this build has.</param>
+/// <param name="settings">The saved processor preference for each model.</param>
 /// <param name="logger">The logger for load failures.</param>
-public sealed class TtsEngine(ModelLibrary library, ModelRuntimeRegistry runtimes, ILogger<TtsEngine> logger) : IDisposable
+public sealed class TtsEngine(ModelLibrary library, ModelRuntimeRegistry runtimes, ISettingsSource settings, ILogger<TtsEngine> logger) : IDisposable
 {
     private static readonly TimeSpan IdleUnloadDelay = TimeSpan.FromMinutes(5);
 
@@ -105,11 +107,30 @@ public sealed class TtsEngine(ModelLibrary library, ModelRuntimeRegistry runtime
         ArgumentNullException.ThrowIfNull(modelId);
         ArgumentNullException.ThrowIfNull(text);
 
-        var usability = library.GetUsability(modelId, null);
+        var device = settings.Settings.ModelDevices.GetValueOrDefault(modelId)?.ToLowerInvariant() switch
+        {
+            "cpu" => ModelDevice.Cpu,
+            "gpu" => ModelDevice.Gpu,
+            _ => ModelDevice.Automatic,
+        };
+        var installedRuntimes = library.GetRuntimeOptions(modelId);
+        var preferredRuntime = device == ModelDevice.Cpu && installedRuntimes.Contains("sherpa-onnx")
+            ? "sherpa-onnx"
+            : installedRuntimes.Contains("audio.cpp") ? "audio.cpp" : null;
+        var usability = library.GetUsability(modelId, preferredRuntime);
         if (!usability.IsUsable)
             throw new TtsException(usability.Reason ?? "This model cannot be used.");
 
-        var resolved = library.Resolve(modelId, null) ?? throw new TtsException("This model is not downloaded.");
+        var resolved = library.Resolve(modelId, preferredRuntime) ?? throw new TtsException("This model is not downloaded.");
+        if (device == ModelDevice.Gpu && resolved.RuntimeId != "audio.cpp")
+            throw new TtsException("The GPU model files are not downloaded. Choose GPU in TTS Models to download them.");
+        if (resolved.RuntimeId == "audio.cpp")
+        {
+            resolved = resolved with
+            {
+                Device = device,
+            };
+        }
         var voice = FindVoice(modelId, voiceId) ?? throw new TtsException($"{resolved.Model.Name} has no such voice.");
         var spokenLanguage = language ?? LanguageOf(voice, resolved.Model);
 
@@ -120,8 +141,14 @@ public sealed class TtsEngine(ModelLibrary library, ModelRuntimeRegistry runtime
             CancelIdleUnload();
 
             var synthesizer = await GetLoadedAsync(resolved, cancellationToken).ConfigureAwait(false);
-            return await Task.Run(() => synthesizer.Synthesize(text, voice, spokenLanguage, speed, cancellationToken), cancellationToken)
+            return await synthesizer.SynthesizeAsync(text, voice, spokenLanguage, speed, cancellationToken)
                 .ConfigureAwait(false);
+        }
+        catch
+        {
+            // A cancelled server request may still be computing. Unloading stops it and lets the next request start fresh.
+            Unload();
+            throw;
         }
         finally
         {

@@ -142,9 +142,9 @@ public static class RamblProgram
         );
         builder.Services.AddSingleton<AppLayout>();
         builder.Services.AddSingleton<ModelCatalogProvider>();
-#if LLAMA_CPP && WINDOWS
-        // The language model server is ended with Rambl, however Rambl ends.
-        builder.Services.AddSingleton<Features.LanguageModels.LlamaCpp.IChildProcessGuard, Platforms.Windows.Processes.KillOnCloseJob>();
+#if (LLAMA_CPP || AUDIO_CPP) && WINDOWS
+        // Model servers are ended with Rambl, however Rambl ends.
+        builder.Services.AddSingleton<Common.Processes.IChildProcessGuard, Platforms.Windows.Processes.KillOnCloseJob>();
 #endif
         // The language runtimes this build has, the decision runtime for voice commands among them. Models of a runtime
         // that is not here can be downloaded and managed, but not used.
@@ -155,7 +155,7 @@ public static class RamblProgram
                     [
 #if LLAMA_CPP
                         new Features.LanguageModels.LlamaCpp.LlamaCppRuntime(
-                            services.GetService<Features.LanguageModels.LlamaCpp.IChildProcessGuard>(),
+                            services.GetService<Common.Processes.IChildProcessGuard>(),
                             services.GetRequiredService<ILogger<Features.LanguageModels.LlamaCpp.LlamaCppRuntime>>()
                         ),
 #endif
@@ -190,11 +190,17 @@ public static class RamblProgram
         // The text-to-speech runtimes this build has, with their own catalog and folder.
         builder.Services.AddKeyedSingleton(
             ModelLibraryKeys.Tts,
-            static (_, _) =>
+            static (services, _) =>
                 new ModelRuntimeRegistry(
                     [
 #if SHERPA_ONNX
                         new Features.Tts.Sherpa.SherpaTtsRuntime(),
+#endif
+#if AUDIO_CPP
+                        new Features.Tts.AudioCpp.AudioCppRuntime(
+                            services.GetService<Common.Processes.IChildProcessGuard>(),
+                            services.GetRequiredService<ILogger<Features.Tts.AudioCpp.AudioCppRuntime>>()
+                        ),
 #endif
                     ]
                 )
@@ -214,6 +220,7 @@ public static class RamblProgram
             new TtsEngine(
                 services.GetRequiredKeyedService<ModelLibrary>(ModelLibraryKeys.Tts),
                 services.GetRequiredKeyedService<ModelRuntimeRegistry>(ModelLibraryKeys.Tts),
+                (ISettingsSource)Application.Current!,
                 services.GetRequiredService<ILogger<TtsEngine>>()
             )
         );

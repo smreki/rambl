@@ -25,7 +25,10 @@ internal sealed class SherpaTtsSynthesizer : ITtsSynthesizer
         main = new OfflineTts(files.CreateConfig(directory, british: false, threads));
     }
 
-    public TtsAudio Synthesize(string text, CatalogVoice voice, string language, float speed, CancellationToken cancellationToken)
+    public Task<TtsAudio> SynthesizeAsync(string text, CatalogVoice voice, string language, float speed, CancellationToken cancellationToken) =>
+        Task.Run(() => Synthesize(text, voice, language, speed, cancellationToken), cancellationToken);
+
+    private TtsAudio Synthesize(string text, CatalogVoice voice, string language, float speed, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var tts = files.Kind == SherpaTtsKind.Kokoro && voice.Language == "en-GB"

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Rambl.Features.LanguageModels.LlamaCpp;
+namespace Rambl.Common.Processes;
 
 /// <summary>Makes sure a child process does not outlive Rambl, even when Rambl is killed or crashes.</summary>
 /// <remarks>

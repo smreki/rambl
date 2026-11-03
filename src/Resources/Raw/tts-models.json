@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23",
+  "generatedAt": "2026-11-03",
   "runtimes": [
     {
       "id": "sherpa-onnx",
@@ -16,6 +16,19 @@
       "automaticOrder": 1,
       "license": "Apache-2.0",
       "project": "https://github.com/k2-fsa/sherpa-onnx"
+    },
+    {
+      "id": "audio.cpp",
+      "name": "audio.cpp",
+      "formats": [
+        "gguf"
+      ],
+      "platforms": [
+        "windows-x64"
+      ],
+      "automaticOrder": 2,
+      "license": "Apache-2.0",
+      "project": "https://github.com/0xShug0/audio.cpp"
     }
   ],
   "models": [
@@ -4065,6 +4078,123 @@
               "path": "voice.bin",
               "bytes": 517168,
               "sha256": "67d5209b0ee8ce6c74105ffbe12fe6a7628aea3b4ba2fcb308a4a67938a93ce8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qwen3-tts-1.7b-customvoice",
+      "name": "Qwen3-TTS 1.7B CustomVoice",
+      "family": "qwen3-tts-customvoice",
+      "purpose": {
+        "label": "Expressive multilingual voices",
+        "icon": "sparkles"
+      },
+      "cpuFit": "heavy",
+      "languages": {
+        "label": "10 languages",
+        "codes": [
+          "en",
+          "zh",
+          "ja",
+          "ko",
+          "de",
+          "fr",
+          "ru",
+          "pt",
+          "es",
+          "it"
+        ]
+      },
+      "license": {
+        "id": "Apache-2.0"
+      },
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+      "notes": [
+        "Nine built-in voices, including Aiden. Runs locally with audio.cpp; no Python or API key is needed.",
+        "Choose Automatic, CPU or GPU (Vulkan) on the Local model card. Automatic prefers Vulkan and falls back to CPU when GPU loading fails.",
+        "The self-contained Q8_0 GGUF includes the speech tokenizer. The first sentence warms the inference caches.",
+        "Speed is adjusted locally with pitch-preserving overlap-add. Voice cloning and voice-design checkpoints are not supported."
+      ],
+      "parameters": "1.7B",
+      "defaultVoice": "Aiden",
+      "voices": [
+        {
+          "id": "Aiden",
+          "name": "Aiden",
+          "speaker": 2861,
+          "gender": "male"
+        },
+        {
+          "id": "Dylan",
+          "name": "Dylan",
+          "speaker": 2878,
+          "gender": "male"
+        },
+        {
+          "id": "Eric",
+          "name": "Eric",
+          "speaker": 2875,
+          "gender": "male"
+        },
+        {
+          "id": "Ono_Anna",
+          "name": "Ono Anna",
+          "speaker": 2873,
+          "gender": "female"
+        },
+        {
+          "id": "Ryan",
+          "name": "Ryan",
+          "speaker": 3061,
+          "gender": "male"
+        },
+        {
+          "id": "Serena",
+          "name": "Serena",
+          "speaker": 3066,
+          "gender": "female"
+        },
+        {
+          "id": "Sohee",
+          "name": "Sohee",
+          "speaker": 2864,
+          "gender": "female"
+        },
+        {
+          "id": "Uncle_Fu",
+          "name": "Uncle Fu",
+          "speaker": 3010,
+          "gender": "male"
+        },
+        {
+          "id": "Vivian",
+          "name": "Vivian",
+          "speaker": 3065,
+          "gender": "female"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": "audio-cpp-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "audio.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "audio-cpp/audio.cpp-gguf",
+            "revision": "874fcb41ececda20bcbc0782d6b4ea7f7d069ea8"
+          },
+          "files": [
+            {
+              "path": "Qwen3-TTS-12Hz-1.7B-CustomVoice-GGUF/qwen3-tts-12hz-1.7b-customvoice-q8_0.gguf",
+              "bytes": 2817055200,
+              "sha256": "c8ac3f94b6e73f137c0e7ecc9270bc8faec7a476ff799b87e48844d1d0987ac3"
             }
           ]
         }

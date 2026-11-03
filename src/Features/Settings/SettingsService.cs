@@ -167,6 +167,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
             ActiveModelId = NullIfEmpty(ReadString(models, "models", "active")),
             ActiveLanguageModelId = NullIfEmpty(ReadString(languageModels, "language_models", "active")),
             ModelRuntimes = ReadModelChoices(models, "runtimes"),
+            ModelDevices = ReadModelChoices(models, "devices"),
             ModelLanguages = ReadModelChoices(models, "languages"),
             OutputDeviceId = NullIfEmpty(ReadString(audio, "audio", "output_device")),
             FeedbackVolume = ReadInt(audio, "audio", "feedback_volume") is { } volume
@@ -275,7 +276,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
         }
 
         var models = FindTable(document, "models");
-        if (settings.ActiveModelId is not null || settings.ModelRuntimes.Count > 0 || settings.ModelLanguages.Count > 0)
+        if (settings.ActiveModelId is not null || settings.ModelRuntimes.Count > 0 || settings.ModelLanguages.Count > 0 || settings.ModelDevices.Count > 0)
             models ??= GetOrAddTable(document, "models");
 
         if (models is null)
@@ -284,6 +285,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
         SetOrRemove(models, "active", settings.ActiveModelId);
         WriteModelChoices(models, "runtimes", settings.ModelRuntimes);
         WriteModelChoices(models, "languages", settings.ModelLanguages);
+        WriteModelChoices(models, "devices", settings.ModelDevices);
 
         if (models.Count == 0)
             _ = document.Remove("models");
@@ -291,7 +293,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
 
     private static string? NullIfEmpty(string? value) => string.IsNullOrWhiteSpace(value) ? null : value;
 
-    // [models.runtimes] and [models.languages] map a model id to the runtime or language picked for it; entries that are not
+    // [models.runtimes], [models.languages] and [models.devices] map a model id to its choice; entries that are not
     // text are errors, empty ones are ignored.
     private static Dictionary<string, string> ReadModelChoices(TomlTable? models, string tableName)
     {

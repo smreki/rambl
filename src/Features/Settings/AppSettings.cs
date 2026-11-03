@@ -44,6 +44,9 @@ public sealed record AppSettings
     /// <summary>Gets the language code the user picked for a downloaded model, by model id; a model without an entry detects the language itself.</summary>
     public IReadOnlyDictionary<string, string> ModelLanguages { get; init; } = new Dictionary<string, string>();
 
+    /// <summary>Gets the processor picked for a model, by model id: <c>cpu</c> or <c>gpu</c>; no entry means Automatic.</summary>
+    public IReadOnlyDictionary<string, string> ModelDevices { get; init; } = new Dictionary<string, string>();
+
     /// <summary>Gets whether each dictation's audio and transcript is kept in the History.</summary>
     public bool HistoryEnabled { get; init; } = true;
 
