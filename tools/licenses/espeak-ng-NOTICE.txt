@@ -1,0 +1,9 @@
+Kokoro phonemization uses the eSpeak NG library and dictionaries distributed in
+the espeakng-loader 0.2.4 Windows x64 wheel. Python code from the wheel is not
+used or shipped. eSpeak NG is licensed under GPL-3.0-or-later; see COPYING.
+
+eSpeak NG source and license: https://github.com/espeak-ng/espeak-ng
+Packager source and build instructions: https://github.com/thewh1teagle/espeakng-loader
+Exact package: https://pypi.org/project/espeakng-loader/0.2.4/
+
+The library is loaded in Rambl's separate audio.cpp process.

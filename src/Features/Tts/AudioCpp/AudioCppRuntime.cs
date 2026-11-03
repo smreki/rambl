@@ -4,7 +4,7 @@ using Rambl.Features.Models;
 
 namespace Rambl.Features.Tts.AudioCpp;
 
-/// <summary>Runs Qwen3-TTS CustomVoice GGUF models in an isolated audio.cpp server.</summary>
+/// <summary>Runs Kokoro and Qwen3-TTS CustomVoice GGUF models in an isolated audio.cpp server.</summary>
 /// <param name="guard">Ties the server to Rambl's lifetime.</param>
 /// <param name="logger">The logger for server failures and backend selection.</param>
 internal sealed class AudioCppRuntime(IChildProcessGuard? guard, ILogger<AudioCppRuntime> logger) : ITtsRuntime
@@ -17,10 +17,13 @@ internal sealed class AudioCppRuntime(IChildProcessGuard? guard, ILogger<AudioCp
     {
         ArgumentNullException.ThrowIfNull(model);
         ArgumentNullException.ThrowIfNull(artifact);
-        if (model.Family != "qwen3-tts-customvoice" || artifact.Format != "gguf")
-            return RuntimeSupport.No("Rambl uses audio.cpp for Qwen3-TTS CustomVoice GGUF models only.");
+        if (model.Family is not ("qwen3-tts-customvoice" or "kokoro") || artifact.Format != "gguf")
+            return RuntimeSupport.No("Rambl uses audio.cpp for Kokoro and Qwen3-TTS CustomVoice GGUF models only.");
         if (artifact.Files.Count(file => file.Path.EndsWith(".gguf", StringComparison.OrdinalIgnoreCase)) != 1)
             return RuntimeSupport.No("This voice model needs one self-contained audio.cpp GGUF file.");
+        if (model.Family == "kokoro" && (!File.Exists(AudioCppSynthesizer.EspeakLibraryPath)
+            || !File.Exists(Path.Combine(AudioCppSynthesizer.EspeakDataPath, "phontab"))))
+            return RuntimeSupport.No("The Kokoro phonemizer is missing from this installation.");
         return File.Exists(AudioCppSynthesizer.ServerPath)
             ? RuntimeSupport.Yes
             : RuntimeSupport.No("The audio.cpp server is missing from this installation.");
@@ -37,7 +40,7 @@ internal sealed class AudioCppRuntime(IChildProcessGuard? guard, ILogger<AudioCp
         var path = Path.Combine(model.Directory, file.Path);
         if (!File.Exists(path))
             throw new TtsException("The voice model file is missing. Download the model again.");
-        const string family = "qwen3_tts";
+        var family = model.Model.Family == "kokoro" ? "kokoro_tts" : "qwen3_tts";
 
         if (model.Device == ModelDevice.Cpu)
             return await AudioCppSynthesizer.StartAsync(path, family, "cpu", guard, logger, cancellationToken).ConfigureAwait(false);
