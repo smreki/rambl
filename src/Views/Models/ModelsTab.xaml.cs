@@ -199,6 +199,7 @@ public partial class ModelsTab : ContentView
             card.TypeGlyph = Icons.Users;
             card.LicenseText = listing.License?.Name ?? string.Empty;
             card.LanguageRowTitle = "Voice";
+            card.IsRuntimeSelectInLanguageRow = true;
             card.LanguageRowHint = "Preview plays a short sample with this voice.";
             card.KeepsLanguageRowHint = true;
         }
@@ -348,16 +349,19 @@ public partial class ModelsTab : ContentView
     {
         var card = entry.Card;
         var playing = preview.Current?.ModelId == entry.Listing.Id;
+        var downloading = library.GetState(entry.Listing.Id).Status == ModelStatus.Downloading;
         card.IsDownloaded = false;
-        card.IsRuntimeSelectVisible = false;
+        ShowVoiceDeviceOptions(entry.Listing.Id, card, usability.IsUsable);
         card.IsActionVisible = true;
-        (card.ActionText, card.ActionGlyph, card.IsActionEnabled) = playing
-            ? ("Stop", Icons.Square, true)
-            : ("Preview", Icons.Play, usability.IsUsable);
+        (card.ActionText, card.ActionGlyph, card.IsActionEnabled) = downloading
+            ? ("Cancel", Icons.X, true)
+            : playing
+                ? ("Stop", Icons.Square, true)
+                : ("Preview", Icons.Play, usability.IsUsable);
         card.NoticeText = usability.IsUsable ? string.Empty : usability.Reason ?? string.Empty;
         card.SecondaryActionName = "Delete";
         card.SecondaryActionGlyph = Icons.Trash2;
-        card.IsSecondaryActionVisible = true;
+        card.IsSecondaryActionVisible = !downloading;
 
         var voices = entry.Listing.Voices ?? [];
         card.IsLanguageRowVisible = voices.Count > 1;
@@ -461,6 +465,12 @@ public partial class ModelsTab : ContentView
 
     private async void OnRuntimeChanged(ModelListing listing, ModelCard card)
     {
+        if (kind == ModelsTabKind.Tts && scope == ModelsTabScope.Local)
+        {
+            await SaveVoiceDeviceAsync(listing, card);
+            return;
+        }
+
         try
         {
             if (scope == ModelsTabScope.Browse)
@@ -485,6 +495,66 @@ public partial class ModelsTab : ContentView
         {
             logger.LogError(ex, "Unable to save the runtime chosen for {Model}", listing.Id);
             await ShowAlertAsync("The runtime could not be saved", "Check that config.toml is valid and writable, then try again.");
+        }
+    }
+
+    // Voice cards place the processor selector beside Voice. Other voice runtimes remain CPU-only.
+    private void ShowVoiceDeviceOptions(string modelId, ModelCard card, bool usable)
+    {
+        var gpu = library.GetRuntimeChoices(modelId).FirstOrDefault(choice => choice.RuntimeId == "audio.cpp");
+        card.IsRuntimeSelectVisible = gpu is not null;
+        if (gpu is null)
+            return;
+
+        var chosen = CurrentApp.Settings.ModelDevices.GetValueOrDefault(modelId)?.ToLowerInvariant();
+        card.LanguageRowHint = gpu.IsInstalled
+            ? "Preview plays a short sample with this voice."
+            : $"GPU downloads an additional {ByteSize.Format(gpu.SizeBytes)}.";
+        var installed = library.GetRuntimeOptions(modelId);
+        var preferred = chosen == "cpu" && installed.Contains("sherpa-onnx")
+            ? "sherpa-onnx"
+            : gpu.IsInstalled ? "audio.cpp" : null;
+        if (library.Resolve(modelId, preferred) is { } resolved)
+            card.Size = ByteSize.Format(resolved.Artifact.TotalBytes);
+        card.RuntimeSelectLabel = "Processor";
+        card.RuntimeSelectWidth = 176;
+        card.IsRuntimeSelectEnabled = usable && library.GetState(modelId).Status != ModelStatus.Downloading;
+        card.SetRuntimeOptions(["Automatic", "CPU", "GPU (Vulkan)"], chosen switch { "cpu" => 1, "gpu" => 2, _ => 0 });
+    }
+
+    private async Task SaveVoiceDeviceAsync(ModelListing listing, ModelCard card)
+    {
+        var chosen = card.SelectedRuntimeIndex switch { 1 => "cpu", 2 => "gpu", _ => null };
+        card.IsRuntimeSelectEnabled = false;
+        if (preview.Current?.ModelId == listing.Id)
+            preview.Stop();
+        try
+        {
+            if (chosen != "cpu" && library.GetInstalled(listing.Id, "audio.cpp") is null)
+            {
+                await library.DownloadAsync(listing.Id, "audio.cpp");
+                if (library.GetInstalled(listing.Id, "audio.cpp") is null)
+                {
+                    var state = library.GetState(listing.Id);
+                    if (state.Status == ModelStatus.Failed)
+                        throw new TtsException(state.Error ?? "The GPU model files could not be downloaded.");
+                    return;
+                }
+            }
+            await CurrentApp.UpdateSettingsAsync(settings => settings with { ModelDevices = WithChoice(settings.ModelDevices, listing.Id, chosen) });
+        }
+        catch (TtsException ex)
+        {
+            await ShowAlertAsync("The processor could not be selected", ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unable to save the processor chosen for {Model}", listing.Id);
+            await ShowAlertAsync("The processor could not be saved", "Check that config.toml is valid and writable, then try again.");
+        }
+        finally
+        {
+            RefreshAll();
         }
     }
 
@@ -555,7 +625,10 @@ public partial class ModelsTab : ContentView
             var status = library.GetState(listing.Id).Status;
             if (scope == ModelsTabScope.Local && kind == ModelsTabKind.Tts)
             {
-                await PreviewAsync(listing);
+                if (status == ModelStatus.Downloading)
+                    library.Cancel(listing.Id);
+                else
+                    await PreviewAsync(listing);
             }
             else if (scope == ModelsTabScope.Local)
             {

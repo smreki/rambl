@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rambl.Common.Input;
 using Rambl.Components;
@@ -6,6 +7,7 @@ using Rambl.Features.Dialogs;
 using Rambl.Features.Models;
 using Rambl.Features.PostProcessing;
 using Rambl.Features.ReadAloud;
+using Rambl.Features.Settings;
 using Rambl.Features.Tts;
 
 namespace Rambl.Views;
@@ -15,7 +17,8 @@ namespace Rambl.Views;
 /// pre-processing steps and its voice. Shown inside <see cref="ReadAloud"/>; it asks to go back through <see cref="BackRequested"/>.
 /// </summary>
 /// <remarks>
-/// Nothing is stored until Save. Revert, Delete and leaving with unsaved changes each ask in a confirmation dialog. A new
+/// Profile changes are stored on Save; the shared model processor preference is saved immediately.
+/// Revert, Delete and leaving with unsaved changes each ask in a confirmation dialog. A new
 /// profile uses the same screen with the first downloaded voice and Create instead of Save.
 /// </remarks>
 public partial class ProfileEditor : ContentView
@@ -28,6 +31,7 @@ public partial class ProfileEditor : ContentView
     private readonly ShortcutUsage shortcuts;
     private readonly ProcessModels models;
     private readonly TtsEngine tts;
+    private readonly ModelLibrary voiceModels;
     private readonly VoicePreview preview;
     private readonly IConfirmService confirmations;
     private readonly ILogger<ProfileEditor> logger;
@@ -49,12 +53,14 @@ public partial class ProfileEditor : ContentView
     private string baseline = string.Empty;
     private bool syncing = true;
     private bool subscribed;
+    private bool savingProcessor;
 
     /// <summary>Creates the screen.</summary>
     /// <param name="library">Stores the profiles.</param>
     /// <param name="shortcuts">Keeps the profiles' shortcuts apart from the dictation shortcuts.</param>
     /// <param name="models">Lists the language models a step can use.</param>
     /// <param name="tts">Lists the voices.</param>
+    /// <param name="voiceModels">Downloads voice files for the shared model processor preference.</param>
     /// <param name="preview">Plays a sample of the chosen voice.</param>
     /// <param name="confirmations">Asks before a change is discarded or a profile deleted.</param>
     /// <param name="logger">The logger for failures.</param>
@@ -63,6 +69,7 @@ public partial class ProfileEditor : ContentView
         ShortcutUsage shortcuts,
         ProcessModels models,
         TtsEngine tts,
+        [FromKeyedServices(ModelLibraryKeys.Tts)] ModelLibrary voiceModels,
         VoicePreview preview,
         IConfirmService confirmations,
         ILogger<ProfileEditor> logger
@@ -72,6 +79,7 @@ public partial class ProfileEditor : ContentView
         ArgumentNullException.ThrowIfNull(shortcuts);
         ArgumentNullException.ThrowIfNull(models);
         ArgumentNullException.ThrowIfNull(tts);
+        ArgumentNullException.ThrowIfNull(voiceModels);
         ArgumentNullException.ThrowIfNull(preview);
         ArgumentNullException.ThrowIfNull(confirmations);
         ArgumentNullException.ThrowIfNull(logger);
@@ -79,6 +87,7 @@ public partial class ProfileEditor : ContentView
         this.shortcuts = shortcuts;
         this.models = models;
         this.tts = tts;
+        this.voiceModels = voiceModels;
         this.preview = preview;
         this.confirmations = confirmations;
         this.logger = logger;
@@ -149,6 +158,8 @@ public partial class ProfileEditor : ContentView
 
         subscribed = true;
         models.Library.Changed += OnModelChanged;
+        voiceModels.Changed += OnVoiceModelStateChanged;
+        CurrentApp.SettingsChanged += OnSettingsChanged;
         library.Changed += OnProfilesChanged;
         preview.Changed += OnPreviewChanged;
         _ = RefreshAsync(isNew: false);
@@ -161,6 +172,8 @@ public partial class ProfileEditor : ContentView
 
         subscribed = false;
         models.Library.Changed -= OnModelChanged;
+        voiceModels.Changed -= OnVoiceModelStateChanged;
+        CurrentApp.SettingsChanged -= OnSettingsChanged;
         library.Changed -= OnProfilesChanged;
         preview.Changed -= OnPreviewChanged;
         preview.Stop();
@@ -414,6 +427,7 @@ public partial class ProfileEditor : ContentView
                     ? "This model is not downloaded, so the shortcut does nothing. Choose another or download it in TTS Models."
                     : "Downloaded voice models. Get more in TTS Models.";
 
+            ShowProcessorState();
             languages = voice.ModelId is null ? [] : tts.GetLanguages(voice.ModelId, voice.VoiceId);
             LanguageRow.IsVisible = languages.Count > 0;
             if (languages.Count > 0)
@@ -435,6 +449,100 @@ public partial class ProfileEditor : ContentView
         }
 
         ShowPreviewState();
+    }
+
+    private void OnVoiceModelStateChanged(object? sender, string id)
+    {
+        if (id == voice.ModelId)
+            Dispatcher.Dispatch(ShowProcessorState);
+    }
+
+    private void OnSettingsChanged(object? sender, AppSettings settings) => ShowProcessorState();
+
+    private void ShowProcessorState()
+    {
+        var wasSyncing = syncing;
+        syncing = true;
+        try
+        {
+            var gpu = voice.ModelId is { } id
+                ? voiceModels.GetRuntimeChoices(id).FirstOrDefault(choice => choice.RuntimeId == "audio.cpp")
+                : null;
+            ProcessorRow.IsVisible = gpu is not null;
+            if (gpu is null || voice.ModelId is not { } modelId)
+                return;
+
+            var state = voiceModels.GetState(modelId);
+            var downloading = state.Status == ModelStatus.Downloading;
+            var chosen = CurrentApp.Settings.ModelDevices.GetValueOrDefault(modelId)?.ToLowerInvariant();
+            ProcessorSelect.SetItems(["Automatic", "CPU", "GPU (Vulkan)"], chosen switch { "cpu" => 1, "gpu" => 2, _ => 0 });
+            ProcessorSelect.IsEnabled = !savingProcessor && !downloading;
+            ProcessorCancel.IsVisible = downloading;
+            ProcessorHint.Text = "Shared by all profiles using this model. Saved immediately."
+                + (downloading
+                    ? $" Downloading: {ByteSize.Format(state.Progress.BytesDone)} / {ByteSize.Format(state.Progress.TotalBytes)}."
+                    : gpu.IsInstalled ? string.Empty : $" Automatic or GPU downloads an additional {ByteSize.Format(gpu.SizeBytes)}.");
+        }
+        finally
+        {
+            syncing = wasSyncing;
+        }
+    }
+
+    private void OnProcessorCancelClicked(object? sender, EventArgs e)
+    {
+        if (voice.ModelId is { } modelId)
+            voiceModels.Cancel(modelId);
+    }
+
+    private async void OnProcessorChanged(object? sender, EventArgs e)
+    {
+        if (syncing || savingProcessor || voice.ModelId is not { } modelId || ProcessorSelect.SelectedIndex < 0)
+            return;
+
+        var chosen = ProcessorSelect.SelectedIndex switch { 1 => "cpu", 2 => "gpu", _ => null };
+        savingProcessor = true;
+        ProcessorSelect.IsEnabled = false;
+        if (preview.Current?.ModelId == modelId)
+            preview.Stop();
+        try
+        {
+            if (chosen != "cpu" && voiceModels.GetInstalled(modelId, "audio.cpp") is null)
+            {
+                await voiceModels.DownloadAsync(modelId, "audio.cpp");
+                if (voiceModels.GetInstalled(modelId, "audio.cpp") is null)
+                {
+                    var state = voiceModels.GetState(modelId);
+                    if (state.Status == ModelStatus.Failed)
+                        throw new TtsException(state.Error ?? "The GPU model files could not be downloaded.");
+                    return;
+                }
+            }
+
+            await CurrentApp.UpdateSettingsAsync(settings =>
+            {
+                var devices = new Dictionary<string, string>(settings.ModelDevices, StringComparer.Ordinal);
+                if (chosen is null)
+                    devices.Remove(modelId);
+                else
+                    devices[modelId] = chosen;
+                return settings with { ModelDevices = devices };
+            });
+        }
+        catch (TtsException ex)
+        {
+            await ShowAlertAsync("The processor could not be selected", ex.Message);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unable to save the processor chosen for {Model}", modelId);
+            await ShowAlertAsync("The processor could not be saved", "Check that config.toml is valid and writable, then try again.");
+        }
+        finally
+        {
+            savingProcessor = false;
+            ShowProcessorState();
+        }
     }
 
     private List<(string Id, string Name)> Models() => [.. voices.Select(choice => (choice.ModelId, choice.ModelName)).Distinct()];
@@ -952,12 +1060,9 @@ public partial class ProfileEditor : ContentView
 
     private async Task ShowAlertAsync(string title, string message)
     {
-        if (Window?.Page is not { } page)
-            return;
-
         try
         {
-            await page.DisplayAlertAsync(title, message, "OK");
+            await confirmations.ConfirmAsync(new ConfirmRequest(title, message, new ConfirmButton("OK"), CancelText: "Close"));
         }
         catch (Exception ex)
         {

@@ -148,6 +148,21 @@
                                                 AutomationId="ProfileVoice" SelectedIndexChanged="OnVoiceChanged" />
                     </Grid>
 
+                    <Grid x:Name="ProcessorRow" ColumnDefinitions="*,360" ColumnSpacing="16" IsVisible="False">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Processor" FontFamily="InterMedium" FontSize="13" />
+                            <Label x:Name="ProcessorHint" Style="{StaticResource SettingHelp}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="8">
+                            <components:SelectInput x:Name="ProcessorSelect" WidthRequest="360"
+                                                    Glyph="{x:Static components:Icons.Cpu}" AccessibleName="Voice processor"
+                                                    AutomationId="ProfileProcessor" SelectedIndexChanged="OnProcessorChanged" />
+                            <components:IconButton x:Name="ProcessorCancel" IsVisible="False" HorizontalOptions="Start"
+                                                   Glyph="{x:Static components:Icons.X}" Text="Cancel download"
+                                                   AutomationId="ProfileProcessorCancel" Clicked="OnProcessorCancelClicked" />
+                        </VerticalStackLayout>
+                    </Grid>
+
                     <Grid x:Name="LanguageRow" ColumnDefinitions="*,360" ColumnSpacing="16" IsVisible="False">
                         <VerticalStackLayout Spacing="5" VerticalOptions="Center">
                             <Label Text="Language" FontFamily="InterMedium" FontSize="13" />
