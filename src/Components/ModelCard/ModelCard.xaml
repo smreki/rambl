@@ -70,9 +70,10 @@
                     </FlexLayout>
                 </VerticalStackLayout>
 
-                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                <HorizontalStackLayout x:Name="HeaderActions" Grid.Column="1" Spacing="8" VerticalOptions="Center">
                     <!-- Which runtime runs the model (Local) or whose files are downloaded (Browse), chosen before the
-                         action that uses it. It has no visible label; its accessible name says what it is. -->
+                         action that uses it. Voice cards move this selector beside Voice to choose the processor.
+                         It has no visible label; its accessible name says what it is. -->
                     <components:SelectInput x:Name="RuntimeSelect" WidthRequest="208" IsVisible="False"
                                             SelectedIndexChanged="OnRuntimeSelectChanged" />
                     <components:IconButton x:Name="ActionButton" IsOutlined="True" GlyphSize="14" Clicked="OnActionClicked" />
@@ -92,7 +93,8 @@
 
             <!-- Local only, and only for a model that takes a language (or, for a voice model, has more than one voice). It
                  has its own row because the actions have no room for a third control. The language hint explains
-                 Auto-detect and goes away once a language is chosen; a voice hint stays. -->
+                 Auto-detect and goes away once a language is chosen; a voice hint stays. Voice cards with a processor
+                 choice place it immediately after the voice selector and before the hint. -->
             <HorizontalStackLayout x:Name="LanguageRow" Spacing="12" IsVisible="False">
                 <Label x:Name="LanguageRowLabel" Style="{StaticResource SettingHelp}" FontFamily="InterMedium" Text="Language"
                        VerticalOptions="Center" />

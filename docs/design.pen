@@ -7258,6 +7258,8 @@
                                   "id": "Nj2SH",
                                   "name": "Page Subtitle",
                                   "fill": "$text-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Replay, copy or re-run your recent dictations, and replay the readings of profiles that save them. Audio stays on this device.",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
@@ -7382,6 +7384,7 @@
                           "id": "UnI4F",
                           "name": "History Content",
                           "width": "fill_container",
+                          "height": "fill_container",
                           "layout": "vertical",
                           "gap": 18,
                           "children": [
@@ -7461,344 +7464,438 @@
                             },
                             {
                               "type": "frame",
-                              "id": "M4VhW",
-                              "name": "Day Group — Today",
+                              "id": "o8e1H",
+                              "name": "History Page Scroll Viewport",
+                              "context": "Scrollable page containing at most 10 recording cards. Overflow is intentionally clipped; pagination stays below the viewport.",
+                              "clip": true,
                               "width": "fill_container",
+                              "height": "fill_container",
                               "layout": "vertical",
-                              "gap": 10,
+                              "gap": 18,
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "kMGPh",
-                                  "name": "Day Group Label",
-                                  "fill": "$text-secondary",
-                                  "content": "Today · 2 recordings",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
+                                  "type": "frame",
+                                  "id": "M4VhW",
+                                  "name": "Day Group — Today",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 10,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "kMGPh",
+                                      "name": "Day Group Label",
+                                      "fill": "$text-secondary",
+                                      "content": "Today · 2 recordings",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "pSZ90",
+                                      "name": "Recording Cards",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 12,
+                                      "children": [
+                                        {
+                                          "id": "unhAy",
+                                          "type": "ref",
+                                          "ref": "NituI",
+                                          "name": "Reading Card",
+                                          "width": "fill_container",
+                                          "stroke": "$accent",
+                                          "descendants": {
+                                            "KgJMJ": {
+                                              "content": "Der Ausschuss hat die Beratungen auf unbestimmte Zeit verschoben. Eine Lösung ist daher noch nicht in Sicht."
+                                            },
+                                            "rJPVT": {
+                                              "enabled": false
+                                            },
+                                            "DhUoO": {
+                                              "enabled": true
+                                            },
+                                            "WfdTi": {
+                                              "enabled": false
+                                            },
+                                            "s5sjC": {
+                                              "enabled": false,
+                                              "content": "Polish for email"
+                                            },
+                                            "oT67B": {
+                                              "enabled": false
+                                            },
+                                            "aw6z7": {
+                                              "enabled": true
+                                            },
+                                            "ntMbM": {
+                                              "icon": "chevron-up"
+                                            },
+                                            "P2oP8a": {
+                                              "content": "Show selected text"
+                                            },
+                                            "vRgvW": {
+                                              "enabled": false
+                                            },
+                                            "J9p2b": {
+                                              "content": "SELECTED TEXT"
+                                            },
+                                            "svxxG": {
+                                              "content": "Copy selected text"
+                                            },
+                                            "foVfN": {
+                                              "content": "Today, 15:10"
+                                            },
+                                            "Qji4O": {
+                                              "content": "0:09"
+                                            },
+                                            "y0rM9Q": {
+                                              "enabled": false
+                                            },
+                                            "RAq3a": {
+                                              "content": "English"
+                                            },
+                                            "LFp7e": {
+                                              "enabled": false
+                                            },
+                                            "BoXDb": {
+                                              "content": "Nemotron 3.5 ASR Streaming 0.6B"
+                                            },
+                                            "tihCs": {
+                                              "enabled": true
+                                            },
+                                            "JrNrQ": {
+                                              "content": "Translate to German · F1 · Supertonic 3"
+                                            },
+                                            "DmIjR": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "WveJV": {
+                                              "enabled": false,
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "wFa6q": {
+                                              "fill": "$speaking-soft"
+                                            },
+                                            "Ab3Po": {
+                                              "fill": "$speaking",
+                                              "icon": "pause"
+                                            },
+                                            "vM7RI": {
+                                              "content": "0:04"
+                                            },
+                                            "Q40fH": {
+                                              "fill": "$speaking",
+                                              "width": 264
+                                            },
+                                            "rywIn": {
+                                              "x": 256
+                                            },
+                                            "x0l2M": {
+                                              "content": "0:09"
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "id": "Bap6D",
+                                          "type": "ref",
+                                          "ref": "NituI",
+                                          "name": "Recording Card",
+                                          "width": "fill_container",
+                                          "stroke": "$accent",
+                                          "descendants": {
+                                            "KgJMJ": {
+                                              "content": "Hi Anna, quick update on tomorrow: the demo moves to ten o’clock and Peter will join remotely, so please send him the link and the revised slides before the end of the day."
+                                            },
+                                            "DhUoO": {
+                                              "enabled": true
+                                            },
+                                            "s5sjC": {
+                                              "content": "Polish for email"
+                                            },
+                                            "ntMbM": {
+                                              "icon": "chevron-up"
+                                            },
+                                            "P2oP8a": {
+                                              "content": "Hide original"
+                                            },
+                                            "vRgvW": {
+                                              "enabled": true
+                                            },
+                                            "foVfN": {
+                                              "content": "Today, 14:32"
+                                            },
+                                            "Qji4O": {
+                                              "content": "0:42"
+                                            },
+                                            "RAq3a": {
+                                              "content": "English"
+                                            },
+                                            "BoXDb": {
+                                              "content": "Nemotron 3.5 ASR Streaming 0.6B"
+                                            },
+                                            "DmIjR": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "WveJV": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "Ab3Po": {
+                                              "icon": "pause"
+                                            },
+                                            "vM7RI": {
+                                              "content": "0:14"
+                                            },
+                                            "Q40fH": {
+                                              "width": 264
+                                            },
+                                            "rywIn": {
+                                              "x": 256
+                                            },
+                                            "x0l2M": {
+                                              "content": "0:42"
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "id": "QttyT",
+                                          "type": "ref",
+                                          "ref": "NituI",
+                                          "name": "Recording Card",
+                                          "width": "fill_container",
+                                          "descendants": {
+                                            "KgJMJ": {
+                                              "content": "Bitte denk daran, die Rechnung für das Projekt bis Freitag zu schicken, und frag Markus, ob wir den Termin am Montag verschieben können.",
+                                              "enabled": false
+                                            },
+                                            "rJPVT": {
+                                              "enabled": true
+                                            },
+                                            "DhUoO": {
+                                              "enabled": true
+                                            },
+                                            "s5sjC": {
+                                              "content": "Translate to German"
+                                            },
+                                            "foVfN": {
+                                              "content": "Today, 11:05"
+                                            },
+                                            "Qji4O": {
+                                              "content": "0:18"
+                                            },
+                                            "RAq3a": {
+                                              "content": "German"
+                                            },
+                                            "BoXDb": {
+                                              "content": "Parakeet TDT v3"
+                                            },
+                                            "DmIjR": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "WveJV": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "vM7RI": {
+                                              "content": "0:00"
+                                            },
+                                            "Q40fH": {
+                                              "width": 0
+                                            },
+                                            "rywIn": {
+                                              "x": 0
+                                            },
+                                            "x0l2M": {
+                                              "content": "0:18"
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
                                 },
                                 {
                                   "type": "frame",
-                                  "id": "pSZ90",
-                                  "name": "Recording Cards",
+                                  "id": "QH4pP",
+                                  "name": "Day Group — Yesterday",
                                   "width": "fill_container",
                                   "layout": "vertical",
-                                  "gap": 12,
+                                  "gap": 10,
                                   "children": [
                                     {
-                                      "id": "unhAy",
-                                      "type": "ref",
-                                      "ref": "NituI",
-                                      "name": "Reading Card",
-                                      "width": "fill_container",
-                                      "stroke": "$accent",
-                                      "descendants": {
-                                        "KgJMJ": {
-                                          "content": "Der Ausschuss hat die Beratungen auf unbestimmte Zeit verschoben. Eine Lösung ist daher noch nicht in Sicht."
-                                        },
-                                        "rJPVT": {
-                                          "enabled": false
-                                        },
-                                        "DhUoO": {
-                                          "enabled": true
-                                        },
-                                        "WfdTi": {
-                                          "enabled": false
-                                        },
-                                        "s5sjC": {
-                                          "enabled": false,
-                                          "content": "Polish for email"
-                                        },
-                                        "oT67B": {
-                                          "enabled": false
-                                        },
-                                        "aw6z7": {
-                                          "enabled": true
-                                        },
-                                        "ntMbM": {
-                                          "icon": "chevron-up"
-                                        },
-                                        "P2oP8a": {
-                                          "content": "Show selected text"
-                                        },
-                                        "vRgvW": {
-                                          "enabled": false
-                                        },
-                                        "J9p2b": {
-                                          "content": "SELECTED TEXT"
-                                        },
-                                        "svxxG": {
-                                          "content": "Copy selected text"
-                                        },
-                                        "foVfN": {
-                                          "content": "Today, 15:10"
-                                        },
-                                        "Qji4O": {
-                                          "content": "0:09"
-                                        },
-                                        "y0rM9Q": {
-                                          "enabled": false
-                                        },
-                                        "RAq3a": {
-                                          "content": "English"
-                                        },
-                                        "LFp7e": {
-                                          "enabled": false
-                                        },
-                                        "BoXDb": {
-                                          "content": "Nemotron 3.5 ASR Streaming 0.6B"
-                                        },
-                                        "tihCs": {
-                                          "enabled": true
-                                        },
-                                        "JrNrQ": {
-                                          "content": "Translate to German · F1 · Supertonic 3"
-                                        },
-                                        "DmIjR": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "WveJV": {
-                                          "enabled": false,
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "wFa6q": {
-                                          "fill": "$speaking-soft"
-                                        },
-                                        "Ab3Po": {
-                                          "fill": "$speaking",
-                                          "icon": "pause"
-                                        },
-                                        "vM7RI": {
-                                          "content": "0:04"
-                                        },
-                                        "Q40fH": {
-                                          "fill": "$speaking",
-                                          "width": 264
-                                        },
-                                        "rywIn": {
-                                          "x": 256
-                                        },
-                                        "x0l2M": {
-                                          "content": "0:09"
-                                        }
-                                      }
+                                      "type": "text",
+                                      "id": "fT53m",
+                                      "name": "Day Group Label",
+                                      "fill": "$text-secondary",
+                                      "content": "Yesterday · 1 recording",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "600"
                                     },
                                     {
-                                      "id": "Bap6D",
-                                      "type": "ref",
-                                      "ref": "NituI",
-                                      "name": "Recording Card",
+                                      "type": "frame",
+                                      "id": "HOZUh",
+                                      "name": "Recording Cards",
                                       "width": "fill_container",
-                                      "stroke": "$accent",
-                                      "descendants": {
-                                        "KgJMJ": {
-                                          "content": "Hi Anna, quick update on tomorrow: the demo moves to ten o’clock and Peter will join remotely, so please send him the link and the revised slides before the end of the day."
-                                        },
-                                        "DhUoO": {
-                                          "enabled": true
-                                        },
-                                        "s5sjC": {
-                                          "content": "Polish for email"
-                                        },
-                                        "ntMbM": {
-                                          "icon": "chevron-up"
-                                        },
-                                        "P2oP8a": {
-                                          "content": "Hide original"
-                                        },
-                                        "vRgvW": {
-                                          "enabled": true
-                                        },
-                                        "foVfN": {
-                                          "content": "Today, 14:32"
-                                        },
-                                        "Qji4O": {
-                                          "content": "0:42"
-                                        },
-                                        "RAq3a": {
-                                          "content": "English"
-                                        },
-                                        "BoXDb": {
-                                          "content": "Nemotron 3.5 ASR Streaming 0.6B"
-                                        },
-                                        "DmIjR": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "WveJV": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "Ab3Po": {
-                                          "icon": "pause"
-                                        },
-                                        "vM7RI": {
-                                          "content": "0:14"
-                                        },
-                                        "Q40fH": {
-                                          "width": 264
-                                        },
-                                        "rywIn": {
-                                          "x": 256
-                                        },
-                                        "x0l2M": {
-                                          "content": "0:42"
+                                      "layout": "vertical",
+                                      "gap": 12,
+                                      "children": [
+                                        {
+                                          "id": "FUCUq",
+                                          "type": "ref",
+                                          "ref": "NituI",
+                                          "name": "Recording Card",
+                                          "width": "fill_container",
+                                          "descendants": {
+                                            "KgJMJ": {
+                                              "content": "Notes for the weekly review: the new onboarding flow cut drop-off by twelve percent, but the pricing page still confuses people, so let’s test two layouts next sprint and compare…"
+                                            },
+                                            "DhUoO": {
+                                              "enabled": true
+                                            },
+                                            "J8uooS": {
+                                              "icon": "triangle-alert",
+                                              "fill": "$warning"
+                                            },
+                                            "WfdTi": {
+                                              "enabled": false
+                                            },
+                                            "s5sjC": {
+                                              "content": "Post-processing didn’t finish. The original text was inserted instead.",
+                                              "fontWeight": "normal",
+                                              "fill": "$text-secondary",
+                                              "enabled": true
+                                            },
+                                            "oT67B": {
+                                              "enabled": false
+                                            },
+                                            "aw6z7": {
+                                              "enabled": false
+                                            },
+                                            "foVfN": {
+                                              "content": "Yesterday, 17:48"
+                                            },
+                                            "Qji4O": {
+                                              "content": "1:12"
+                                            },
+                                            "RAq3a": {
+                                              "content": "English"
+                                            },
+                                            "BoXDb": {
+                                              "content": "Parakeet Redux"
+                                            },
+                                            "DmIjR": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "WveJV": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "vM7RI": {
+                                              "content": "0:00"
+                                            },
+                                            "Q40fH": {
+                                              "width": 0
+                                            },
+                                            "rywIn": {
+                                              "x": 0
+                                            },
+                                            "x0l2M": {
+                                              "content": "1:12"
+                                            }
+                                          }
                                         }
-                                      }
-                                    },
-                                    {
-                                      "id": "QttyT",
-                                      "type": "ref",
-                                      "ref": "NituI",
-                                      "name": "Recording Card",
-                                      "width": "fill_container",
-                                      "descendants": {
-                                        "KgJMJ": {
-                                          "content": "Bitte denk daran, die Rechnung für das Projekt bis Freitag zu schicken, und frag Markus, ob wir den Termin am Montag verschieben können.",
-                                          "enabled": false
-                                        },
-                                        "rJPVT": {
-                                          "enabled": true
-                                        },
-                                        "DhUoO": {
-                                          "enabled": true
-                                        },
-                                        "s5sjC": {
-                                          "content": "Translate to German"
-                                        },
-                                        "foVfN": {
-                                          "content": "Today, 11:05"
-                                        },
-                                        "Qji4O": {
-                                          "content": "0:18"
-                                        },
-                                        "RAq3a": {
-                                          "content": "German"
-                                        },
-                                        "BoXDb": {
-                                          "content": "Parakeet TDT v3"
-                                        },
-                                        "DmIjR": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "WveJV": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "vM7RI": {
-                                          "content": "0:00"
-                                        },
-                                        "Q40fH": {
-                                          "width": 0
-                                        },
-                                        "rywIn": {
-                                          "x": 0
-                                        },
-                                        "x0l2M": {
-                                          "content": "0:18"
-                                        }
-                                      }
+                                      ]
                                     }
                                   ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JdaXX",
+                          "name": "History Pagination",
+                          "context": "At most 10 recordings per page, newest first. Search all recordings and reset to page 1. Previous disabled on first page; Next disabled on last. Hide footer for 10 or fewer search results. Clamp page after deletion; preserve playback across pages.",
+                          "width": "fill_container",
+                          "height": 36,
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "SMxFR",
+                              "name": "History Page Count",
+                              "fill": "$text-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Page 1 of 47 · 465 recordings",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "ZluxP",
+                              "name": "History Previous Page",
+                              "opacity": 0.5,
+                              "height": 36,
+                              "fill": "$content-bg",
+                              "cornerRadius": 6,
+                              "stroke": "$border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "o6mFD",
+                                  "name": "Previous Page Label",
+                                  "fill": "$text-primary",
+                                  "content": "Previous",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
                                 }
                               ]
                             },
                             {
                               "type": "frame",
-                              "id": "QH4pP",
-                              "name": "Day Group — Yesterday",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "gap": 10,
+                              "id": "lunP4",
+                              "name": "History Next Page",
+                              "height": 36,
+                              "fill": "$content-bg",
+                              "cornerRadius": 6,
+                              "stroke": "$border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
                               "children": [
                                 {
                                   "type": "text",
-                                  "id": "fT53m",
-                                  "name": "Day Group Label",
-                                  "fill": "$text-secondary",
-                                  "content": "Yesterday · 1 recording",
+                                  "id": "SeUes",
+                                  "name": "Next Page Label",
+                                  "fill": "$text-primary",
+                                  "content": "Next",
                                   "fontFamily": "Inter",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "HOZUh",
-                                  "name": "Recording Cards",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": 12,
-                                  "children": [
-                                    {
-                                      "id": "FUCUq",
-                                      "type": "ref",
-                                      "ref": "NituI",
-                                      "name": "Recording Card",
-                                      "width": "fill_container",
-                                      "descendants": {
-                                        "KgJMJ": {
-                                          "content": "Notes for the weekly review: the new onboarding flow cut drop-off by twelve percent, but the pricing page still confuses people, so let’s test two layouts next sprint and compare…"
-                                        },
-                                        "DhUoO": {
-                                          "enabled": true
-                                        },
-                                        "J8uooS": {
-                                          "icon": "triangle-alert",
-                                          "fill": "$warning"
-                                        },
-                                        "WfdTi": {
-                                          "enabled": false
-                                        },
-                                        "s5sjC": {
-                                          "content": "Post-processing didn’t finish. The original text was inserted instead.",
-                                          "fontWeight": "normal",
-                                          "fill": "$text-secondary",
-                                          "enabled": true
-                                        },
-                                        "oT67B": {
-                                          "enabled": false
-                                        },
-                                        "aw6z7": {
-                                          "enabled": false
-                                        },
-                                        "foVfN": {
-                                          "content": "Yesterday, 17:48"
-                                        },
-                                        "Qji4O": {
-                                          "content": "1:12"
-                                        },
-                                        "RAq3a": {
-                                          "content": "English"
-                                        },
-                                        "BoXDb": {
-                                          "content": "Parakeet Redux"
-                                        },
-                                        "DmIjR": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "WveJV": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "vM7RI": {
-                                          "content": "0:00"
-                                        },
-                                        "Q40fH": {
-                                          "width": 0
-                                        },
-                                        "rywIn": {
-                                          "x": 0
-                                        },
-                                        "x0l2M": {
-                                          "content": "1:12"
-                                        }
-                                      }
-                                    }
-                                  ]
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
                                 }
                               ]
                             }
@@ -8749,6 +8846,8 @@
                                   "id": "UEzYL",
                                   "name": "Page Subtitle",
                                   "fill": "$text-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
                                   "content": "Replay, copy or re-run your recent dictations, and replay the readings of profiles that save them. Audio stays on this device.",
                                   "fontFamily": "Inter",
                                   "fontSize": 13,
@@ -8873,6 +8972,7 @@
                           "id": "w3vjAG",
                           "name": "History Content",
                           "width": "fill_container",
+                          "height": "fill_container",
                           "layout": "vertical",
                           "gap": 18,
                           "children": [
@@ -8952,344 +9052,438 @@
                             },
                             {
                               "type": "frame",
-                              "id": "MQeZq",
-                              "name": "Day Group — Today",
+                              "id": "E0bJS",
+                              "name": "History Page Scroll Viewport",
+                              "context": "Scrollable page containing at most 10 recording cards. Overflow is intentionally clipped; pagination stays below the viewport.",
+                              "clip": true,
                               "width": "fill_container",
+                              "height": "fill_container",
                               "layout": "vertical",
-                              "gap": 10,
+                              "gap": 18,
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "aYU1r",
-                                  "name": "Day Group Label",
-                                  "fill": "$text-secondary",
-                                  "content": "Today · 2 recordings",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
+                                  "type": "frame",
+                                  "id": "MQeZq",
+                                  "name": "Day Group — Today",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 10,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "aYU1r",
+                                      "name": "Day Group Label",
+                                      "fill": "$text-secondary",
+                                      "content": "Today · 2 recordings",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "T5ZBNG",
+                                      "name": "Recording Cards",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 12,
+                                      "children": [
+                                        {
+                                          "id": "JVi68",
+                                          "type": "ref",
+                                          "ref": "NituI",
+                                          "name": "Reading Card",
+                                          "width": "fill_container",
+                                          "stroke": "$accent",
+                                          "descendants": {
+                                            "KgJMJ": {
+                                              "content": "Der Ausschuss hat die Beratungen auf unbestimmte Zeit verschoben. Eine Lösung ist daher noch nicht in Sicht."
+                                            },
+                                            "rJPVT": {
+                                              "enabled": false
+                                            },
+                                            "DhUoO": {
+                                              "enabled": true
+                                            },
+                                            "WfdTi": {
+                                              "enabled": false
+                                            },
+                                            "s5sjC": {
+                                              "enabled": false,
+                                              "content": "Polish for email"
+                                            },
+                                            "oT67B": {
+                                              "enabled": false
+                                            },
+                                            "aw6z7": {
+                                              "enabled": true
+                                            },
+                                            "ntMbM": {
+                                              "icon": "chevron-up"
+                                            },
+                                            "P2oP8a": {
+                                              "content": "Show selected text"
+                                            },
+                                            "vRgvW": {
+                                              "enabled": false
+                                            },
+                                            "J9p2b": {
+                                              "content": "SELECTED TEXT"
+                                            },
+                                            "svxxG": {
+                                              "content": "Copy selected text"
+                                            },
+                                            "foVfN": {
+                                              "content": "Today, 15:10"
+                                            },
+                                            "Qji4O": {
+                                              "content": "0:09"
+                                            },
+                                            "y0rM9Q": {
+                                              "enabled": false
+                                            },
+                                            "RAq3a": {
+                                              "content": "English"
+                                            },
+                                            "LFp7e": {
+                                              "enabled": false
+                                            },
+                                            "BoXDb": {
+                                              "content": "Nemotron 3.5 ASR Streaming 0.6B"
+                                            },
+                                            "tihCs": {
+                                              "enabled": true
+                                            },
+                                            "JrNrQ": {
+                                              "content": "Translate to German · F1 · Supertonic 3"
+                                            },
+                                            "DmIjR": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "WveJV": {
+                                              "enabled": false,
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "wFa6q": {
+                                              "fill": "$speaking-soft"
+                                            },
+                                            "Ab3Po": {
+                                              "fill": "$speaking",
+                                              "icon": "pause"
+                                            },
+                                            "vM7RI": {
+                                              "content": "0:04"
+                                            },
+                                            "Q40fH": {
+                                              "fill": "$speaking",
+                                              "width": 264
+                                            },
+                                            "rywIn": {
+                                              "x": 256
+                                            },
+                                            "x0l2M": {
+                                              "content": "0:09"
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "id": "xBtl3",
+                                          "type": "ref",
+                                          "ref": "NituI",
+                                          "name": "Recording Card",
+                                          "width": "fill_container",
+                                          "stroke": "$accent",
+                                          "descendants": {
+                                            "KgJMJ": {
+                                              "content": "Hi Anna, quick update on tomorrow: the demo moves to ten o’clock and Peter will join remotely, so please send him the link and the revised slides before the end of the day."
+                                            },
+                                            "DhUoO": {
+                                              "enabled": true
+                                            },
+                                            "s5sjC": {
+                                              "content": "Polish for email"
+                                            },
+                                            "ntMbM": {
+                                              "icon": "chevron-up"
+                                            },
+                                            "P2oP8a": {
+                                              "content": "Hide original"
+                                            },
+                                            "vRgvW": {
+                                              "enabled": true
+                                            },
+                                            "foVfN": {
+                                              "content": "Today, 14:32"
+                                            },
+                                            "Qji4O": {
+                                              "content": "0:42"
+                                            },
+                                            "RAq3a": {
+                                              "content": "English"
+                                            },
+                                            "BoXDb": {
+                                              "content": "Nemotron 3.5 ASR Streaming 0.6B"
+                                            },
+                                            "DmIjR": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "WveJV": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "Ab3Po": {
+                                              "icon": "pause"
+                                            },
+                                            "vM7RI": {
+                                              "content": "0:14"
+                                            },
+                                            "Q40fH": {
+                                              "width": 264
+                                            },
+                                            "rywIn": {
+                                              "x": 256
+                                            },
+                                            "x0l2M": {
+                                              "content": "0:42"
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "id": "d6XyH",
+                                          "type": "ref",
+                                          "ref": "NituI",
+                                          "name": "Recording Card",
+                                          "width": "fill_container",
+                                          "descendants": {
+                                            "KgJMJ": {
+                                              "content": "Bitte denk daran, die Rechnung für das Projekt bis Freitag zu schicken, und frag Markus, ob wir den Termin am Montag verschieben können.",
+                                              "enabled": false
+                                            },
+                                            "rJPVT": {
+                                              "enabled": true
+                                            },
+                                            "DhUoO": {
+                                              "enabled": true
+                                            },
+                                            "s5sjC": {
+                                              "content": "Translate to German"
+                                            },
+                                            "foVfN": {
+                                              "content": "Today, 11:05"
+                                            },
+                                            "Qji4O": {
+                                              "content": "0:18"
+                                            },
+                                            "RAq3a": {
+                                              "content": "German"
+                                            },
+                                            "BoXDb": {
+                                              "content": "Parakeet TDT v3"
+                                            },
+                                            "DmIjR": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "WveJV": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "vM7RI": {
+                                              "content": "0:00"
+                                            },
+                                            "Q40fH": {
+                                              "width": 0
+                                            },
+                                            "rywIn": {
+                                              "x": 0
+                                            },
+                                            "x0l2M": {
+                                              "content": "0:18"
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
                                 },
                                 {
                                   "type": "frame",
-                                  "id": "T5ZBNG",
-                                  "name": "Recording Cards",
+                                  "id": "GAuyt",
+                                  "name": "Day Group — Yesterday",
                                   "width": "fill_container",
                                   "layout": "vertical",
-                                  "gap": 12,
+                                  "gap": 10,
                                   "children": [
                                     {
-                                      "id": "JVi68",
-                                      "type": "ref",
-                                      "ref": "NituI",
-                                      "name": "Reading Card",
-                                      "width": "fill_container",
-                                      "stroke": "$accent",
-                                      "descendants": {
-                                        "KgJMJ": {
-                                          "content": "Der Ausschuss hat die Beratungen auf unbestimmte Zeit verschoben. Eine Lösung ist daher noch nicht in Sicht."
-                                        },
-                                        "rJPVT": {
-                                          "enabled": false
-                                        },
-                                        "DhUoO": {
-                                          "enabled": true
-                                        },
-                                        "WfdTi": {
-                                          "enabled": false
-                                        },
-                                        "s5sjC": {
-                                          "enabled": false,
-                                          "content": "Polish for email"
-                                        },
-                                        "oT67B": {
-                                          "enabled": false
-                                        },
-                                        "aw6z7": {
-                                          "enabled": true
-                                        },
-                                        "ntMbM": {
-                                          "icon": "chevron-up"
-                                        },
-                                        "P2oP8a": {
-                                          "content": "Show selected text"
-                                        },
-                                        "vRgvW": {
-                                          "enabled": false
-                                        },
-                                        "J9p2b": {
-                                          "content": "SELECTED TEXT"
-                                        },
-                                        "svxxG": {
-                                          "content": "Copy selected text"
-                                        },
-                                        "foVfN": {
-                                          "content": "Today, 15:10"
-                                        },
-                                        "Qji4O": {
-                                          "content": "0:09"
-                                        },
-                                        "y0rM9Q": {
-                                          "enabled": false
-                                        },
-                                        "RAq3a": {
-                                          "content": "English"
-                                        },
-                                        "LFp7e": {
-                                          "enabled": false
-                                        },
-                                        "BoXDb": {
-                                          "content": "Nemotron 3.5 ASR Streaming 0.6B"
-                                        },
-                                        "tihCs": {
-                                          "enabled": true
-                                        },
-                                        "JrNrQ": {
-                                          "content": "Translate to German · F1 · Supertonic 3"
-                                        },
-                                        "DmIjR": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "WveJV": {
-                                          "enabled": false,
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "wFa6q": {
-                                          "fill": "$speaking-soft"
-                                        },
-                                        "Ab3Po": {
-                                          "fill": "$speaking",
-                                          "icon": "pause"
-                                        },
-                                        "vM7RI": {
-                                          "content": "0:04"
-                                        },
-                                        "Q40fH": {
-                                          "fill": "$speaking",
-                                          "width": 264
-                                        },
-                                        "rywIn": {
-                                          "x": 256
-                                        },
-                                        "x0l2M": {
-                                          "content": "0:09"
-                                        }
-                                      }
+                                      "type": "text",
+                                      "id": "MzCkH",
+                                      "name": "Day Group Label",
+                                      "fill": "$text-secondary",
+                                      "content": "Yesterday · 1 recording",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "600"
                                     },
                                     {
-                                      "id": "xBtl3",
-                                      "type": "ref",
-                                      "ref": "NituI",
-                                      "name": "Recording Card",
+                                      "type": "frame",
+                                      "id": "L5p8K",
+                                      "name": "Recording Cards",
                                       "width": "fill_container",
-                                      "stroke": "$accent",
-                                      "descendants": {
-                                        "KgJMJ": {
-                                          "content": "Hi Anna, quick update on tomorrow: the demo moves to ten o’clock and Peter will join remotely, so please send him the link and the revised slides before the end of the day."
-                                        },
-                                        "DhUoO": {
-                                          "enabled": true
-                                        },
-                                        "s5sjC": {
-                                          "content": "Polish for email"
-                                        },
-                                        "ntMbM": {
-                                          "icon": "chevron-up"
-                                        },
-                                        "P2oP8a": {
-                                          "content": "Hide original"
-                                        },
-                                        "vRgvW": {
-                                          "enabled": true
-                                        },
-                                        "foVfN": {
-                                          "content": "Today, 14:32"
-                                        },
-                                        "Qji4O": {
-                                          "content": "0:42"
-                                        },
-                                        "RAq3a": {
-                                          "content": "English"
-                                        },
-                                        "BoXDb": {
-                                          "content": "Nemotron 3.5 ASR Streaming 0.6B"
-                                        },
-                                        "DmIjR": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "WveJV": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "Ab3Po": {
-                                          "icon": "pause"
-                                        },
-                                        "vM7RI": {
-                                          "content": "0:14"
-                                        },
-                                        "Q40fH": {
-                                          "width": 264
-                                        },
-                                        "rywIn": {
-                                          "x": 256
-                                        },
-                                        "x0l2M": {
-                                          "content": "0:42"
+                                      "layout": "vertical",
+                                      "gap": 12,
+                                      "children": [
+                                        {
+                                          "id": "f5dN94",
+                                          "type": "ref",
+                                          "ref": "NituI",
+                                          "name": "Recording Card",
+                                          "width": "fill_container",
+                                          "descendants": {
+                                            "KgJMJ": {
+                                              "content": "Notes for the weekly review: the new onboarding flow cut drop-off by twelve percent, but the pricing page still confuses people, so let’s test two layouts next sprint and compare…"
+                                            },
+                                            "DhUoO": {
+                                              "enabled": true
+                                            },
+                                            "J8uooS": {
+                                              "icon": "triangle-alert",
+                                              "fill": "$warning"
+                                            },
+                                            "WfdTi": {
+                                              "enabled": false
+                                            },
+                                            "s5sjC": {
+                                              "content": "Post-processing didn’t finish. The original text was inserted instead.",
+                                              "fontWeight": "normal",
+                                              "fill": "$text-secondary",
+                                              "enabled": true
+                                            },
+                                            "oT67B": {
+                                              "enabled": false
+                                            },
+                                            "aw6z7": {
+                                              "enabled": false
+                                            },
+                                            "foVfN": {
+                                              "content": "Yesterday, 17:48"
+                                            },
+                                            "Qji4O": {
+                                              "content": "1:12"
+                                            },
+                                            "RAq3a": {
+                                              "content": "English"
+                                            },
+                                            "BoXDb": {
+                                              "content": "Parakeet Redux"
+                                            },
+                                            "DmIjR": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "WveJV": {
+                                              "width": 32,
+                                              "height": 32
+                                            },
+                                            "vM7RI": {
+                                              "content": "0:00"
+                                            },
+                                            "Q40fH": {
+                                              "width": 0
+                                            },
+                                            "rywIn": {
+                                              "x": 0
+                                            },
+                                            "x0l2M": {
+                                              "content": "1:12"
+                                            }
+                                          }
                                         }
-                                      }
-                                    },
-                                    {
-                                      "id": "d6XyH",
-                                      "type": "ref",
-                                      "ref": "NituI",
-                                      "name": "Recording Card",
-                                      "width": "fill_container",
-                                      "descendants": {
-                                        "KgJMJ": {
-                                          "content": "Bitte denk daran, die Rechnung für das Projekt bis Freitag zu schicken, und frag Markus, ob wir den Termin am Montag verschieben können.",
-                                          "enabled": false
-                                        },
-                                        "rJPVT": {
-                                          "enabled": true
-                                        },
-                                        "DhUoO": {
-                                          "enabled": true
-                                        },
-                                        "s5sjC": {
-                                          "content": "Translate to German"
-                                        },
-                                        "foVfN": {
-                                          "content": "Today, 11:05"
-                                        },
-                                        "Qji4O": {
-                                          "content": "0:18"
-                                        },
-                                        "RAq3a": {
-                                          "content": "German"
-                                        },
-                                        "BoXDb": {
-                                          "content": "Parakeet TDT v3"
-                                        },
-                                        "DmIjR": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "WveJV": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "vM7RI": {
-                                          "content": "0:00"
-                                        },
-                                        "Q40fH": {
-                                          "width": 0
-                                        },
-                                        "rywIn": {
-                                          "x": 0
-                                        },
-                                        "x0l2M": {
-                                          "content": "0:18"
-                                        }
-                                      }
+                                      ]
                                     }
                                   ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "DXAUe",
+                          "name": "History Pagination",
+                          "context": "At most 10 recordings per page, newest first. Search all recordings and reset to page 1. Previous disabled on first page; Next disabled on last. Hide footer for 10 or fewer search results. Clamp page after deletion; preserve playback across pages.",
+                          "width": "fill_container",
+                          "height": 36,
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "c3AsxN",
+                              "name": "History Page Count",
+                              "fill": "$text-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Page 1 of 47 · 465 recordings",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "v8frj",
+                              "name": "History Previous Page",
+                              "opacity": 0.5,
+                              "height": 36,
+                              "fill": "$content-bg",
+                              "cornerRadius": 6,
+                              "stroke": "$border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "iyP5i",
+                                  "name": "Previous Page Label",
+                                  "fill": "$text-primary",
+                                  "content": "Previous",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
                                 }
                               ]
                             },
                             {
                               "type": "frame",
-                              "id": "GAuyt",
-                              "name": "Day Group — Yesterday",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "gap": 10,
+                              "id": "vtxA5",
+                              "name": "History Next Page",
+                              "height": 36,
+                              "fill": "$content-bg",
+                              "cornerRadius": 6,
+                              "stroke": "$border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
                               "children": [
                                 {
                                   "type": "text",
-                                  "id": "MzCkH",
-                                  "name": "Day Group Label",
-                                  "fill": "$text-secondary",
-                                  "content": "Yesterday · 1 recording",
+                                  "id": "u9663I",
+                                  "name": "Next Page Label",
+                                  "fill": "$text-primary",
+                                  "content": "Next",
                                   "fontFamily": "Inter",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "L5p8K",
-                                  "name": "Recording Cards",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": 12,
-                                  "children": [
-                                    {
-                                      "id": "f5dN94",
-                                      "type": "ref",
-                                      "ref": "NituI",
-                                      "name": "Recording Card",
-                                      "width": "fill_container",
-                                      "descendants": {
-                                        "KgJMJ": {
-                                          "content": "Notes for the weekly review: the new onboarding flow cut drop-off by twelve percent, but the pricing page still confuses people, so let’s test two layouts next sprint and compare…"
-                                        },
-                                        "DhUoO": {
-                                          "enabled": true
-                                        },
-                                        "J8uooS": {
-                                          "icon": "triangle-alert",
-                                          "fill": "$warning"
-                                        },
-                                        "WfdTi": {
-                                          "enabled": false
-                                        },
-                                        "s5sjC": {
-                                          "content": "Post-processing didn’t finish. The original text was inserted instead.",
-                                          "fontWeight": "normal",
-                                          "fill": "$text-secondary",
-                                          "enabled": true
-                                        },
-                                        "oT67B": {
-                                          "enabled": false
-                                        },
-                                        "aw6z7": {
-                                          "enabled": false
-                                        },
-                                        "foVfN": {
-                                          "content": "Yesterday, 17:48"
-                                        },
-                                        "Qji4O": {
-                                          "content": "1:12"
-                                        },
-                                        "RAq3a": {
-                                          "content": "English"
-                                        },
-                                        "BoXDb": {
-                                          "content": "Parakeet Redux"
-                                        },
-                                        "DmIjR": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "WveJV": {
-                                          "width": 32,
-                                          "height": 32
-                                        },
-                                        "vM7RI": {
-                                          "content": "0:00"
-                                        },
-                                        "Q40fH": {
-                                          "width": 0
-                                        },
-                                        "rywIn": {
-                                          "x": 0
-                                        },
-                                        "x0l2M": {
-                                          "content": "1:12"
-                                        }
-                                      }
-                                    }
-                                  ]
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
                                 }
                               ]
                             }
@@ -29138,7 +29332,7 @@
                                               "id": "K4Rlx0",
                                               "name": "Profile Voice Select Value",
                                               "fill": "$text-primary",
-                                              "content": "Supertonic 3",
+                                              "content": "Qwen3-TTS 1.7B CustomVoice",
                                               "fontFamily": "Inter",
                                               "fontSize": 13,
                                               "fontWeight": "500"
@@ -29148,7 +29342,7 @@
                                               "id": "rB4uJ",
                                               "name": "Profile Voice Select Detail",
                                               "fill": "$text-secondary",
-                                              "content": "31 languages · 10 voices",
+                                              "content": "10 languages · 9 voices",
                                               "fontFamily": "Inter",
                                               "fontSize": 12,
                                               "fontWeight": "normal"
@@ -29240,7 +29434,7 @@
                                               "id": "zI6Qc",
                                               "name": "Profile Voice Select Value",
                                               "fill": "$text-primary",
-                                              "content": "F1",
+                                              "content": "Aiden",
                                               "fontFamily": "Inter",
                                               "fontSize": 13,
                                               "fontWeight": "500"
@@ -29250,7 +29444,7 @@
                                               "id": "o7R7Q",
                                               "name": "Profile Voice Select Detail",
                                               "fill": "$text-secondary",
-                                              "content": "female",
+                                              "content": "male",
                                               "fontFamily": "Inter",
                                               "fontSize": 12,
                                               "fontWeight": "normal"
@@ -29261,6 +29455,100 @@
                                           "type": "icon",
                                           "id": "q357n",
                                           "name": "Profile Voice Select Chevron",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "chevron-down",
+                                          "library": "lucide",
+                                          "fill": "$text-muted"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "P9gyS",
+                                  "name": "Voice Processor Row",
+                                  "context": "Shown for Qwen3-TTS and Kokoro. Shares models.devices with TTS Models; saves immediately. Automatic prefers Vulkan with CPU fallback; explicit GPU reports failures. Download missing GGUF before saving; progress and Cancel retain the previous choice on failure or cancellation.",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "R8NXV",
+                                      "name": "Voice Language Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "jcmNE",
+                                          "name": "Voice Processor Label",
+                                          "fill": "$text-primary",
+                                          "content": "Processor",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "QBWSE",
+                                          "name": "Voice Processor Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Shared by all profiles using this model. Saved immediately.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "zaBXo",
+                                      "name": "Voice Language Select",
+                                      "context": "Only for a voice that speaks several languages (Supertonic). Its languages A–Z; the default is English, or the model's first language.",
+                                      "width": 360,
+                                      "height": 36,
+                                      "fill": "$content-bg",
+                                      "cornerRadius": 6,
+                                      "stroke": "$border",
+                                      "strokeWidth": 1,
+                                      "gap": 8,
+                                      "padding": [
+                                        0,
+                                        12
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "B2XlG5",
+                                          "name": "Voice Language Select Text",
+                                          "width": "fill_container",
+                                          "layout": "vertical",
+                                          "gap": 2,
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "L5abBR",
+                                              "name": "Voice Processor Value",
+                                              "fill": "$text-primary",
+                                              "content": "Automatic",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 13,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "icon",
+                                          "id": "k3qgW",
+                                          "name": "Voice Language Select Chevron",
                                           "width": 16,
                                           "height": 16,
                                           "icon": "chevron-down",
@@ -29343,7 +29631,7 @@
                                               "id": "Dr77q",
                                               "name": "Voice Language Select Value",
                                               "fill": "$text-primary",
-                                              "content": "German",
+                                              "content": "English",
                                               "fontFamily": "Inter",
                                               "fontSize": 13,
                                               "fontWeight": "500"
@@ -32926,7 +33214,7 @@
                                               "id": "W93Vy",
                                               "name": "Profile Voice Select Value",
                                               "fill": "$text-primary",
-                                              "content": "Supertonic 3",
+                                              "content": "Qwen3-TTS 1.7B CustomVoice",
                                               "fontFamily": "Inter",
                                               "fontSize": 13,
                                               "fontWeight": "500"
@@ -32936,7 +33224,7 @@
                                               "id": "Kjqel",
                                               "name": "Profile Voice Select Detail",
                                               "fill": "$text-secondary",
-                                              "content": "31 languages · 10 voices",
+                                              "content": "10 languages · 9 voices",
                                               "fontFamily": "Inter",
                                               "fontSize": 12,
                                               "fontWeight": "normal"
@@ -33028,7 +33316,7 @@
                                               "id": "b5IX7i",
                                               "name": "Profile Voice Select Value",
                                               "fill": "$text-primary",
-                                              "content": "F1",
+                                              "content": "Aiden",
                                               "fontFamily": "Inter",
                                               "fontSize": 13,
                                               "fontWeight": "500"
@@ -33038,7 +33326,7 @@
                                               "id": "Tqy5S",
                                               "name": "Profile Voice Select Detail",
                                               "fill": "$text-secondary",
-                                              "content": "female",
+                                              "content": "male",
                                               "fontFamily": "Inter",
                                               "fontSize": 12,
                                               "fontWeight": "normal"
@@ -33049,6 +33337,100 @@
                                           "type": "icon",
                                           "id": "U8ytaL",
                                           "name": "Profile Voice Select Chevron",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "chevron-down",
+                                          "library": "lucide",
+                                          "fill": "$text-muted"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "Hu4xS",
+                                  "name": "Voice Processor Row",
+                                  "context": "Shown for Qwen3-TTS and Kokoro. Shares models.devices with TTS Models; saves immediately. Automatic prefers Vulkan with CPU fallback; explicit GPU reports failures. Download missing GGUF before saving; progress and Cancel retain the previous choice on failure or cancellation.",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "hLBur",
+                                      "name": "Voice Language Details",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "MQEeL",
+                                          "name": "Voice Processor Label",
+                                          "fill": "$text-primary",
+                                          "content": "Processor",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "FMeOh",
+                                          "name": "Voice Processor Hint",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Shared by all profiles using this model. Saved immediately.",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "nTVIY",
+                                      "name": "Voice Language Select",
+                                      "context": "Only for a voice that speaks several languages (Supertonic). Its languages A–Z; the default is English, or the model's first language.",
+                                      "width": 360,
+                                      "height": 36,
+                                      "fill": "$content-bg",
+                                      "cornerRadius": 6,
+                                      "stroke": "$border",
+                                      "strokeWidth": 1,
+                                      "gap": 8,
+                                      "padding": [
+                                        0,
+                                        12
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "FeySO",
+                                          "name": "Voice Language Select Text",
+                                          "width": "fill_container",
+                                          "layout": "vertical",
+                                          "gap": 2,
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "YcbM1",
+                                              "name": "Voice Processor Value",
+                                              "fill": "$text-primary",
+                                              "content": "Automatic",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 13,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "icon",
+                                          "id": "qUiAf",
+                                          "name": "Voice Language Select Chevron",
                                           "width": 16,
                                           "height": 16,
                                           "icon": "chevron-down",
@@ -33131,7 +33513,7 @@
                                               "id": "b3vKw",
                                               "name": "Voice Language Select Value",
                                               "fill": "$text-primary",
-                                              "content": "German",
+                                              "content": "English",
                                               "fontFamily": "Inter",
                                               "fontSize": 13,
                                               "fontWeight": "500"
@@ -50594,9 +50976,8 @@
               "x": 0,
               "y": 0,
               "name": "Model Language Row",
-              "context": "Local only, and only for a model that takes a language (a multilingual model whose runtime can be told what is spoken, such as Nemotron 3.5 on sherpa-onnx). A row of its own under the card's main row, because the actions column has no room for a third control. Visible label Language, the selector (accessible name: Language for [model]) and a muted hint. Auto-detect (default) lets the model decide; otherwise the selector shows the language name and the hint is dropped. Choices are Auto-detect and the model's languages. Each model has its own selection.",
+              "context": "Local model options row. Speech models use Language. Voice models use Voice; a model with a processor choice places its Automatic / CPU / GPU (Vulkan) selector immediately after the voice selector, followed by the preview hint. Preview and Delete stay in the header.",
               "enabled": false,
-              "width": "fill_container(0)",
               "gap": 28,
               "alignItems": "center",
               "children": [
@@ -50651,6 +51032,51 @@
                           "type": "icon",
                           "id": "PrfRb",
                           "name": "Model Language Chevron",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$text-muted"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "j60QA",
+                      "x": 60,
+                      "y": 0,
+                      "name": "Model Processor Select",
+                      "context": "Local TTS only for models with a processor choice. Immediately after Voice, before the preview hint. Accessible name: Processor for [model]. Automatic prefers GPU with CPU fallback; CPU and GPU (Vulkan) are explicit choices. Saved per model; applies at the next synthesis.",
+                      "enabled": false,
+                      "width": 176,
+                      "height": 36,
+                      "fill": "$content-bg",
+                      "cornerRadius": 6,
+                      "stroke": "$border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "qIhs6",
+                          "name": "Selected Model Processor",
+                          "fill": "$text-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Automatic",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "Et3iP",
+                          "name": "Model Processor Chevron",
                           "width": 16,
                           "height": 16,
                           "icon": "chevron-down",
@@ -50746,7 +51172,6 @@
               "name": "Model Runtime Notice",
               "context": "Local only. Shown when the downloaded model cannot be used because no runtime in this version can run it; Use model is then disabled and the model cannot be activated. Text names the runtime, for example transcribe.cpp is not available in this version of Rambl yet.",
               "enabled": false,
-              "width": "fill_container(928)",
               "gap": 6,
               "alignItems": "center",
               "children": [
@@ -71910,7 +72335,7 @@
           },
           "clip": true,
           "width": 1280,
-          "height": 930,
+          "height": 978,
           "fill": "$window-bg",
           "cornerRadius": 8,
           "stroke": "$border",
@@ -72719,7 +73144,7 @@
                                   "name": "Cloud Tab",
                                   "enabled": false,
                                   "width": 50,
-                                  "height": "fill_container(40)",
+                                  "height": 40,
                                   "layout": "vertical",
                                   "children": [
                                     {
@@ -72974,7 +73399,7 @@
                               "id": "PwORk",
                               "name": "Model Results Count",
                               "fill": "$text-secondary",
-                              "content": "3 local models · 39 voices",
+                              "content": "4 local models · 48 voices",
                               "fontFamily": "Inter",
                               "fontSize": 12,
                               "fontWeight": "normal"
@@ -72983,7 +73408,7 @@
                               "type": "frame",
                               "id": "CazQg",
                               "name": "Model Cards",
-                              "context": "One card per downloaded TTS model; a model may hold many voices (speakers). Tags: voice count, languages, CPU fit, size, license. A model with several voices has a Voice row to pick which one Preview plays; one-voice models have none. Preview speaks a short sample sentence in the voice's language and turns into Stop while playing. Listed A–Z. Deleting a model that profiles or voice commands use asks first (danger) and names them; they then show the Needs attention warning.",
+                              "context": "One card per downloaded TTS model, sorted A–Z. Voice selects the speaker to preview. Models with a processor choice put Automatic / CPU / GPU (Vulkan) immediately beside Voice, before the preview hint. Preview and Delete remain in the header. The processor preference is saved per model and applies to the next synthesis.",
                               "width": "fill_container",
                               "layout": "vertical",
                               "gap": 12,
@@ -72995,6 +73420,7 @@
                                   "name": "Kokoro 82M — Local",
                                   "width": "fill_container",
                                   "stroke": "$border",
+                                  "context": "Kokoro keeps its existing CPU model. The processor selector beside Voice offers Automatic, CPU and GPU (Vulkan). Selecting GPU downloads the additional 190 MB audio.cpp GGUF if absent; show progress with Cancel during this download. Save the new preference only after download succeeds; cancellation or failure leaves the prior choice intact. CPU prefers the installed sherpa-onnx artifact; Automatic prefers audio.cpp after it is downloaded. Existing voice IDs and read-aloud profiles are preserved.",
                                   "descendants": {
                                     "Bima8": {
                                       "content": "Kokoro 82M"
@@ -73039,7 +73465,7 @@
                                       "content": "Good on CPU"
                                     },
                                     "k6cfh": {
-                                      "content": "~157 MB"
+                                      "content": "173 MB"
                                     },
                                     "j3xOUJ": {
                                       "enabled": false
@@ -73062,8 +73488,11 @@
                                     "epquN": {
                                       "content": "Heart · US, female"
                                     },
+                                    "j60QA": {
+                                      "enabled": true
+                                    },
                                     "uJ3kn": {
-                                      "content": "Preview plays a short sample with this voice."
+                                      "content": "GPU downloads an additional 190 MB."
                                     }
                                   }
                                 },
@@ -73139,6 +73568,89 @@
                                     },
                                     "epquN": {
                                       "content": ""
+                                    },
+                                    "uJ3kn": {
+                                      "content": "Preview plays a short sample with this voice."
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": "KGHkL",
+                                  "type": "ref",
+                                  "ref": "ctB3K",
+                                  "name": "Qwen3-TTS 1.7B CustomVoice — Local",
+                                  "context": "Local Qwen3-TTS model with Voice and processor selectors next to each other. Preview uses the selected voice and processor. Automatic is the default.",
+                                  "width": "fill_container",
+                                  "stroke": "$border",
+                                  "descendants": {
+                                    "Bima8": {
+                                      "content": "Qwen3-TTS 1.7B CustomVoice"
+                                    },
+                                    "A1gFp9": {
+                                      "enabled": false
+                                    },
+                                    "RG55X": {
+                                      "icon": "volume-2"
+                                    },
+                                    "FRpam": {
+                                      "content": "Default"
+                                    },
+                                    "V6sQC": {
+                                      "enabled": true
+                                    },
+                                    "zAzF9": {
+                                      "icon": "sparkles"
+                                    },
+                                    "LQuSJ": {
+                                      "content": "Expressive multilingual voices"
+                                    },
+                                    "oKgAq": {
+                                      "enabled": true
+                                    },
+                                    "X6T07D": {
+                                      "icon": "users"
+                                    },
+                                    "CKUP1": {
+                                      "content": "9 voices"
+                                    },
+                                    "Je6Xj": {
+                                      "content": "10 languages"
+                                    },
+                                    "ExbSM": {
+                                      "enabled": false
+                                    },
+                                    "z8DQ9": {
+                                      "fill": "$warning"
+                                    },
+                                    "Zwc2T": {
+                                      "content": "Heavy on CPU"
+                                    },
+                                    "k6cfh": {
+                                      "content": "2.82 GB"
+                                    },
+                                    "j3xOUJ": {
+                                      "enabled": false
+                                    },
+                                    "l3Lt0": {
+                                      "enabled": true
+                                    },
+                                    "Mn8xr": {
+                                      "icon": "play"
+                                    },
+                                    "lulD3": {
+                                      "content": "Preview"
+                                    },
+                                    "gepN7": {
+                                      "enabled": true
+                                    },
+                                    "nZMG7": {
+                                      "content": "Voice"
+                                    },
+                                    "epquN": {
+                                      "content": "Aiden · male"
+                                    },
+                                    "j60QA": {
+                                      "enabled": true
                                     },
                                     "uJ3kn": {
                                       "content": "Preview plays a short sample with this voice."
@@ -73473,7 +73985,7 @@
           },
           "clip": true,
           "width": 1280,
-          "height": 930,
+          "height": 978,
           "fill": "$window-bg",
           "cornerRadius": 8,
           "stroke": "$border",
@@ -74282,7 +74794,7 @@
                                   "name": "Cloud Tab",
                                   "enabled": false,
                                   "width": 50,
-                                  "height": "fill_container(40)",
+                                  "height": 40,
                                   "layout": "vertical",
                                   "children": [
                                     {
@@ -74537,7 +75049,7 @@
                               "id": "t8Bryv",
                               "name": "Model Results Count",
                               "fill": "$text-secondary",
-                              "content": "3 local models · 39 voices",
+                              "content": "4 local models · 48 voices",
                               "fontFamily": "Inter",
                               "fontSize": 12,
                               "fontWeight": "normal"
@@ -74546,7 +75058,7 @@
                               "type": "frame",
                               "id": "lnZuS",
                               "name": "Model Cards",
-                              "context": "One card per downloaded TTS model; a model may hold many voices (speakers). Tags: voice count, languages, CPU fit, size, license. A model with several voices has a Voice row to pick which one Preview plays; one-voice models have none. Preview speaks a short sample sentence in the voice's language and turns into Stop while playing. Listed A–Z. Deleting a model that profiles or voice commands use asks first (danger) and names them; they then show the Needs attention warning.",
+                              "context": "One card per downloaded TTS model, sorted A–Z. Voice selects the speaker to preview. Models with a processor choice put Automatic / CPU / GPU (Vulkan) immediately beside Voice, before the preview hint. Preview and Delete remain in the header. The processor preference is saved per model and applies to the next synthesis.",
                               "width": "fill_container",
                               "layout": "vertical",
                               "gap": 12,
@@ -74558,6 +75070,7 @@
                                   "name": "Kokoro 82M — Local",
                                   "width": "fill_container",
                                   "stroke": "$border",
+                                  "context": "Kokoro keeps its existing CPU model. The processor selector beside Voice offers Automatic, CPU and GPU (Vulkan). Selecting GPU downloads the additional 190 MB audio.cpp GGUF if absent; show progress with Cancel during this download. Save the new preference only after download succeeds; cancellation or failure leaves the prior choice intact. CPU prefers the installed sherpa-onnx artifact; Automatic prefers audio.cpp after it is downloaded. Existing voice IDs and read-aloud profiles are preserved.",
                                   "descendants": {
                                     "Bima8": {
                                       "content": "Kokoro 82M"
@@ -74602,7 +75115,7 @@
                                       "content": "Good on CPU"
                                     },
                                     "k6cfh": {
-                                      "content": "~157 MB"
+                                      "content": "173 MB"
                                     },
                                     "j3xOUJ": {
                                       "enabled": false
@@ -74625,8 +75138,11 @@
                                     "epquN": {
                                       "content": "Heart · US, female"
                                     },
+                                    "j60QA": {
+                                      "enabled": true
+                                    },
                                     "uJ3kn": {
-                                      "content": "Preview plays a short sample with this voice."
+                                      "content": "GPU downloads an additional 190 MB."
                                     }
                                   }
                                 },
@@ -74702,6 +75218,89 @@
                                     },
                                     "epquN": {
                                       "content": ""
+                                    },
+                                    "uJ3kn": {
+                                      "content": "Preview plays a short sample with this voice."
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": "Z4Fdz",
+                                  "type": "ref",
+                                  "ref": "ctB3K",
+                                  "name": "Qwen3-TTS 1.7B CustomVoice — Local",
+                                  "context": "Local Qwen3-TTS model with Voice and processor selectors next to each other. Preview uses the selected voice and processor. Automatic is the default.",
+                                  "width": "fill_container",
+                                  "stroke": "$border",
+                                  "descendants": {
+                                    "Bima8": {
+                                      "content": "Qwen3-TTS 1.7B CustomVoice"
+                                    },
+                                    "A1gFp9": {
+                                      "enabled": false
+                                    },
+                                    "RG55X": {
+                                      "icon": "volume-2"
+                                    },
+                                    "FRpam": {
+                                      "content": "Default"
+                                    },
+                                    "V6sQC": {
+                                      "enabled": true
+                                    },
+                                    "zAzF9": {
+                                      "icon": "sparkles"
+                                    },
+                                    "LQuSJ": {
+                                      "content": "Expressive multilingual voices"
+                                    },
+                                    "oKgAq": {
+                                      "enabled": true
+                                    },
+                                    "X6T07D": {
+                                      "icon": "users"
+                                    },
+                                    "CKUP1": {
+                                      "content": "9 voices"
+                                    },
+                                    "Je6Xj": {
+                                      "content": "10 languages"
+                                    },
+                                    "ExbSM": {
+                                      "enabled": false
+                                    },
+                                    "z8DQ9": {
+                                      "fill": "$warning"
+                                    },
+                                    "Zwc2T": {
+                                      "content": "Heavy on CPU"
+                                    },
+                                    "k6cfh": {
+                                      "content": "2.82 GB"
+                                    },
+                                    "j3xOUJ": {
+                                      "enabled": false
+                                    },
+                                    "l3Lt0": {
+                                      "enabled": true
+                                    },
+                                    "Mn8xr": {
+                                      "icon": "play"
+                                    },
+                                    "lulD3": {
+                                      "content": "Preview"
+                                    },
+                                    "gepN7": {
+                                      "enabled": true
+                                    },
+                                    "nZMG7": {
+                                      "content": "Voice"
+                                    },
+                                    "epquN": {
+                                      "content": "Aiden · male"
+                                    },
+                                    "j60QA": {
+                                      "enabled": true
                                     },
                                     "uJ3kn": {
                                       "content": "Preview plays a short sample with this voice."

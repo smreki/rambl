@@ -297,6 +297,9 @@ public partial class ModelCard : ContentView
     /// <summary>Gets the index of the runtime chosen in the selector, or -1 when it has no choices.</summary>
     public int SelectedRuntimeIndex => RuntimeSelect.SelectedIndex;
 
+    /// <summary>Gets or sets the accessible label of the header selector, for example Runtime or Processor.</summary>
+    public string RuntimeSelectLabel { get; set; } = "Runtime";
+
     /// <summary>Gets or sets the model type shown as the first tag, for example "LLM"; the tag is hidden while empty.</summary>
     public string TypeText
     {
@@ -408,6 +411,28 @@ public partial class ModelCard : ContentView
         set => RuntimeSelect.WidthRequest = value;
     }
 
+    /// <summary>Gets or sets whether the header selector is placed after the language or voice selector instead.</summary>
+    public bool IsRuntimeSelectInLanguageRow
+    {
+        get => ReferenceEquals(RuntimeSelect.Parent, LanguageRow);
+        set
+        {
+            if (value == IsRuntimeSelectInLanguageRow)
+                return;
+
+            if (value)
+            {
+                HeaderActions.Children.Remove(RuntimeSelect);
+                LanguageRow.Children.Insert(2, RuntimeSelect);
+            }
+            else
+            {
+                LanguageRow.Children.Remove(RuntimeSelect);
+                HeaderActions.Children.Insert(0, RuntimeSelect);
+            }
+        }
+    }
+
     /// <summary>Occurs when the user picks another language; not when <see cref="SetLanguageOptions"/> does.</summary>
     public event EventHandler? LanguageChanged;
 
@@ -450,6 +475,7 @@ public partial class ModelCard : ContentView
     /// <param name="selectedIndex">The index to select.</param>
     public void SetRuntimeOptions(IReadOnlyList<string> labels, int selectedIndex)
     {
+        RuntimeSelect.AccessibleName = $"{RuntimeSelectLabel} for {Title}".Trim();
         settingRuntimeOptions = true;
         try
         {
@@ -637,7 +663,7 @@ public partial class ModelCard : ContentView
     {
         ActionButton.AccessibleName = $"{ActionText} {Title}".Trim();
         SecondaryButton.AccessibleName = $"{SecondaryActionName} {Title}".Trim();
-        RuntimeSelect.AccessibleName = $"Runtime for {Title}".Trim();
+        RuntimeSelect.AccessibleName = $"{RuntimeSelectLabel} for {Title}".Trim();
         LanguageSelect.AccessibleName = $"{LanguageRowTitle} for {Title}".Trim();
     }
 
