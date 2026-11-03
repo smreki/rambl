@@ -2,6 +2,21 @@
 
 All notable changes to Rambl are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - Unreleased
+
+More local voices, Vulkan acceleration for speech synthesis and smoother History browsing.
+
+### Added
+
+- Local Qwen3-TTS CustomVoice models through audio.cpp, with CPU and GPU (Vulkan) support and pitch-preserving speed control.
+- GPU (Vulkan) support for Kokoro through an additional audio.cpp model download, alongside its existing CPU runtime.
+- Automatic, CPU and GPU (Vulkan) processor choices beside Voice in TTS Models and below Voice in the Read Aloud profile editor. The choice is shared by all profiles using the model and saved immediately; required downloads can be cancelled without changing the previous choice.
+
+### Fixed
+
+- History freezes with large recording libraries: recordings now display 10 per page, newest first, while search still covers the full history.
+- Off-center labels on text-only icon buttons.
+
 ## [0.3.0] - Unreleased
 
 Adjustable local voice effects for read-aloud profiles.
