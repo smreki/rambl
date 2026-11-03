@@ -5,7 +5,7 @@
              x:Class="Rambl.Views.History"
              Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged">
     <Grid>
-        <Grid x:Name="Column" RowDefinitions="Auto,Auto,*" RowSpacing="18" HorizontalOptions="Center">
+        <Grid x:Name="Column" RowDefinitions="Auto,Auto,*,Auto" RowSpacing="18" HorizontalOptions="Center">
             <!-- Title, then Delete all (the same Clear history as in the settings), the folder and the settings buttons. -->
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
                 <VerticalStackLayout Spacing="4">
@@ -39,6 +39,16 @@
                 </ScrollView>
                 <Label x:Name="MessageLabel" IsVisible="False" Style="{StaticResource PageSubtitle}" VerticalOptions="Start"
                        AutomationId="HistoryMessage" />
+            </Grid>
+            <Grid x:Name="Pagination" Grid.Row="3" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" IsVisible="False">
+                <Label x:Name="PageLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                       AutomationId="HistoryPage" />
+                <components:IconButton x:Name="PreviousPageButton" Grid.Column="1" Text="Previous"
+                                       AccessibleName="Previous page of recordings" IsOutlined="True"
+                                       AutomationId="HistoryPreviousPage" Clicked="OnPreviousPageClicked" />
+                <components:IconButton x:Name="NextPageButton" Grid.Column="2" Text="Next"
+                                       AccessibleName="Next page of recordings" IsOutlined="True"
+                                       AutomationId="HistoryNextPage" Clicked="OnNextPageClicked" />
             </Grid>
         </Grid>
 

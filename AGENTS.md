@@ -50,6 +50,7 @@ Rambl is a local-first push-to-talk dictation app (C# / .NET 10 MAUI). A shortcu
 - Confirmations go through `IConfirmService` (so destructive answers get the danger color), never `DisplayAlertAsync`.
 - Lists are sorted A–Z by name, ordinal and ignoring case, after any "Any"/"Automatic" entry. Exceptions: the active model comes first on STT Models Local, and processes keep the user's order within a shortcut.
 - The sidebar is grouped, with dividers: History | Post Processing, Read Aloud, Voice Commands | Language Models, STT Models, TTS Models | settings A–Z (Appearance, Audio, Controls); About sits at the bottom. The app opens on Controls.
+- History displays at most 10 recordings per page, newest first. Search covers the full history and resets to the first page; Previous/Next clamp after deletions. Keep only the page's cards plus an active playback card, rather than building the entire history on the UI thread.
 - Icons are the Lucide font. Codepoints are pinned to lucide-static 1.48.0 in `Components/Icons.cs`; add new ones there and to its name map.
 - MAUI quirks that already cost time:
   - `Border` can't stroke single sides; use `BoxView` dividers.
