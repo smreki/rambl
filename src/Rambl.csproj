@@ -230,6 +230,48 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- audio.cpp is a separate process, so its ggml never conflicts with the STT or language runtimes.
+	     The Windows Vulkan build also has a CPU backend; Rambl falls back to it if Vulkan cannot load the model. -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<UseAudioCpp>true</UseAudioCpp>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UseAudioCpp)' == 'true'">
+		<DefineConstants>$(DefineConstants);AUDIO_CPP</DefineConstants>
+		<AudioCppVersion>0.9.3</AudioCppVersion>
+		<AudioCppZipName>audio-v$(AudioCppVersion)-bin-windows-x64-vulkan</AudioCppZipName>
+		<AudioCppZipSha256>d1741e16154f99ef96382a36d5e89ccf12fd4fda6ec7dcdcdbd122d82f525c11</AudioCppZipSha256>
+		<AudioCppCacheDir>$(MSBuildProjectDirectory)\..\.native\audio.cpp\$(AudioCppVersion)\</AudioCppCacheDir>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(UseAudioCpp)' != 'true'">
+		<Compile Remove="Features\Tts\AudioCpp\**" />
+	</ItemGroup>
+
+	<Target Name="FetchAudioCpp" BeforeTargets="AssignTargetPaths" Condition="'$(UseAudioCpp)' == 'true'">
+		<PropertyGroup>
+			<AudioCppZip>$(AudioCppCacheDir)$(AudioCppZipName).zip</AudioCppZip>
+			<AudioCppBinDir>$(AudioCppCacheDir)bin\</AudioCppBinDir>
+			<AudioCppChecked>$(AudioCppBinDir)$(AudioCppZipSha256).checked</AudioCppChecked>
+		</PropertyGroup>
+		<DownloadFile Condition="!Exists('$(AudioCppChecked)')"
+		              SourceUrl="https://github.com/0xShug0/audio.cpp/releases/download/v$(AudioCppVersion)/$(AudioCppZipName).zip"
+		              DestinationFolder="$(AudioCppCacheDir)" SkipUnchangedFiles="true" />
+		<GetFileHash Condition="!Exists('$(AudioCppChecked)')" Files="$(AudioCppZip)" Algorithm="SHA256">
+			<Output TaskParameter="Items" ItemName="AudioCppZipHash" />
+		</GetFileHash>
+		<Error Condition="!Exists('$(AudioCppChecked)') And '%(AudioCppZipHash.FileHash)' != '$(AudioCppZipSha256)'"
+		       Text="The downloaded audio.cpp release does not match the pinned SHA-256. Delete $(AudioCppCacheDir) and build again, or update the pin after checking the release." />
+		<Unzip Condition="!Exists('$(AudioCppChecked)')" SourceFiles="$(AudioCppZip)" DestinationFolder="$(AudioCppBinDir)" />
+		<Touch Condition="!Exists('$(AudioCppChecked)')" Files="$(AudioCppChecked)" AlwaysCreate="true" />
+		<ItemGroup>
+			<AudioCppFile Include="$(AudioCppBinDir)audiocpp_server.exe;$(AudioCppBinDir)*.dll;$(AudioCppBinDir)LICENSE*" />
+			<None Include="@(AudioCppFile)" Link="audio.cpp\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<!-- Model specs supply family-specific options to the server. -->
+			<None Include="$(AudioCppBinDir)model_specs\qwen3_tts.json" Link="audio.cpp\model_specs\qwen3_tts.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+		</ItemGroup>
+	</Target>
+
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<WindowsPackageType>None</WindowsPackageType>
 		<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>

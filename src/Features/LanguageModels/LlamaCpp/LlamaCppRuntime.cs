@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Rambl.Common.Processes;
 using Rambl.Features.Models;
 
 namespace Rambl.Features.LanguageModels.LlamaCpp;
