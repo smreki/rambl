@@ -131,3 +131,7 @@ rambl.ps1       development helper
 - [Lucide](https://lucide.dev) (ISC): icons
 
 Models are downloaded from their Hugging Face repositories and keep their own licenses.
+
+## License
+
+Rambl is licensed under the [MIT License](LICENSE). Third-party libraries and models retain their own licenses.
