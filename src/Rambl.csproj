@@ -310,6 +310,22 @@
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 
+	<!-- Optional single-file experiment. WinUI requires extracting the bundled Microsoft runtime at launch;
+	     keep Rambl's path-based native runtimes and data next to the executable. Not used by the release workflow. -->
+	<Target Name="KeepRamblNativeFilesOutsideBundle" BeforeTargets="_ComputeFilesToBundle"
+	        Condition="'$(RamblHybridPublish)' == 'true' And '$(PublishSingleFile)' == 'true'">
+		<ItemGroup>
+			<ResolvedFileToPublish Update="@(ResolvedFileToPublish)"
+			                       Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(ResolvedFileToPublish.RelativePath)', '^(audio\.cpp|llama\.cpp|transcribe\.cpp|vad)[/\\]'))">
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+			<ResolvedFileToPublish Update="@(ResolvedFileToPublish)"
+			                       Condition="'%(ResolvedFileToPublish.RelativePath)' == 'appicon.ico' Or '%(ResolvedFileToPublish.RelativePath)' == 'parakeet.dll' Or '%(ResolvedFileToPublish.RelativePath)' == 'onnxruntime.dll' Or '%(ResolvedFileToPublish.RelativePath)' == 'onnxruntime_providers_shared.dll' Or '%(ResolvedFileToPublish.RelativePath)' == 'sherpa-onnx.dll' Or '%(ResolvedFileToPublish.RelativePath)' == 'sherpa-onnx-c-api.dll'">
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
+
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
 	</PropertyGroup>

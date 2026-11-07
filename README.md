@@ -55,14 +55,15 @@ Requirements:
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) and the MAUI Windows workload: `dotnet workload install maui-windows` (or Visual Studio 2026 with *.NET Multi-platform App UI development*)
 - Microsoft Visual C++ Redistributable (x64), needed at run time by the native speech libraries
-- Internet access for the first build, which downloads pinned releases of parakeet.cpp, transcribe.cpp, llama.cpp and the Silero VAD model into `.native/` and checks each against a pinned hash
+- Internet access for the first build, which downloads pinned releases of parakeet.cpp, transcribe.cpp, llama.cpp, audio.cpp, the Kokoro eSpeak NG phonemizer and the Silero VAD model into `.native/` and checks each against a pinned hash
 
 The `rambl.ps1` helper wraps the usual commands:
 
 ```powershell
 .\rambl.ps1          # run with hot reload (dotnet watch)
 .\rambl.ps1 run      # build and run once
-.\rambl.ps1 build    # build only
+.\rambl.ps1 build    # hybrid Windows publish to artifacts/rambl
+.\rambl.ps1 setup    # self-contained Windows installer
 .\rambl.ps1 clean    # remove build output
 ```
 
@@ -73,6 +74,14 @@ dotnet run --project src\Rambl.csproj -f net10.0-windows10.0.19041.0
 ```
 
 In Visual Studio, open `Rambl.slnx`, select **Windows Machine** and press F5.
+
+#### Windows installer and releases
+
+Published GitHub Releases with a tag such as `v0.4.0` build and attach a per-user `Rambl-Setup.exe`. The tag must match `ApplicationDisplayVersion` in `src/Rambl.csproj`. Use GitHub's **Generate release notes** when creating the release; `CHANGELOG.md` is maintained separately and is included in the app's About screen. Publish the release from a commit that contains `.github/workflows/release-windows.yml` on the default branch. The installer contains Rambl and its pinned native runtimes; installation and launch do not download them. It upgrades an existing installation at the same location and does not remove settings, models or recordings in the app data folder. The x64 Microsoft Visual C++ Redistributable is also bundled: if missing, setup offers to install it first, which requires an administrator prompt. Silent installation requires it to be installed beforehand.
+
+To build locally, install Inno Setup 6 and run `.\rambl.ps1 setup`. Building needs internet for the pinned native releases and the Microsoft-signed Visual C++ Redistributable; the finished installer is written to `artifacts/Rambl-Setup.exe` and works offline. Before distributing it, test installation and upgrade on a clean Windows x64 machine both with and without the Visual C++ Redistributable installed. The installer is currently unsigned, so Windows may show a SmartScreen warning.
+
+To inspect an **experimental** hybrid single-file publish, run `.\rambl.ps1 build`. It writes to `artifacts/rambl/`, independently of the release installer. The Microsoft/.NET runtime is bundled in `Rambl.exe` and extracted to a temporary folder on launch; Rambl's native speech runtimes and path-based assets stay beside it. This mode has not been validated by running the app on a clean machine and is not used by GitHub Actions.
 
 ### macOS
 
@@ -118,19 +127,24 @@ rambl.ps1       development helper
 
 ## Libraries
 
+- [.NET MAUI](https://github.com/dotnet/maui) (MIT): cross-platform app UI
 - [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0): speech recognition
 - [parakeet.cpp](https://github.com/mudler/parakeet.cpp) (MIT): speech recognition
 - [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) (MIT): speech recognition
 - [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT): language models, run as a separate `llama-server` process
+- [audio.cpp](https://github.com/0xShug0/audio.cpp) (Apache-2.0): local voice synthesis in a separate server process
+- [eSpeak NG](https://github.com/espeak-ng/espeak-ng) (GPL-3.0-or-later): Kokoro phonemizer DLL and dictionaries from [espeakng-loader](https://pypi.org/project/espeakng-loader/); no Python runtime is installed
 - [ONNX Runtime](https://github.com/microsoft/onnxruntime) (MIT): Laya decision models
 - [Silero VAD](https://github.com/snakers4/silero-vad) (MIT): silence detection
 - [NAudio](https://github.com/naudio/NAudio) (MIT): Windows audio
 - [H.NotifyIcon](https://github.com/HavenDV/H.NotifyIcon) (MIT): Windows tray icon
 - [Tomlyn](https://github.com/xoofx/Tomlyn) (BSD-2-Clause): settings file
 - [Indiko.Maui.Controls.Markdown](https://github.com/0xc3u/Indiko.Maui.Controls.Markdown) (MIT): this document and the changelog in About
+- [Markdig](https://github.com/xoofx/markdig) (BSD-2-Clause): parsing text for read aloud
+- [Microsoft.Extensions.Logging.Debug](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Debug) (MIT): development diagnostics
 - [Lucide](https://lucide.dev) (ISC): icons
 
-Models are downloaded from their Hugging Face repositories and keep their own licenses.
+Native runtime versions are pinned in `src/Rambl.csproj`; Lucide font codepoints are pinned in `src/Components/Icons.cs`. Models are downloaded from their Hugging Face repositories and keep their own licenses.
 
 ## License
 
