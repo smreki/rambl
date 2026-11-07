@@ -21,12 +21,14 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
-          if ($env:RELEASE_TAG -notmatch '^v(\d+\.\d+\.\d+)$') {
-            throw 'Release tag must be vMAJOR.MINOR.PATCH (for example, v0.4.0).'
+          if ($env:RELEASE_TAG -notmatch '^v?(\d+\.\d+\.\d+)$') {
+            throw 'Release tag must be MAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH (for example, 0.4.0 or v0.4.0).'
           }
           $version = $Matches[1]
           [xml]$project = Get-Content src/Rambl.csproj
-          if ($project.Project.PropertyGroup.ApplicationDisplayVersion -ne $version) {
+          $versionNode = $project.SelectSingleNode('/Project/PropertyGroup/ApplicationDisplayVersion')
+          $projectVersion = if ($versionNode) { $versionNode.InnerText } else { $null }
+          if ($projectVersion -ne $version) {
             throw "Release tag $env:RELEASE_TAG does not match ApplicationDisplayVersion in src/Rambl.csproj."
           }
 

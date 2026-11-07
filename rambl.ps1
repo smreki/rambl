@@ -49,7 +49,8 @@ switch ($Command) {
         }
 
         [xml]$projectXml = Get-Content $projectPath
-        $version = $projectXml.Project.PropertyGroup.ApplicationDisplayVersion
+        $versionNode = $projectXml.SelectSingleNode('/Project/PropertyGroup/ApplicationDisplayVersion')
+        $version = if ($versionNode) { $versionNode.InnerText } else { $null }
         if (-not $version) {
             throw "ApplicationDisplayVersion was not found in $projectPath."
         }
