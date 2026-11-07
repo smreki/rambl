@@ -147,13 +147,15 @@ internal sealed class WasapiStream : IAudioStream
             }
         }
 
-        public int Read(float[] buffer, int start, int count)
+        public int Read(float[] buffer, int start, int count) => Read(buffer.AsSpan(start, count));
+
+        public int Read(Span<float> buffer)
         {
             lock (gate)
             {
                 var filled = 0;
                 var volume = Volume;
-                while (filled < count)
+                while (filled < buffer.Length)
                 {
                     if (current is null || offset >= current.Length)
                     {
@@ -162,18 +164,18 @@ internal sealed class WasapiStream : IAudioStream
                         offset = 0;
                     }
 
-                    var take = Math.Min(count - filled, current.Length - offset);
+                    var take = Math.Min(buffer.Length - filled, current.Length - offset);
                     for (var index = 0; index < take; index++)
-                        buffer[start + filled + index] = Math.Clamp(current[offset + index] * volume, -1f, 1f);
+                        buffer[filled + index] = Math.Clamp(current[offset + index] * volume, -1f, 1f);
 
                     offset += take;
                     filled += take;
                 }
 
                 Consumed += filled;
-                SilenceSinceDry = filled == count ? 0 : filled > 0 ? count - filled : SilenceSinceDry + count;
-                Array.Clear(buffer, start + filled, count - filled);
-                return count;
+                SilenceSinceDry = filled == buffer.Length ? 0 : filled > 0 ? buffer.Length - filled : SilenceSinceDry + buffer.Length;
+                buffer[filled..].Clear();
+                return buffer.Length;
             }
         }
     }

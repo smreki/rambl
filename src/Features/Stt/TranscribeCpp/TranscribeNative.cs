@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Rambl.Features.Stt.TranscribeCpp;
 
-/// <summary>The transcribe.cpp C API (<c>include/transcribe.h</c> of release 0.4.0) as far as Rambl uses it.</summary>
+/// <summary>The transcribe.cpp C API (<c>include/transcribe.h</c> of release 0.4.1) as far as Rambl uses it.</summary>
 /// <remarks>
 /// <para>
 /// Every params struct carries its own size as its first field and must be filled by its <c>*_init</c> function first;
@@ -20,7 +20,7 @@ internal static class TranscribeNative
     public const string Library = "transcribe";
 
     /// <summary>The release this code was written against; a library of another version is not used.</summary>
-    public const string Version = "0.4.0";
+    public const string Version = "0.4.1";
 
     /// <summary>The status every function returns on success.</summary>
     public const int Ok = 0;
@@ -134,6 +134,7 @@ internal static class TranscribeNative
         public ulong StructSize;
         public int Backend;
         public nint Device;
+        public byte NoMmap;
     }
 
     /// <summary><c>struct transcribe_session_params</c>.</summary>

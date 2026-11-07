@@ -1,3 +1,4 @@
+using Rambl.Common.IO;
 using Microsoft.Extensions.Logging;
 using Rambl.Layouts;
 using Rambl.Features.Audio;
@@ -86,7 +87,7 @@ public static class RamblProgram
         // Silero VAD finds the speech before a model that transcribes whole recordings runs ([audio] skip_silence).
         builder.Services.AddSingleton<ISpeechDetector>(static services =>
             new Features.Stt.Sherpa.SileroSpeechDetector(
-                Path.Combine(AppContext.BaseDirectory, "vad", "silero_vad.onnx"),
+                Path.Combine(ApplicationFiles.BaseDirectory, "vad", "silero_vad.onnx"),
                 services.GetRequiredService<ILogger<Features.Stt.Sherpa.SileroSpeechDetector>>()
             )
         );

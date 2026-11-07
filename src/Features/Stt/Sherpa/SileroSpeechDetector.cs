@@ -73,7 +73,7 @@ internal sealed class SileroSpeechDetector(string modelPath, ILogger logger) : I
         while (!vad.IsEmpty())
         {
             var segment = vad.Front();
-            found.Add(segment.Start..(segment.Start + segment.Samples.Length));
+            found.Add(checked((int)segment.Start)..checked((int)(segment.Start + segment.Samples.Length)));
             vad.Pop();
         }
     }

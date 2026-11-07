@@ -1,3 +1,4 @@
+using Rambl.Common.IO;
 namespace Rambl.Features.LanguageModels.LlamaCpp;
 
 /// <summary>Finds the llama.cpp server that is shipped beside the app.</summary>
@@ -12,7 +13,7 @@ internal static class LlamaServerFiles
 
     /// <summary>Gets the path where the server executable is expected.</summary>
     internal static string ServerPath =>
-        Path.Combine(AppContext.BaseDirectory, FolderName, OperatingSystem.IsWindows() ? "llama-server.exe" : "llama-server");
+        Path.Combine(ApplicationFiles.BaseDirectory, FolderName, OperatingSystem.IsWindows() ? "llama-server.exe" : "llama-server");
 
     /// <summary>Checks that the server is there.</summary>
     /// <param name="reason">When it is not, why, for the user.</param>

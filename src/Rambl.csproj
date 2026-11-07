@@ -10,7 +10,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<MauiVersion>10.0.71</MauiVersion>
+		<MauiVersion>10.0.120</MauiVersion>
 
 		<!-- Enable XAML source generation for faster build times and improved performance.
 		     This generates C# code from XAML at compile time instead of runtime inflation.
@@ -43,6 +43,8 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(UseSherpaOnnx)' == 'true'">
+		<!-- 2.x removes the built-in eSpeak frontend: Piper and Kokoro's out-of-lexicon words need it.
+		     Keep 1.x until an external phonemizer is integrated for both voice families. -->
 		<PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.8" />
 	</ItemGroup>
 
@@ -149,9 +151,9 @@
 
 	<PropertyGroup Condition="'$(UseTranscribeCpp)' == 'true'">
 		<DefineConstants>$(DefineConstants);TRANSCRIBE_CPP</DefineConstants>
-		<TranscribeCppVersion>0.4.0</TranscribeCppVersion>
+		<TranscribeCppVersion>0.4.1</TranscribeCppVersion>
 		<TranscribeCppArchiveName>transcribe-native-$(TranscribeCppVersion)-windows-x86_64-cpu-vulkan</TranscribeCppArchiveName>
-		<TranscribeCppArchiveSha256>9d5bd89f720d7979323e73f5220fe50fad5e38a7b0c2525225d453bd09adf2b0</TranscribeCppArchiveSha256>
+		<TranscribeCppArchiveSha256>272eb97795048ccb557c85bb9dd44c9e530e1c928443114c39816a8a5f76269d</TranscribeCppArchiveSha256>
 		<TranscribeCppCacheDir>$(MSBuildProjectDirectory)\..\.native\transcribe.cpp\$(TranscribeCppVersion)\</TranscribeCppCacheDir>
 	</PropertyGroup>
 
@@ -196,9 +198,9 @@
 
 	<PropertyGroup Condition="'$(UseLlamaCpp)' == 'true'">
 		<DefineConstants>$(DefineConstants);LLAMA_CPP</DefineConstants>
-		<LlamaCppVersion>b11580</LlamaCppVersion>
+		<LlamaCppVersion>b12182</LlamaCppVersion>
 		<LlamaCppZipName>llama-$(LlamaCppVersion)-bin-win-cpu-x64</LlamaCppZipName>
-		<LlamaCppZipSha256>430efe5b4f10db617ae0f5732f7e9360fa7be4344d1d97688e09bbd3b5b084da</LlamaCppZipSha256>
+		<LlamaCppZipSha256>e068c483e2ea97bf09121ec0bbe085bd43470bb67d9062c7c66162164aea5834</LlamaCppZipSha256>
 		<LlamaCppCacheDir>$(MSBuildProjectDirectory)\..\.native\llama.cpp\$(LlamaCppVersion)\</LlamaCppCacheDir>
 	</PropertyGroup>
 
@@ -238,9 +240,9 @@
 
 	<PropertyGroup Condition="'$(UseAudioCpp)' == 'true'">
 		<DefineConstants>$(DefineConstants);AUDIO_CPP</DefineConstants>
-		<AudioCppVersion>0.9.3</AudioCppVersion>
+		<AudioCppVersion>0.9.4</AudioCppVersion>
 		<AudioCppZipName>audio-v$(AudioCppVersion)-bin-windows-x64-vulkan</AudioCppZipName>
-		<AudioCppZipSha256>d1741e16154f99ef96382a36d5e89ccf12fd4fda6ec7dcdcdbd122d82f525c11</AudioCppZipSha256>
+		<AudioCppZipSha256>804f70cf47c7b8450ef37e76fc04ecee71728345061f6e749a412932dd7db7a7</AudioCppZipSha256>
 		<AudioCppCacheDir>$(MSBuildProjectDirectory)\..\.native\audio.cpp\$(AudioCppVersion)\</AudioCppCacheDir>
 	</PropertyGroup>
 
@@ -353,14 +355,14 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Indiko.Maui.Controls.Markdown" Version="1.10.0" />
 		<!-- Common/Text reads text that is read aloud as Markdown; the same version the Markdown control brings. -->
-		<PackageReference Include="Markdig" Version="1.3.2" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
-		<PackageReference Include="Tomlyn" Version="2.10.1" />
+		<PackageReference Include="Markdig" Version="1.6.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.14" />
+		<PackageReference Include="Tomlyn" Version="2.10.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
-		<PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
+		<PackageReference Include="NAudio.Wasapi" Version="3.3.0" />
 	</ItemGroup>
 
 </Project>

@@ -1,3 +1,4 @@
+using Rambl.Common.IO;
 #if WINDOWS
 using Microsoft.Extensions.Logging;
 #endif
@@ -43,7 +44,7 @@ public partial class RamblWindow : Window
         try
         {
             // Use the generated MAUI icon for the native taskbar entry as well as the tray.
-            window.AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "appicon.ico"));
+            window.AppWindow.SetIcon(Path.Combine(ApplicationFiles.BaseDirectory, "appicon.ico"));
             trayController = new(window);
         }
         catch (Exception ex)

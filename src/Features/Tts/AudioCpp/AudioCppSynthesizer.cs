@@ -1,3 +1,4 @@
+using Rambl.Common.IO;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
@@ -17,7 +18,7 @@ internal sealed class AudioCppSynthesizer : ITtsSynthesizer
     private static readonly TimeSpan StartTimeout = TimeSpan.FromMinutes(3);
     private static readonly TimeSpan RequestTimeout = TimeSpan.FromMinutes(5);
     // Keep this in step with AudioCppVersion and its verified archive hash in Rambl.csproj.
-    private const string ExpectedVersion = "0.9.3";
+    private const string ExpectedVersion = "0.9.4";
     private readonly Process process;
     private readonly HttpClient client;
     private readonly string configPath;
@@ -36,13 +37,13 @@ internal sealed class AudioCppSynthesizer : ITtsSynthesizer
     }
 
     /// <summary>Gets the pinned server shipped beside Rambl, isolated from its other ggml libraries.</summary>
-    internal static string ServerPath => Path.Combine(AppContext.BaseDirectory, "audio.cpp", "audiocpp_server.exe");
+    internal static string ServerPath => Path.Combine(ApplicationFiles.BaseDirectory, "audio.cpp", "audiocpp_server.exe");
 
     /// <summary>Gets the bundled eSpeak library used only inside the Kokoro server process.</summary>
-    internal static string EspeakLibraryPath => Path.Combine(AppContext.BaseDirectory, "audio.cpp", "espeak", "espeak-ng.dll");
+    internal static string EspeakLibraryPath => Path.Combine(ApplicationFiles.BaseDirectory, "audio.cpp", "espeak", "espeak-ng.dll");
 
     /// <summary>Gets the data shipped with the bundled eSpeak library.</summary>
-    internal static string EspeakDataPath => Path.Combine(AppContext.BaseDirectory, "audio.cpp", "espeak", "espeak-ng-data");
+    internal static string EspeakDataPath => Path.Combine(ApplicationFiles.BaseDirectory, "audio.cpp", "espeak", "espeak-ng-data");
 
     /// <summary>Starts and eagerly loads a model on the requested backend.</summary>
     /// <param name="modelPath">The self-contained GGUF file.</param>

@@ -1,3 +1,4 @@
+using Rambl.Common.IO;
 using H.NotifyIcon;
 using Microsoft.UI.Windowing;
 using Rambl.Features.Dialogs;
@@ -29,7 +30,7 @@ internal sealed class TrayIconController : IDisposable
 
         try
         {
-            trayIcon.Icon = new(Path.Combine(AppContext.BaseDirectory, "appicon.ico"));
+            trayIcon.Icon = new(Path.Combine(ApplicationFiles.BaseDirectory, "appicon.ico"));
             trayIcon.ToolTipText = "Rambl — Ready";
             trayIcon.NoLeftClickDelay = true;
             trayIcon.LeftClickCommand = new Command(() => Dispatch(RestoreWindow));

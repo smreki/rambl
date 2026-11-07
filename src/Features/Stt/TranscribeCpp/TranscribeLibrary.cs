@@ -1,3 +1,4 @@
+using Rambl.Common.IO;
 using System.Runtime.InteropServices;
 
 namespace Rambl.Features.Stt.TranscribeCpp;
@@ -18,7 +19,7 @@ internal static class TranscribeLibrary
     private static readonly Lazy<string?> Problem = new(Initialize);
 
     /// <summary>Gets the folder the library and its backends are in.</summary>
-    public static string Folder { get; } = Path.Combine(AppContext.BaseDirectory, FolderName);
+    public static string Folder { get; } = Path.Combine(ApplicationFiles.BaseDirectory, FolderName);
 
     /// <summary>Says whether the library can be used, loading and initializing it the first time.</summary>
     /// <param name="reason">When it cannot, why, in words fit for the user; otherwise null.</param>
