@@ -1,4 +1,4 @@
-; Build after publishing the Windows x64 app. Pass /DAppVersion=0.4.0 to ISCC.
+; Build after publishing the Windows x64 app. Pass /DAppVersion=0.5.0 to ISCC.
 #ifndef AppVersion
   #error Pass /DAppVersion=<version> to ISCC.
 #endif

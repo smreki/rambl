@@ -2,6 +2,33 @@
 
 All notable changes to Rambl are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] - Unreleased
+
+An offline Windows installer, shared local speech and language inference with LFM3 Omni, and a dictation card that stays visible until insertion finishes.
+
+### Added
+
+- A self-contained, per-user Windows installer (`Rambl-Setup.exe`) with bundled native runtimes and the Microsoft-signed x64 Visual C++ Redistributable. Installation and first launch need no runtime downloads; upgrades keep settings, models and recordings. Only installation of a missing Visual C++ prerequisite needs administrator permission.
+- Automatic installer builds and uploads for published GitHub Releases, accepting version tags with or without a `v` prefix. Build the installer locally with `rambl.ps1 setup`.
+- LFM3 Omni 2B for transcription, text post-processing and read aloud, with Female and Male voices and pitch-preserving speed control. One shared download and one loaded model serve all three tasks; download, cancellation and deletion stay in sync across the model screens. The model unloads after five minutes without use, and deletion waits for active inference before unloading and removing its files.
+- LFM3 1.7B as an optional local language model.
+- Native inference documentation and an Omni smoke-test harness for shared downloads and installation, STT/text/TTS inference, cancellation, dictation card lifetime, runtime loading and CPU benchmarks.
+- An MIT license for Rambl; third-party libraries and models retain their own licenses.
+
+### Changed
+
+- GGUF language models now run inside Rambl through a private llama.cpp runtime instead of a separate llama-server process, with AVX2 acceleration on compatible CPUs and a fallback for older processors.
+- After recording stops, the dictation card shows a neutral Transcribing state with a frozen recording duration and stays visible through result insertion. Violet and Skip appear when post-processing starts. Esc or Cancel stops transcription while keeping the completed recording in History.
+- `rambl.ps1 build` now creates an experimental hybrid single-file Windows publish in `artifacts/rambl`, bundling the Microsoft runtimes while keeping native inference libraries and path-based assets beside the executable.
+- Updated .NET MAUI, Markdown parsing, logging, TOML, Windows audio and Lucide dependencies, plus transcribe.cpp 0.4.1, audio.cpp 0.9.4 and llama.cpp b12182. Building the private llama.cpp runtime now requires Visual Studio's Desktop development with C++ workload, including CMake.
+
+### Fixed
+
+- Overlapping dictations and late post-processing progress updates interfering with the dictation card.
+- Crashes during Sherpa initialization when native dependencies are unavailable or incompatible; availability and version checks now run before creating native-backed speech and silence detection objects.
+- Silence detection ranges extending past the end of a recording.
+- Incomplete or outdated model installations being treated as installed when their pinned revision, total size or component files do not match the catalog.
+
 ## [0.4.0] - Unreleased
 
 More local voices, Vulkan acceleration for speech synthesis and smoother History browsing.
