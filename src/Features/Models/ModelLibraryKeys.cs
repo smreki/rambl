@@ -3,6 +3,9 @@ namespace Rambl.Features.Models;
 /// <summary>The keys the model libraries are registered under; the unkeyed <see cref="ModelLibrary"/> is the speech catalog's.</summary>
 public static class ModelLibraryKeys
 {
+    /// <summary>The key of the shared multimodal catalog and its single installation store.</summary>
+    public const string Shared = "shared-models";
+
     /// <summary>The key of the library for the language models catalog.</summary>
     public const string Language = "language-models";
 

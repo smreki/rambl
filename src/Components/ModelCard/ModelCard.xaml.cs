@@ -10,6 +10,23 @@ namespace Rambl.Components;
 /// </remarks>
 public partial class ModelCard : ContentView
 {
+    /// <summary>Identifies the explanation that several tasks use one shared download.</summary>
+    public static readonly BindableProperty SharedNoticeProperty = BindableProperty.Create(
+        nameof(SharedNotice), typeof(string), typeof(ModelCard), string.Empty,
+        propertyChanged: static (bindable, _, value) =>
+        {
+            var card = (ModelCard)bindable;
+            card.SharedNoticeLabel.Text = (string)value;
+            card.SharedNoticeLabel.IsVisible = !string.IsNullOrEmpty((string)value);
+        });
+
+    /// <summary>Gets or sets the explanation of the shared installation.</summary>
+    public string SharedNotice
+    {
+        get => (string)GetValue(SharedNoticeProperty);
+        set => SetValue(SharedNoticeProperty, value);
+    }
+
     private const double SubduedOpacity = 0.55;
 
     /// <summary>Identifies the model name.</summary>

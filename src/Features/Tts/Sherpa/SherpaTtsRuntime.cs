@@ -1,4 +1,5 @@
 using Rambl.Features.Models;
+using Rambl.Features.Inference.SherpaOnnx;
 
 namespace Rambl.Features.Tts.Sherpa;
 
@@ -35,6 +36,7 @@ internal sealed class SherpaTtsRuntime : ITtsRuntime
                 var threads = Math.Clamp(Environment.ProcessorCount / 2, 2, 8);
                 try
                 {
+                    SherpaLibrary.EnsureAvailable();
                     return new SherpaTtsSynthesizer(files, model.Directory, threads);
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)

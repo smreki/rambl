@@ -29,6 +29,32 @@ public sealed class ModelCatalog
         Tasks = document.Tasks ?? [];
     }
 
+    private ModelCatalog(ModelCatalog local, ModelCatalog shared, string capability)
+    {
+        runtimes = local.runtimes.Concat(shared.runtimes).GroupBy(pair => pair.Key).ToDictionary(group => group.Key, group => group.First().Value);
+        cpuFitLevels = local.cpuFitLevels;
+        licenses = local.licenses;
+        modelTypes = local.modelTypes.Concat(shared.modelTypes).GroupBy(pair => pair.Key).ToDictionary(group => group.Key, group => group.First().Value);
+        Tasks = local.Tasks;
+        Models = [.. local.Models, .. shared.Models.Where(model => model.Capabilities?.Contains(capability) == true)
+            .Select(model => capability == "text" ? model : model with
+            {
+                Languages = model.AudioLanguages ?? model.Languages,
+                ModelType = null,
+                Tasks = null,
+                Parameters = null,
+                ContextLength = null,
+            })];
+        if (Models.Select(model => model.Id).Distinct(StringComparer.Ordinal).Count() != Models.Count)
+            throw new InvalidDataException("A shared model must not also be defined in a task-specific catalog.");
+    }
+
+    /// <summary>Includes the shared models that support this catalog's task.</summary>
+    /// <param name="shared">The validated multimodal catalog.</param>
+    /// <param name="capability">The task: stt, text or tts.</param>
+    /// <returns>A catalog whose shared models retain one installation identity.</returns>
+    public ModelCatalog WithSharedModels(ModelCatalog shared, string capability) => new(this, shared, capability);
+
     /// <summary>Gets the supported models.</summary>
     public IReadOnlyList<CatalogModel> Models { get; }
 

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.8" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Using Include="Microsoft.Maui.Storage" />
+    <Using Include="Microsoft.Maui" />
+    <Compile Include="../../src/Features/Models/*.cs" />
+    <Compile Include="../../src/Features/Inference/LlamaCpp/*.cs" />
+    <Compile Include="../../src/Features/Stt/LlamaCpp/*.cs" />
+    <Compile Include="../../src/Features/Tts/LlamaCpp/*.cs" />
+    <Compile Include="../../src/Features/LanguageModels/ChatMessage.cs;../../src/Features/LanguageModels/GenerationOptions.cs;../../src/Features/LanguageModels/ILanguageModel.cs;../../src/Features/LanguageModels/ILanguageRuntime.cs;../../src/Features/LanguageModels/LanguageModelException.cs" />
+    <Compile Include="../../src/Features/Stt/ISttRuntime.cs;../../src/Features/Stt/ISpeechRecognizer.cs;../../src/Features/Stt/ISpeechSession.cs;../../src/Features/Stt/ICancellableSpeechSession.cs;../../src/Features/Stt/ISpeechDetector.cs;../../src/Features/Stt/SpeechInput.cs;../../src/Features/Stt/SpeechPieces.cs;../../src/Features/Stt/AudioSegmenter.cs;../../src/Features/Stt/TranscriptText.cs" />
+    <Compile Include="../../src/Features/Stt/ParakeetCpp/*.cs" />
+    <Compile Include="../../src/Features/Stt/TranscribeCpp/*.cs" />
+    <Compile Include="../../src/Features/Stt/Sherpa/SileroSpeechDetector.cs" />
+    <Compile Include="../../src/Features/Inference/SherpaOnnx/SherpaLibrary.cs" />
+    <Compile Include="../../src/Features/History/WavFile.cs;../../src/Features/History/WavInfo.cs;../../src/Features/History/WavWriter.cs" />
+    <Compile Include="../../src/Common/Input/*.cs" />
+    <Compile Include="../../src/Features/Dictation/DictationCoordinator.cs;../../src/Features/Dictation/IDictationSurface.cs;../../src/Features/Dictation/IUiDispatcher.cs;../../src/Features/Dictation/IResultExecutor.cs;../../src/Features/Dictation/ShortcutTracker.cs;../../src/Features/Dictation/ShortcutAction.cs;../../src/Features/Dictation/TrackResult.cs" />
+    <Compile Include="../../src/Features/Stt/SpeechEngine.cs;../../src/Features/Stt/SpeechLease.cs;../../src/Features/Stt/SpeechTranscriber.cs" />
+    <Compile Include="../../src/Features/Settings/AppSettings.cs;../../src/Features/Settings/ISettingsSource.cs;../../src/Features/Settings/ActivationMode.cs;../../src/Features/Settings/DictationPosition.cs" />
+    <Compile Include="../../src/Features/Audio/*.cs" />
+    <Compile Include="../../src/Features/History/IDictationRecorder.cs;../../src/Features/History/RecordingSession.cs;../../src/Features/History/RecordingInfo.cs;../../src/Features/History/ReadingInfo.cs" />
+    <Compile Include="../../src/Features/PostProcessing/*.cs" />
+    <Compile Include="../../src/Features/LanguageModels/ILanguageGenerator.cs" />
+    <Compile Include="../../src/Features/VoiceCommands/*.cs" Exclude="../../src/Features/VoiceCommands/VoiceCommandRunner.cs;../../src/Features/VoiceCommands/CommandMatcher.cs;../../src/Features/VoiceCommands/CommandModels.cs" />
+    <Compile Include="../../src/Features/Tts/TtsVoiceSettings.cs;../../src/Features/Tts/TtsVoiceFile.cs" />
+    <Compile Include="../../src/Features/Tts/ITtsRuntime.cs;../../src/Features/Tts/ITtsSynthesizer.cs;../../src/Features/Tts/TtsAudio.cs;../../src/Features/Tts/TtsException.cs" />
+    <Compile Include="../../src/Common/Interop/NativeLibraryImports.cs;../../src/Common/IO/ApplicationFiles.cs;../../src/Common/Audio/*.cs" />
+    <None Include="../../.native/rambl-llama/b12182/build/Release/rambl-llama.dll" Link="llama.cpp/rambl-llama.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+    <None Include="../../.native/rambl-llama/b12182/build-avx2/Release/rambl-llama-avx2.dll" Link="llama.cpp/rambl-llama-avx2.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+    <None Include="../../.native/silero-vad/9e2449e10874/silero_vad.onnx" Link="vad/silero_vad.onnx" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+  <!-- Match Rambl's hybrid bundle: Sherpa and ONNX stay beside the executable, while managed runtime files extract. -->
+  <Target Name="KeepNativeFilesOutsideBundle" BeforeTargets="_ComputeFilesToBundle" Condition="'$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <ResolvedFileToPublish Update="@(ResolvedFileToPublish)"
+                             Condition="'%(ResolvedFileToPublish.RelativePath)' == 'onnxruntime.dll' Or '%(ResolvedFileToPublish.RelativePath)' == 'sherpa-onnx.dll' Or '%(ResolvedFileToPublish.RelativePath)' == 'sherpa-onnx-c-api.dll' Or $([System.Text.RegularExpressions.Regex]::IsMatch('%(ResolvedFileToPublish.RelativePath)', '^(llama\.cpp|vad)[/\\]'))">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+</Project>

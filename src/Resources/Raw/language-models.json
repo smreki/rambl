@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-12",
+  "generatedAt": "2026-11-07",
   "runtimes": [
     {
       "id": "llama.cpp",
@@ -2107,6 +2107,78 @@
               "path": "xLAM-2-1B-fc-r-Q4_K_M.gguf",
               "bytes": 986048192,
               "sha256": "61eeb070aaae78ff1cbb16fecd14e35a624d792cb3592a6116a82dba92285aa3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lfm3-1.7b",
+      "name": "LFM3 1.7B",
+      "family": "lfm3",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting",
+        "translation"
+      ],
+      "purpose": {
+        "label": "Local text generation",
+        "icon": "feather"
+      },
+      "cpuFit": "good",
+      "parameters": "1.7B",
+      "contextLength": 262144,
+      "languages": {
+        "label": "16 languages",
+        "codes": [
+          "en",
+          "ar",
+          "zh",
+          "fr",
+          "de",
+          "it",
+          "ja",
+          "ko",
+          "pt",
+          "es",
+          "vi",
+          "th",
+          "id",
+          "hi",
+          "ru",
+          "pl"
+        ]
+      },
+      "license": {
+        "id": "LFM-Open-1.0",
+        "attribution": "Liquid AI · LFM Open License v1.0. Use is subject to the license terms, including its revenue and funding threshold."
+      },
+      "source": "https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF",
+      "notes": [
+        "Runs natively inside Rambl with the pinned llama.cpp bridge. Text generation only; no model server is started.",
+        "The trained context is shown here; Rambl currently allocates at most 8192 tokens."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "LiquidAI/LFM3-1.7B-GGUF",
+            "revision": "cd0c74c575b5c416f3011b5b4c298077f26ca8c2"
+          },
+          "files": [
+            {
+              "path": "LFM3-1.7B-Q4_K_M.gguf",
+              "bytes": 1099627808,
+              "sha256": "3793e1e6e2266919d6e015287221b41100175a98eddaba92e111aed3b05c93c4"
             }
           ]
         }

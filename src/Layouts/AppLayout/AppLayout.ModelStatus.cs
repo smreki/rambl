@@ -109,7 +109,8 @@ public partial class AppLayout
 
     // Every download in progress, of any catalog.
     private List<(string ModelId, DownloadProgress Progress)> CurrentDownloads() =>
-        [.. library.GetDownloads(), .. languageLibrary.GetDownloads(), .. ttsLibrary.GetDownloads()];
+        [.. library.GetDownloads().Concat(languageLibrary.GetDownloads()).Concat(ttsLibrary.GetDownloads())
+            .DistinctBy(download => download.ModelId)];
 
     // Shows the model used for dictation and the progress of any model being downloaded in the background.
     private void UpdateModelStatus()

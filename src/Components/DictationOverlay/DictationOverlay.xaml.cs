@@ -5,7 +5,8 @@ namespace Rambl.Components;
 /// <summary>
 /// The dictation card shown while recording: a recording indicator that pulses, a waveform that follows the
 /// microphone, the elapsed time, a close button, and the live transcript. After the key is released it turns into the
-/// processing card (<see cref="ShowProcessing"/>) and, when a process fails, into the failure card (<see cref="ShowFailure"/>);
+/// transcribing card (<see cref="ShowTranscribing"/>), then the processing card (<see cref="ShowProcessing"/>) when needed,
+/// and, when a process fails, into the failure card (<see cref="ShowFailure"/>);
 /// a voice command that ran shows its name and keys (<see cref="ShowCommand"/>).
 /// </summary>
 /// <remarks>
@@ -23,6 +24,7 @@ public partial class DictationOverlay : ContentView
     private enum Mode
     {
         Recording,
+        Transcribing,
         Processing,
         Failed,
         Command,
@@ -55,6 +57,7 @@ public partial class DictationOverlay : ContentView
     private readonly Random random = new();
     private Style? recordingBarStyle;
     private Style? processingBarStyle;
+    private Style? transcribingBarStyle;
     private Mode mode;
     private IDispatcherTimer? timer;
     private IDispatcherTimer? waveformTimer;
@@ -68,6 +71,7 @@ public partial class DictationOverlay : ContentView
 
         recordingBarStyle = (Style)Resources["WaveBar"];
         processingBarStyle = (Style)Resources["ProcessingWaveBar"];
+        transcribingBarStyle = (Style)Resources["TranscribingWaveBar"];
         for (var i = 0; i < bars.Length; i++)
         {
             bars[i] = new BoxView { Style = recordingBarStyle };
@@ -77,7 +81,7 @@ public partial class DictationOverlay : ContentView
         ShowLevels();
     }
 
-    /// <summary>Occurs when the user taps the close button, while recording or after a failure.</summary>
+    /// <summary>Occurs when the user cancels recording or transcription, or dismisses a result or failure card.</summary>
     public event EventHandler? CloseRequested;
 
     /// <summary>Occurs when the user taps Skip while a process is running.</summary>
@@ -109,6 +113,8 @@ public partial class DictationOverlay : ContentView
     public Size MeasureCard(double widthConstraint)
     {
         _ = TranscriptLabel.Measure(widthConstraint, double.PositiveInfinity);
+        _ = TranscribingStatus.Measure(widthConstraint, double.PositiveInfinity);
+        _ = ProcessingStatus.Measure(widthConstraint, double.PositiveInfinity);
         return Measure(widthConstraint, double.PositiveInfinity);
     }
 
@@ -141,10 +147,22 @@ public partial class DictationOverlay : ContentView
         timer?.Stop();
         waveformTimer?.Stop();
         StopPulse();
+        TranscribingSpinner.IsRunning = false;
+    }
+
+    /// <summary>Shows indeterminate transcription activity and freezes the recording duration after release.</summary>
+    public void ShowTranscribing()
+    {
+        UpdateElapsed();
+        timer?.Stop();
+        StopPulse();
+        SetMode(Mode.Transcribing);
+        levels.Reset();
+        ShowLevels();
     }
 
     /// <summary>Switches the card to its processing look.</summary>
-    /// <param name="step">The 1-based position of the running process, or 0 while the speech is still being turned into text.</param>
+    /// <param name="step">The 1-based position of the running process, or 0 while post-processing starts.</param>
     /// <param name="total">How many processes there are.</param>
     /// <param name="processName">The running process's name.</param>
     /// <param name="modelName">The language model it uses, or null.</param>
@@ -153,13 +171,14 @@ public partial class DictationOverlay : ContentView
     {
         var entering = mode != Mode.Processing;
         SetMode(Mode.Processing);
+        timer?.Stop();
         ProcessingGlyph.Text = isCommand ? Icons.Speech : Icons.WandSparkles;
         StepLabel.Text = step > 0 && total > 1 ? $"{step} of {total}" : string.Empty;
         StepLabel.IsVisible = StepLabel.Text.Length > 0;
-        ProcessNameLabel.Text = step > 0 ? processName : "Transcribing…";
+        ProcessNameLabel.Text = step > 0 ? processName : "Processing…";
         ProcessModelLabel.Text = step > 0 && !string.IsNullOrEmpty(modelName) ? "· " + modelName : string.Empty;
         ProcessModelLabel.IsVisible = ProcessModelLabel.Text.Length > 0;
-        SemanticProperties.SetDescription(ProcessingStatus, step > 0 ? $"Running {processName}, step {step} of {total}" : "Transcribing");
+        SemanticProperties.SetDescription(ProcessingStatus, step > 0 ? $"Running {processName}, step {step} of {total}" : "Processing");
 
         if (entering)
         {
@@ -169,7 +188,7 @@ public partial class DictationOverlay : ContentView
         }
     }
 
-    /// <summary>Switches the card to say a process failed and the original text was inserted instead.</summary>
+    /// <summary>Shows why transcription or a later step failed, and what happened to the text.</summary>
     /// <param name="title">What happened.</param>
     /// <param name="detail">Why, and that the original text was inserted.</param>
     public void ShowFailure(string title, string detail)
@@ -201,22 +220,27 @@ public partial class DictationOverlay : ContentView
     {
         mode = next;
         var recording = next == Mode.Recording;
+        var transcribing = next == Mode.Transcribing;
         var processing = next == Mode.Processing;
         var failed = next is Mode.Failed or Mode.Command;
 
         RecordingIndicator.IsVisible = recording;
+        TranscribingIndicator.IsVisible = transcribing;
+        TranscribingSpinner.IsRunning = transcribing;
+        TranscribingStatus.IsVisible = transcribing;
         ProcessingIndicator.IsVisible = processing;
         FailureIndicator.IsVisible = next == Mode.Failed;
         CommandIndicator.IsVisible = next == Mode.Command;
         Waveform.IsVisible = !failed;
         FailureText.IsVisible = failed;
-        ElapsedLabel.IsVisible = recording;
+        ElapsedLabel.IsVisible = recording || transcribing;
         StepLabel.IsVisible = processing && !string.IsNullOrEmpty(StepLabel.Text);
         RightDivider.IsVisible = !failed;
         CloseHost.IsVisible = !processing;
+        SemanticProperties.SetDescription(CloseButton, transcribing ? "Cancel transcription" : "Close dictation");
         SkipHost.IsVisible = processing;
         ProcessingStatus.IsVisible = processing;
-        TranscriptLabel.Opacity = processing ? DimmedTranscriptOpacity : 1;
+        TranscriptLabel.Opacity = processing || transcribing ? DimmedTranscriptOpacity : 1;
         if (failed)
             TranscriptLabel.IsVisible = false;
 
@@ -226,7 +250,7 @@ public partial class DictationOverlay : ContentView
         IndicatorHost.VerticalOptions = top;
         RightGroup.VerticalOptions = top;
         foreach (var bar in bars)
-            bar.Style = processing ? processingBarStyle : recordingBarStyle;
+            bar.Style = processing ? processingBarStyle : transcribing ? transcribingBarStyle : recordingBarStyle;
     }
 
     // One repeating 0..1 animation drives both rings, the second half a period behind the first.
@@ -273,8 +297,8 @@ public partial class DictationOverlay : ContentView
 
     private void OnWaveformTick()
     {
-        // While processing there is no microphone to follow, so the wave is made up: random levels enter at the left and travel right.
-        if (mode == Mode.Processing)
+        // After release there is no microphone to follow: random levels indicate activity and travel right.
+        if (mode is Mode.Processing or Mode.Transcribing)
             levels.Report((float)Math.Pow(10, (ProcessingLowDb + random.NextDouble() * (ProcessingHighDb - ProcessingLowDb)) / 20));
 
         levels.Advance();
@@ -285,7 +309,7 @@ public partial class DictationOverlay : ContentView
     // is mirrored, so it moves the other way, and its brightness grows toward the leading edge instead.
     private void ShowLevels()
     {
-        var processing = mode == Mode.Processing;
+        var processing = mode is Mode.Processing or Mode.Transcribing;
         for (var i = 0; i < bars.Length; i++)
         {
             var level = levels.Levels[processing ? bars.Length - 1 - i : i];

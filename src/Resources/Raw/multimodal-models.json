@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-07",
+  "runtimes": [
+    {
+      "id": "llama.cpp",
+      "name": "llama.cpp",
+      "formats": [
+        "gguf"
+      ],
+      "platforms": [
+        "windows-x64",
+        "macos-arm64",
+        "macos-x64"
+      ],
+      "automaticOrder": 1,
+      "license": "MIT",
+      "project": "https://github.com/ggml-org/llama.cpp"
+    }
+  ],
+  "modelTypes": [
+    {
+      "id": "llm",
+      "label": "LLM",
+      "meaning": "A language model: it follows instructions or translates, so it can polish, reformat or translate text. Translation-only models (M2M100, NLLB-200) are listed here too; their kind says how they differ."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "formatting",
+      "label": "Text polishing",
+      "icon": "feather",
+      "meaning": "Clean up and format dictated text."
+    },
+    {
+      "id": "translation",
+      "label": "Translation",
+      "icon": "languages",
+      "meaning": "Translate dictated text into another language."
+    }
+  ],
+  "models": [
+    {
+      "id": "lfm3-omni-2b",
+      "name": "LFM3 Omni 2B",
+      "family": "lfm3-omni",
+      "kind": "chat",
+      "modelType": "llm",
+      "tasks": [
+        "formatting",
+        "translation"
+      ],
+      "purpose": {
+        "label": "Transcribe, rewrite and read aloud",
+        "icon": "feather"
+      },
+      "cpuFit": "good",
+      "parameters": "2.2B",
+      "contextLength": 32768,
+      "languages": {
+        "label": "16 text languages",
+        "codes": [
+          "en",
+          "ar",
+          "zh",
+          "fr",
+          "de",
+          "it",
+          "ja",
+          "ko",
+          "pt",
+          "es",
+          "vi",
+          "th",
+          "id",
+          "hi",
+          "ru",
+          "pl"
+        ]
+      },
+      "license": {
+        "id": "LFM-Open-1.0",
+        "attribution": "Liquid AI · LFM Open License v1.0. Use is subject to the license terms, including its revenue and funding threshold."
+      },
+      "source": "https://huggingface.co/LiquidAI/LFM3-Omni-2B-GGUF",
+      "notes": [
+        "One installation and one native backbone serve STT, text post-processing and TTS. Includes the matching Q8_0 audio/vision projector and codec components. Vision is not exposed in Rambl.",
+        "Native CPU inference; requests share one execution queue. ASR processes bounded segments, and speech output is mono 24 kHz. Female and male voices support the listed speech languages.",
+        "The trained context is 32768 tokens; Rambl currently allocates 8192.",
+        "d1-Omni is a separate decision checkpoint; calibrated decisions are not provided by this generative checkpoint."
+      ],
+      "artifacts": [
+        {
+          "id": "gguf-q4_k_m",
+          "format": "gguf",
+          "quantization": "q4_k_m",
+          "runtimes": [
+            {
+              "name": "llama.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "LiquidAI/LFM3-Omni-2B-GGUF",
+            "revision": "d508b88f08a5b4286f2d2805a6a8d69a0ff44c72"
+          },
+          "files": [
+            {
+              "path": "LFM3-Omni-2B-Q4_K_M.gguf",
+              "bytes": 1099630080,
+              "sha256": "9f8d30e9d4fd7a9349d586e077988229b3ca0a0e4ad730897563d1eccc9893e2"
+            },
+            {
+              "path": "mmproj-LFM3-Omni-2B-Q8_0.gguf",
+              "bytes": 506842528,
+              "sha256": "8a25f9d1931244429de404fccacfb7fb933970a36aa5688d2f5069f29c6b27b1"
+            }
+          ]
+        }
+      ],
+      "capabilities": [
+        "stt",
+        "text",
+        "tts"
+      ],
+      "audioLanguages": {
+        "label": "18 speech languages",
+        "codes": [
+          "en-us",
+          "en-gb",
+          "ar",
+          "da",
+          "de",
+          "el",
+          "fi",
+          "fr",
+          "he",
+          "it",
+          "ja",
+          "ko",
+          "nl",
+          "pl",
+          "pt",
+          "es",
+          "sv",
+          "tr",
+          "zh"
+        ],
+        "selectable": true
+      },
+      "defaultVoice": "female",
+      "voices": [
+        {
+          "id": "female",
+          "name": "Female",
+          "speaker": 0,
+          "gender": "female"
+        },
+        {
+          "id": "male",
+          "name": "Male",
+          "speaker": 1,
+          "gender": "male"
+        }
+      ]
+    }
+  ]
+}

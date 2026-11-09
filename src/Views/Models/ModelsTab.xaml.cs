@@ -176,6 +176,7 @@ public partial class ModelsTab : ContentView
         {
             Title = listing.Name,
             Purpose = listing.PurposeLabel,
+            SharedNotice = listing.SharedNotice,
             PurposeGlyph = Icons.FromName(listing.PurposeIcon),
             Languages = kind == ModelsTabKind.Language ? listing.ParametersText : listing.LanguagesLabel,
             LanguagesGlyph = kind == ModelsTabKind.Language ? Icons.Layers : Icons.Languages,
@@ -206,7 +207,7 @@ public partial class ModelsTab : ContentView
 
         SemanticProperties.SetDescription(
             card,
-            kind switch
+            (kind switch
             {
                 ModelsTabKind.Language =>
                     $"{listing.Name}. {listing.TypeLabel}. {listing.PurposeLabel}. {listing.ParametersText}. {(listing.ContextText.Length > 0 ? listing.ContextText + ". " : string.Empty)}{listing.CpuFit.Label}. {listing.SizeText}.",
@@ -214,7 +215,7 @@ public partial class ModelsTab : ContentView
                     $"{listing.Name}. {listing.PurposeLabel}. {listing.VoicesText}. {listing.LanguagesLabel}. {listing.CpuFit.Label}. {listing.SizeText}. {listing.License?.Name}.",
                 _ =>
                     $"{listing.Name}. {listing.PurposeLabel}. {listing.LanguagesLabel}. {(listing.IsStreaming ? "Streaming. " : string.Empty)}{listing.CpuFit.Label}. {listing.SizeText}.",
-            }
+            }) + " " + listing.SharedNotice
         );
         card.ActionClicked += (_, _) => OnPrimaryAction(listing);
         card.SecondaryActionClicked += (_, _) => OnDelete(listing);
@@ -328,7 +329,7 @@ public partial class ModelsTab : ContentView
             card.IsActionVisible = !active;
             (card.ActionText, card.ActionGlyph, card.IsActionEnabled) = ("Use model", Icons.Check, usability.IsUsable);
             card.NoticeText = usability.IsUsable ? string.Empty : usability.Reason ?? string.Empty;
-            if (kind == ModelsTabKind.Speech)
+            if (kind == ModelsTabKind.Speech && (!entry.Listing.IsShared || library.GetRuntimeOptions(id).Count > 1))
                 ShowRuntimeOptions(id, card, chosenRuntime);
             else
                 card.IsRuntimeSelectVisible = false;
@@ -692,7 +693,9 @@ public partial class ModelsTab : ContentView
             }
 
             var answer = await confirmations.ConfirmAsync(
-                new ConfirmRequest(title, message, new ConfirmButton(button, IsDestructive: true))
+                new ConfirmRequest(title, message + (listing.IsShared
+                    ? " These shared files are also removed from STT Models, Language Models and TTS Models. Any profiles or processes using this model will need it downloaded again."
+                    : string.Empty), new ConfirmButton(button, IsDestructive: true))
             );
             if (answer != ConfirmResult.Primary)
                 return;

@@ -91,6 +91,8 @@
                 </HorizontalStackLayout>
             </Grid>
 
+            <Label x:Name="SharedNoticeLabel" Style="{StaticResource SettingHelp}" IsVisible="False" LineBreakMode="WordWrap" />
+
             <!-- Local only, and only for a model that takes a language (or, for a voice model, has more than one voice). It
                  has its own row because the actions have no room for a third control. The language hint explains
                  Auto-detect and goes away once a language is chosen; a voice hint stays. Voice cards with a processor

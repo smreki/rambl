@@ -26,6 +26,8 @@ public sealed class ModelLibrary
     private readonly Dictionary<string, CancellationTokenSource> running = [];
     private Task<IReadOnlyList<ModelListing>>? loading;
     private ModelCatalog? catalog;
+    private readonly ModelLibrary? sharedLibrary;
+    private readonly IModelLifetime? lifetime;
 
     /// <summary>Creates the library for the bundled catalog and the current platform.</summary>
     /// <param name="provider">Supplies the bundled catalog.</param>
@@ -33,15 +35,19 @@ public sealed class ModelLibrary
     /// <param name="downloader">Fetches the files.</param>
     /// <param name="runtimes">The speech runtimes this build has, which decide whether a downloaded model can be used.</param>
     /// <param name="logger">The logger for download failures.</param>
+    /// <param name="sharedLibrary">The common owner of multimodal installations, or null for a standalone library.</param>
+    /// <param name="lifetime">The native lifetime coordinator used before deleting this library's installations.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
     public ModelLibrary(
         ModelCatalogProvider provider,
         ModelStore store,
         ModelDownloader downloader,
         ModelRuntimeRegistry runtimes,
-        ILogger<ModelLibrary> logger
+        ILogger<ModelLibrary> logger,
+        ModelLibrary? sharedLibrary = null,
+        IModelLifetime? lifetime = null
     )
-        : this((provider ?? throw new ArgumentNullException(nameof(provider))).GetAsync, PlatformId.Current, store, downloader, runtimes, logger) { }
+        : this((provider ?? throw new ArgumentNullException(nameof(provider))).GetAsync, PlatformId.Current, store, downloader, runtimes, logger, sharedLibrary, lifetime) { }
 
     internal ModelLibrary(
         Func<Task<ModelCatalog>> catalogSource,
@@ -49,7 +55,9 @@ public sealed class ModelLibrary
         ModelStore store,
         ModelDownloader downloader,
         ModelRuntimeRegistry runtimes,
-        ILogger<ModelLibrary> logger
+        ILogger<ModelLibrary> logger,
+        ModelLibrary? sharedLibrary = null,
+        IModelLifetime? lifetime = null
     )
     {
         ArgumentNullException.ThrowIfNull(catalogSource);
@@ -64,6 +72,10 @@ public sealed class ModelLibrary
         this.downloader = downloader;
         this.runtimes = runtimes;
         this.logger = logger;
+        this.sharedLibrary = sharedLibrary;
+        this.lifetime = lifetime;
+        if (sharedLibrary is not null)
+            sharedLibrary.Changed += (_, modelId) => Changed?.Invoke(this, modelId);
     }
 
     /// <summary>Gets the jobs language models can do, once the catalog has loaded; none for the speech catalog or before it loads.</summary>
@@ -82,19 +94,22 @@ public sealed class ModelLibrary
     /// <param name="modelId">The catalog model id.</param>
     /// <returns>The state; a model nothing is known about is not installed.</returns>
     public ModelState GetState(string modelId) =>
+        IsShared(modelId) ? sharedLibrary!.GetState(modelId) :
         states.GetValueOrDefault(modelId) ?? (IsInstalled(modelId) ? ModelState.Installed : ModelState.NotInstalled);
 
     /// <summary>Says whether any copy of a model is downloaded, whichever runtime it is for.</summary>
     /// <param name="modelId">The catalog model id.</param>
     /// <returns>Whether at least one copy is complete on this computer.</returns>
-    public bool IsInstalled(string modelId) => installed.TryGetValue(modelId, out var copies) && copies.Count > 0;
+    public bool IsInstalled(string modelId) => IsShared(modelId) ? sharedLibrary!.IsInstalled(modelId) : installed.TryGetValue(modelId, out var copies) && copies.Count > 0;
 
     /// <summary>Says whether one set of files of a model is downloaded.</summary>
     /// <param name="modelId">The catalog model id.</param>
     /// <param name="artifactId">The artifact's id within the model.</param>
     /// <returns>Whether those files are complete on this computer.</returns>
     public bool IsInstalled(string modelId, string artifactId) =>
-        installed.TryGetValue(modelId, out var copies) && copies.ContainsKey(artifactId);
+        IsShared(modelId) ? sharedLibrary!.IsInstalled(modelId, artifactId) : installed.TryGetValue(modelId, out var copies) && copies.ContainsKey(artifactId);
+
+    private bool IsShared(string modelId) => sharedLibrary?.catalog?.Models.Any(model => model.Id == modelId) == true;
 
     /// <summary>Gets the record of the downloaded copy that a runtime loads.</summary>
     /// <param name="modelId">The catalog model id.</param>
@@ -102,6 +117,8 @@ public sealed class ModelLibrary
     /// <returns>The record, or null when the files that runtime loads are not downloaded.</returns>
     public InstalledModel? GetInstalled(string modelId, string runtimeId)
     {
+        if (IsShared(modelId))
+            return sharedLibrary!.GetInstalled(modelId, runtimeId);
         if (catalog is null || !installed.TryGetValue(modelId, out var copies))
             return null;
 
@@ -142,7 +159,7 @@ public sealed class ModelLibrary
                         artifact.Id,
                         artifact.TotalBytes,
                         runtime.Streaming == StreamingSupport.Native,
-                        installed.GetValueOrDefault(modelId)?.ContainsKey(artifact.Id) == true
+                        IsInstalled(modelId, artifact.Id)
                     )
                 );
             }
@@ -162,7 +179,8 @@ public sealed class ModelLibrary
     /// <summary>Lists the downloads in progress.</summary>
     /// <returns>Each model id with how much has arrived.</returns>
     public IReadOnlyList<(string ModelId, DownloadProgress Progress)> GetDownloads() =>
-        [.. states.Where(pair => pair.Value.Status == ModelStatus.Downloading).Select(pair => (pair.Key, pair.Value.Progress))];
+        [.. states.Where(pair => pair.Value.Status == ModelStatus.Downloading).Select(pair => (pair.Key, pair.Value.Progress)),
+         .. sharedLibrary?.GetDownloads() ?? []];
 
     /// <summary>Downloads the files of a model for a runtime, and records them when they are complete.</summary>
     /// <param name="modelId">The catalog model id.</param>
@@ -176,6 +194,11 @@ public sealed class ModelLibrary
     public async Task DownloadAsync(string modelId, string? runtimeId = null)
     {
         _ = await GetListingsAsync();
+        if (IsShared(modelId))
+        {
+            await sharedLibrary!.DownloadAsync(modelId, runtimeId);
+            return;
+        }
         if (GetState(modelId).Status == ModelStatus.Downloading)
             return;
 
@@ -195,7 +218,7 @@ public sealed class ModelLibrary
             var staging = store.StagingDirectory(modelId, artifact.Id, artifact.Host.Revision);
             var progress = new Progress<DownloadProgress>(value =>
             {
-                if (running.ContainsKey(modelId))
+                if (ReferenceEquals(running.GetValueOrDefault(modelId), cancellation))
                     SetState(modelId, new(ModelStatus.Downloading, value, ArtifactId: artifact.Id));
             });
 
@@ -203,6 +226,7 @@ public sealed class ModelLibrary
                 () =>
                 {
                     store.DeletePartials(modelId, keepStaging: staging);
+                    store.ReuseInstalledFiles(modelId, artifact, staging);
                     EnsureFreeSpace(artifact, staging);
                     return downloader.DownloadAsync(artifact, staging, progress, cancellation.Token);
                 },
@@ -218,10 +242,12 @@ public sealed class ModelLibrary
                 DateTimeOffset.UtcNow
             );
             await Task.Run(() => store.Commit(staging, record), CancellationToken.None);
+            await Task.Run(() => store.RemoveSupersededCopies(modelId, artifact), CancellationToken.None);
             if (!installed.TryGetValue(modelId, out var copies))
                 installed[modelId] = copies = [];
 
             copies[artifact.Id] = record;
+            lifetime?.ModelAvailable(modelId);
             _ = running.Remove(modelId);
             SetState(modelId, ModelState.Installed);
         }
@@ -244,6 +270,11 @@ public sealed class ModelLibrary
     /// <remarks>The state changes once the download has stopped. Nothing happens when the model is not downloading.</remarks>
     public void Cancel(string modelId)
     {
+        if (IsShared(modelId))
+        {
+            sharedLibrary!.Cancel(modelId);
+            return;
+        }
         if (running.TryGetValue(modelId, out var cancellation))
             cancellation.Cancel();
     }
@@ -256,30 +287,49 @@ public sealed class ModelLibrary
     /// <exception cref="UnauthorizedAccessException">Access to the files is denied.</exception>
     public async Task DeleteAsync(string modelId, string? runtimeId = null)
     {
+        if (IsShared(modelId))
+        {
+            await sharedLibrary!.DeleteAsync(modelId, runtimeId);
+            return;
+        }
         if (GetState(modelId).Status == ModelStatus.Downloading)
             return;
 
-        if (runtimeId is null)
-        {
-            await Task.Run(() => store.Delete(modelId));
-            _ = installed.Remove(modelId);
-        }
-        else
-        {
-            if (GetInstalled(modelId, runtimeId) is not { } record)
-                return;
+        if (lifetime is not null)
+            await lifetime.PrepareDeleteAsync(modelId);
 
-            await Task.Run(() => store.DeleteArtifact(modelId, record.ArtifactId));
-            if (installed.TryGetValue(modelId, out var copies))
+        try
+        {
+            if (runtimeId is null)
             {
-                _ = copies.Remove(record.ArtifactId);
-                if (copies.Count == 0)
-                    _ = installed.Remove(modelId);
+                await Task.Run(() => store.Delete(modelId));
+                _ = installed.Remove(modelId);
             }
-        }
+            else
+            {
+                if (GetInstalled(modelId, runtimeId) is not { } record)
+                {
+                    lifetime?.ModelAvailable(modelId);
+                    return;
+                }
 
-        // A failure left from an earlier download is no longer interesting once files were removed.
-        SetState(modelId, ModelState.NotInstalled);
+                await Task.Run(() => store.DeleteArtifact(modelId, record.ArtifactId));
+                if (installed.TryGetValue(modelId, out var copies))
+                {
+                    _ = copies.Remove(record.ArtifactId);
+                    if (copies.Count == 0)
+                        _ = installed.Remove(modelId);
+                }
+            }
+
+            // A failure left from an earlier download is no longer interesting once files were removed.
+            SetState(modelId, ModelState.NotInstalled);
+        }
+        catch
+        {
+            lifetime?.ModelAvailable(modelId);
+            throw;
+        }
     }
 
     /// <summary>Finds a downloaded model and the runtime that would run it.</summary>
@@ -292,6 +342,12 @@ public sealed class ModelLibrary
     /// </remarks>
     public ResolvedModel? Resolve(string modelId, string? chosenRuntime)
     {
+        if (IsShared(modelId))
+        {
+            var resolved = sharedLibrary!.Resolve(modelId, chosenRuntime);
+            return resolved is not null && catalog?.Models.FirstOrDefault(model => model.Id == modelId) is { } localModel
+                ? resolved with { Model = localModel } : null;
+        }
         var candidates = InstalledCandidates(modelId);
         if (candidates.Count == 0)
             return null;
@@ -365,9 +421,13 @@ public sealed class ModelLibrary
         try
         {
             var loaded = await catalogSource();
+            if (sharedLibrary is not null)
+                _ = await sharedLibrary.GetListingsAsync();
             foreach (var record in await Task.Run(store.ReadInstalled))
             {
-                if (!loaded.Models.Any(candidate => candidate.Id == record.ModelId))
+                var model = loaded.Models.FirstOrDefault(candidate => candidate.Id == record.ModelId);
+                var artifact = model?.Artifacts.FirstOrDefault(candidate => candidate.Id == record.ArtifactId);
+                if (artifact is null || !store.IsComplete(record, artifact))
                     continue;
 
                 if (!installed.TryGetValue(record.ModelId, out var copies))
@@ -457,6 +517,8 @@ public sealed class ModelLibrary
 
     private List<InstalledCandidate> InstalledCandidates(string modelId)
     {
+        if (IsShared(modelId))
+            return sharedLibrary!.InstalledCandidates(modelId);
         var found = new List<InstalledCandidate>();
         if (catalog is null || !installed.TryGetValue(modelId, out var copies))
             return found;

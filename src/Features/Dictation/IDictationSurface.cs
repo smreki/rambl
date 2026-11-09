@@ -6,13 +6,13 @@ namespace Rambl.Features.Dictation;
 /// <summary>What the user sees while dictating: a small floating card with the microphone level and, for some models, live text.</summary>
 /// <remarks>
 /// Each platform draws it its own way (a transparent always-on-top window on Windows). Everything except
-/// <see cref="ReportLevel"/> is called on the UI thread. The card has four looks: recording (<see cref="Show"/>),
-/// processing (<see cref="ShowProcessing"/>), a failed process or unmatched command (<see cref="ShowFailure"/>) and a voice
+/// <see cref="ReportLevel"/> is called on the UI thread. The card shows recording (<see cref="Show"/>),
+/// transcription (<see cref="ShowTranscribing"/>), processing (<see cref="ShowProcessing"/>), a failed process or unmatched command (<see cref="ShowFailure"/>) and a voice
 /// command that ran (<see cref="ShowCommand"/>).
 /// </remarks>
 public interface IDictationSurface
 {
-    /// <summary>Occurs when the user closes the card while recording or after a failure, which cancels the dictation or dismisses the card.</summary>
+    /// <summary>Occurs when the user cancels recording or transcription, or dismisses a result or failure card.</summary>
     event EventHandler? CloseRequested;
 
     /// <summary>Occurs when the user skips post-processing, which inserts the original text.</summary>
@@ -34,11 +34,14 @@ public interface IDictationSurface
     /// <param name="text">The text; empty text goes back to the listening prompt (or nothing, for a card without a transcript line).</param>
     void ShowTranscript(string text);
 
+    /// <summary>Keeps the card visible while the recorded speech is transcribed, with an indeterminate activity indicator.</summary>
+    void ShowTranscribing();
+
     /// <summary>Switches the card to its processing look: a moving wave in the processing color, the step, the process and a Skip button.</summary>
-    /// <param name="progress">Which process is running, or null while the speech is still being turned into text.</param>
+    /// <param name="progress">Which process is running, or null while post-processing starts.</param>
     void ShowProcessing(ChainProgress? progress);
 
-    /// <summary>Switches the card to say a process failed and the original text was inserted instead.</summary>
+    /// <summary>Shows why transcription or a later step failed, and what happened to the text.</summary>
     /// <param name="title">What happened, such as "Polish for email didn't run".</param>
     /// <param name="detail">Why, and that the original text was inserted.</param>
     void ShowFailure(string title, string detail);

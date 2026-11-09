@@ -4518,7 +4518,7 @@
           "y": 196,
           "name": "Section Description",
           "fill": "$text-secondary",
-          "content": "The dictation card shown while recording, processing and on failure.",
+          "content": "The dictation card stays visible through recording, transcription and optional post-processing.",
           "fontFamily": "Inter",
           "fontSize": 28,
           "fontWeight": "normal"
@@ -4919,7 +4919,7 @@
           "x": 940,
           "y": 384,
           "name": "Dictation Component · Processing — Light",
-          "context": "After the key is released, each process of the shortcut runs in order. The waveform keeps moving but turns the processing color (violet, so it is never mistaken for recording) and becomes a wave that travels from left to right instead of following the microphone; the indicator becomes a wand. The right side shows which step this is (1 of 2) and a Skip button: skip stops the chain and inserts the raw transcript, exactly as a failed process does. The line below names the running process and its model. The transcript line, when the model streams, stays as it was, dimmed.",
+          "context": "After transcription completes, each process runs in order. Only this stage uses violet. Skip stops post-processing and inserts the saved original transcript; transcription has its own neutral busy state.",
           "theme": {
             "mode": "light"
           },
@@ -5487,11 +5487,11 @@
           "x": 120,
           "y": 683,
           "name": "Dictation Card States",
-          "context": "The dictation card through a post-processed dictation: recording, processing, and a failed process. Light on the first row, dark on the second.",
+          "context": "Recording → Transcribing → optional Post-processing → Inserted. The card stays up throughout; both light and dark themes shown.",
           "theme": {
             "mode": "light"
           },
-          "width": 1500,
+          "width": 1960,
           "fill": "$window-bg",
           "cornerRadius": 8,
           "stroke": "$border",
@@ -5574,6 +5574,48 @@
                     },
                     {
                       "type": "frame",
+                      "id": "nUrnv",
+                      "name": "Transcribing",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fi9NT",
+                          "name": "State Title",
+                          "fill": "$text-primary",
+                          "content": "Transcribing",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "hW1w1",
+                          "name": "State Caption",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 350,
+                          "content": "Key released: a spinner and moving neutral wave show transcription. Duration freezes; the card stays visible until the result is ready.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "E1FLjF",
+                          "type": "ref",
+                          "ref": "Q3iey",
+                          "name": "Transcribing — Light",
+                          "theme": {
+                            "mode": "light"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
                       "id": "B0ahG",
                       "name": "Processing",
                       "width": "fill_container",
@@ -5597,7 +5639,7 @@
                           "fill": "$text-secondary",
                           "textGrowth": "fixed-width",
                           "width": 350,
-                          "content": "Processing: after the key is released, each process of the shortcut runs in order. The wave travels left to right in the processing color.",
+                          "content": "Once transcription finishes, each process runs in order. The wave turns violet; Skip inserts the original transcript.",
                           "lineHeight": 1.4,
                           "fontFamily": "Inter",
                           "fontSize": 12,
@@ -5721,6 +5763,48 @@
                     },
                     {
                       "type": "frame",
+                      "id": "o7JBz7",
+                      "name": "Transcribing",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I60NU4",
+                          "name": "State Title",
+                          "fill": "$text-primary",
+                          "content": "Transcribing",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Oq8mp",
+                          "name": "State Caption",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 350,
+                          "content": "Key released: a spinner and moving neutral wave show transcription. Duration freezes; the card stays visible until the result is ready.",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "T8CB6v",
+                          "type": "ref",
+                          "ref": "Q3iey",
+                          "name": "Transcribing — Dark",
+                          "theme": {
+                            "mode": "dark"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
                       "id": "Bf28B",
                       "name": "Processing",
                       "width": "fill_container",
@@ -5744,7 +5828,7 @@
                           "fill": "$text-secondary",
                           "textGrowth": "fixed-width",
                           "width": 350,
-                          "content": "Processing: after the key is released, each process of the shortcut runs in order. The wave travels left to right in the processing color.",
+                          "content": "Once transcription finishes, each process runs in order. The wave turns violet; Skip inserts the original transcript.",
                           "lineHeight": 1.4,
                           "fontFamily": "Inter",
                           "fontSize": 12,
@@ -5808,6 +5892,383 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "Q3iey",
+          "x": 1760,
+          "y": 384,
+          "name": "Dictation Component · Transcribing — Light",
+          "context": "On push-to-talk release, keep the card visible until transcription, optional post-processing and insertion finish. Neutral spinner and animated wave indicate indeterminate transcription, never a percentage. Freeze recording duration; Cancel transcription or Esc cancels inference but keeps the completed recording in History. Post-processing alone uses violet and Skip.",
+          "theme": {
+            "mode": "light"
+          },
+          "reusable": true,
+          "width": 350,
+          "fill": "$content-bg",
+          "cornerRadius": 20,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "$overlay-shadow",
+            "offset": {
+              "x": 0,
+              "y": 6
+            },
+            "blur": 20
+          },
+          "layout": "vertical",
+          "gap": 8,
+          "padding": [
+            12,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "h9bdE",
+              "name": "Transcribing Controls",
+              "width": "fill_container",
+              "height": 28,
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "f1KNL",
+                  "name": "Recording Indicator Area",
+                  "height": "fill_container",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "MIdy7",
+                      "name": "Transcribing Indicator",
+                      "width": 20,
+                      "height": 20,
+                      "fill": "$placeholder",
+                      "cornerRadius": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "zjVCv",
+                          "name": "Transcribing Spinner",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "loader-circle",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "aMfYD",
+                  "name": "Waveform Area",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "JVdgP",
+                      "name": "Speech With Short Pause",
+                      "height": 24,
+                      "gap": 3,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "A25qe",
+                          "name": "Waveform Segment 1",
+                          "opacity": 0.55,
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 3
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "R4H01",
+                          "name": "Waveform Segment 2",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 6
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "c7WsU",
+                          "name": "Waveform Segment 3",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "oXXLw",
+                          "name": "Waveform Segment 4",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 20
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "WW4PY",
+                          "name": "Waveform Segment 5",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "YRAlv",
+                          "name": "Waveform Segment 6",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 24
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "UUUpa",
+                          "name": "Waveform Segment 7",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 13
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "X9nAG",
+                          "name": "Waveform Segment 8",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 6
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "zkk2C",
+                          "name": "Waveform Segment 9",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 4
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "Axor7",
+                          "name": "Waveform Segment 10",
+                          "opacity": 0.45,
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 3
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "B1NIF",
+                          "name": "Waveform Segment 11",
+                          "opacity": 0.45,
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 3
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "Fuptt",
+                          "name": "Waveform Segment 12",
+                          "opacity": 0.45,
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 3
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "MohGG",
+                          "name": "Waveform Segment 13",
+                          "opacity": 0.45,
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 3
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "apCtP",
+                          "name": "Waveform Segment 14",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 4
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "v9XjIX",
+                          "name": "Waveform Segment 15",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "g47ONl",
+                          "name": "Waveform Segment 16",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 18
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "B1zxDH",
+                          "name": "Waveform Segment 17",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 10
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "aqRA4",
+                          "name": "Waveform Segment 18",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 22
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "CnXQF",
+                          "name": "Waveform Segment 19",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "J2b4TL",
+                          "name": "Waveform Segment 20",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 6
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "FjUmQ",
+                          "name": "Waveform Segment 21",
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 4
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "FSH0W",
+                          "name": "Waveform Segment 22",
+                          "opacity": 0.55,
+                          "fill": "$text-secondary",
+                          "width": 3,
+                          "height": 3
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TTymp",
+                  "name": "Timer And Close",
+                  "height": "fill_container",
+                  "gap": 10,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XpIjt",
+                      "name": "Recorded Duration",
+                      "fill": "$text-secondary",
+                      "content": "0:10",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "aS7Ql",
+                      "name": "Time And Close Divider",
+                      "fill": "$border",
+                      "width": 1,
+                      "height": 14
+                    },
+                    {
+                      "type": "frame",
+                      "id": "eKJZb",
+                      "name": "Cancel Transcription",
+                      "context": "Cancel transcription; keep the completed audio in History. Esc does the same.",
+                      "width": 28,
+                      "height": 28,
+                      "fill": "$placeholder",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "J4r7H",
+                          "name": "Close Icon",
+                          "width": 13,
+                          "height": 13,
+                          "icon": "x",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "Q7eub",
+              "name": "Transcribing Status",
+              "fill": "$text-secondary",
+              "content": "Transcribing…",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "thxUW",
+          "type": "ref",
+          "ref": "Q3iey",
+          "name": "Dictation Component · Transcribing — Dark",
+          "theme": {
+            "mode": "dark"
+          },
+          "x": 2170,
+          "y": 384
         }
       ]
     },
@@ -50576,7 +51037,7 @@
           "x": 120,
           "y": 384,
           "name": "Model Card",
-          "context": "Shared model card using the user-supplied catalog. Three lines: the name (with the Active badge), the short purpose with its icon on its own line, then the tags row: languages, optional native-streaming support, CPU fit, and practical package size. Same arrangement in Local and Browse. CPU fit comes from the catalog cpuFit: excellent = Great on CPU (success icon), good = Good on CPU (neutral icon, the default), heavy = Heavy on CPU (warning icon); the label always states the level so color is never the only cue. Package sizes can differ by platform/runtime; streaming badges must reflect the shipped backend. Active uses accent border and badge, and on Local it is always the first card; a downloaded Browse card is subdued, except that a card with a runtime selector keeps its content undimmed so the selector stays usable. Cards of models with several runtimes show the runtime selector on Browse too. Download progress is a design example at 38%. The tags row wraps in the app when the window is narrow; the order is kept.",
+          "context": "Shared model card using the user-supplied catalog. Three lines: the name (with the Active badge), the short purpose with its icon on its own line, then the tags row: languages, optional native-streaming support, CPU fit, and practical package size. Same arrangement in Local and Browse. CPU fit comes from the catalog cpuFit: excellent = Great on CPU (success icon), good = Good on CPU (neutral icon, the default), heavy = Heavy on CPU (warning icon); the label always states the level so color is never the only cue. Package sizes can differ by platform/runtime; streaming badges must reflect the shipped backend. Active uses accent border and badge, and on Local it is always the first card; a downloaded Browse card is subdued, except that a card with a runtime selector keeps its content undimmed so the selector stays usable. Cards of models with several runtimes show the runtime selector on Browse too. Download progress is a design example at 38%. The tags row wraps in the app when the window is narrow; the order is kept. Multimodal models show Shared Model Notice on Browse and Local. The same installation, download progress and cancel state appear in STT Models, Language Models and TTS Models. Deleting shared files removes availability in all three screens; the danger confirmation must name this effect. Native execution is shared without exposing implementation details on the card.",
           "reusable": true,
           "width": 960,
           "fill": "$content-bg",
@@ -50969,6 +51430,19 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "text",
+              "id": "n0m6q",
+              "x": 0,
+              "y": 0,
+              "name": "Shared Model Notice",
+              "enabled": false,
+              "fill": "$text-secondary",
+              "content": "STT · Post-processing · TTS · One shared download",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -93549,6 +94023,720 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "jRuAQ",
+      "x": 3000,
+      "y": 27202,
+      "name": "07 Models · Shared Omni states",
+      "theme": {
+        "mode": "light"
+      },
+      "width": 1120,
+      "fill": "$window-bg",
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 48,
+      "children": [
+        {
+          "type": "text",
+          "id": "pxtao",
+          "name": "Shared Omni States Title",
+          "fill": "$text-primary",
+          "content": "One Omni model, three tasks",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "yw9yR",
+          "name": "Shared Omni States Explanation",
+          "fill": "$text-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Download from any model screen. The same model appears on Local in STT Models, Language Models and TTS Models. Each task can still use a different model.",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "Kb138",
+          "name": "Browse · shared download in progress Heading",
+          "fill": "$text-primary",
+          "content": "Browse · shared download in progress",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "wqMl5",
+          "type": "ref",
+          "ref": "ctB3K",
+          "name": "Browse · shared download in progress Omni Card",
+          "width": "fill_container",
+          "descendants": {
+            "Bima8": {
+              "content": "LFM3 Omni 2B"
+            },
+            "zAzF9": {
+              "icon": "audio-lines"
+            },
+            "LQuSJ": {
+              "content": "Transcribe, rewrite and read aloud"
+            },
+            "Je6Xj": {
+              "content": "16 text languages"
+            },
+            "Zwc2T": {
+              "content": "Good on CPU"
+            },
+            "k6cfh": {
+              "content": "1.61 GB"
+            },
+            "Mn8xr": {
+              "icon": "square"
+            },
+            "lulD3": {
+              "content": "Cancel"
+            },
+            "BjP9n": {
+              "enabled": false
+            },
+            "n0m6q": {
+              "enabled": true
+            },
+            "gepN7": {
+              "enabled": false
+            },
+            "nZMG7": {
+              "content": "Language"
+            },
+            "epquN": {
+              "content": "Auto-detect"
+            },
+            "uJ3kn": {
+              "content": "The model decides from what you say."
+            },
+            "oGhFz": {
+              "enabled": true
+            },
+            "tqbxd": {
+              "content": "Downloading · 38%"
+            },
+            "lxbwc": {
+              "content": "584 MB / 1.61 GB"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "OEPvH",
+          "name": "STT Models · Local Heading",
+          "fill": "$text-primary",
+          "content": "STT Models · Local",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "fvdS5",
+          "type": "ref",
+          "ref": "ctB3K",
+          "name": "STT Models · Local Omni Card",
+          "width": "fill_container",
+          "descendants": {
+            "Bima8": {
+              "content": "LFM3 Omni 2B"
+            },
+            "zAzF9": {
+              "icon": "audio-lines"
+            },
+            "LQuSJ": {
+              "content": "Transcribe, rewrite and read aloud"
+            },
+            "Je6Xj": {
+              "content": "18 speech languages"
+            },
+            "Zwc2T": {
+              "content": "Good on CPU"
+            },
+            "k6cfh": {
+              "content": "1.61 GB"
+            },
+            "Mn8xr": {
+              "icon": "check"
+            },
+            "lulD3": {
+              "content": "Use model"
+            },
+            "BjP9n": {
+              "enabled": true
+            },
+            "n0m6q": {
+              "enabled": true
+            },
+            "gepN7": {
+              "enabled": true
+            },
+            "nZMG7": {
+              "content": "Language"
+            },
+            "epquN": {
+              "content": "Auto-detect"
+            },
+            "uJ3kn": {
+              "content": "The model decides from what you say."
+            },
+            "oGhFz": {
+              "enabled": false
+            },
+            "tqbxd": {
+              "content": "Downloading · 38%"
+            },
+            "lxbwc": {
+              "content": "584 MB / 1.61 GB"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "hi0cm",
+          "name": "Language Models · Local Heading",
+          "fill": "$text-primary",
+          "content": "Language Models · Local",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "lf71C",
+          "type": "ref",
+          "ref": "ctB3K",
+          "name": "Language Models · Local Omni Card",
+          "width": "fill_container",
+          "descendants": {
+            "Bima8": {
+              "content": "LFM3 Omni 2B"
+            },
+            "zAzF9": {
+              "icon": "audio-lines"
+            },
+            "LQuSJ": {
+              "content": "Transcribe, rewrite and read aloud"
+            },
+            "Je6Xj": {
+              "content": "2.2B parameters"
+            },
+            "Zwc2T": {
+              "content": "Good on CPU"
+            },
+            "k6cfh": {
+              "content": "1.61 GB"
+            },
+            "Mn8xr": {
+              "icon": "check"
+            },
+            "lulD3": {
+              "content": "Use model"
+            },
+            "BjP9n": {
+              "enabled": true
+            },
+            "n0m6q": {
+              "enabled": true
+            },
+            "gepN7": {
+              "enabled": false
+            },
+            "nZMG7": {
+              "content": "Language"
+            },
+            "epquN": {
+              "content": "Auto-detect"
+            },
+            "uJ3kn": {
+              "content": "The model decides from what you say."
+            },
+            "oGhFz": {
+              "enabled": false
+            },
+            "tqbxd": {
+              "content": "Downloading · 38%"
+            },
+            "lxbwc": {
+              "content": "584 MB / 1.61 GB"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "Z6sAH",
+          "name": "TTS Models · Local Heading",
+          "fill": "$text-primary",
+          "content": "TTS Models · Local",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "ulKdn",
+          "type": "ref",
+          "ref": "ctB3K",
+          "name": "TTS Models · Local Omni Card",
+          "width": "fill_container",
+          "descendants": {
+            "Bima8": {
+              "content": "LFM3 Omni 2B"
+            },
+            "zAzF9": {
+              "icon": "audio-lines"
+            },
+            "LQuSJ": {
+              "content": "Transcribe, rewrite and read aloud"
+            },
+            "Je6Xj": {
+              "content": "18 speech languages"
+            },
+            "Zwc2T": {
+              "content": "Good on CPU"
+            },
+            "k6cfh": {
+              "content": "1.61 GB"
+            },
+            "Mn8xr": {
+              "icon": "play"
+            },
+            "lulD3": {
+              "content": "Preview"
+            },
+            "BjP9n": {
+              "enabled": true
+            },
+            "n0m6q": {
+              "enabled": true
+            },
+            "gepN7": {
+              "enabled": true
+            },
+            "nZMG7": {
+              "content": "Voice"
+            },
+            "epquN": {
+              "content": "Female"
+            },
+            "uJ3kn": {
+              "content": "Preview plays a short sample with this voice."
+            },
+            "oGhFz": {
+              "enabled": false
+            },
+            "tqbxd": {
+              "content": "Downloading · 38%"
+            },
+            "lxbwc": {
+              "content": "584 MB / 1.61 GB"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "zNqk6",
+          "name": "Shared deletion heading",
+          "fill": "$text-primary",
+          "content": "Delete from any screen",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "weQBy",
+          "type": "ref",
+          "ref": "b9OE5C",
+          "name": "Delete Shared Omni Confirmation",
+          "width": "fill_container",
+          "descendants": {
+            "lKpPX": {
+              "content": "Delete model?"
+            },
+            "sB3u5": {
+              "content": "LFM3 Omni 2B (1.61 GB) is removed from this computer. These shared files are also removed from STT Models, Language Models and TTS Models. Any profiles or processes using this model will need it downloaded again."
+            },
+            "fWTSe": {
+              "fill": "$danger-soft",
+              "stroke": "$danger-border",
+              "strokeWidth": 1
+            },
+            "n4vdOm": {
+              "content": "Delete model",
+              "fill": "$danger"
+            },
+            "s7p7U": {
+              "enabled": false,
+              "width": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "VHtbz",
+      "x": 4200,
+      "y": 27202,
+      "name": "07 Models · Shared Omni states — Dark",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 1120,
+      "fill": "$window-bg",
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 48,
+      "children": [
+        {
+          "type": "text",
+          "id": "p3cyL",
+          "name": "Shared Omni States Title",
+          "fill": "$text-primary",
+          "content": "One Omni model, three tasks",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "mJVSC",
+          "name": "Shared Omni States Explanation",
+          "fill": "$text-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Download from any model screen. The same model appears on Local in STT Models, Language Models and TTS Models. Each task can still use a different model.",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "quTWe",
+          "name": "Browse · shared download in progress Heading",
+          "fill": "$text-primary",
+          "content": "Browse · shared download in progress",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "IrQOW",
+          "type": "ref",
+          "ref": "ctB3K",
+          "name": "Browse · shared download in progress Omni Card",
+          "width": "fill_container",
+          "descendants": {
+            "Bima8": {
+              "content": "LFM3 Omni 2B"
+            },
+            "zAzF9": {
+              "icon": "audio-lines"
+            },
+            "LQuSJ": {
+              "content": "Transcribe, rewrite and read aloud"
+            },
+            "Je6Xj": {
+              "content": "16 text languages"
+            },
+            "Zwc2T": {
+              "content": "Good on CPU"
+            },
+            "k6cfh": {
+              "content": "1.61 GB"
+            },
+            "Mn8xr": {
+              "icon": "square"
+            },
+            "lulD3": {
+              "content": "Cancel"
+            },
+            "BjP9n": {
+              "enabled": false
+            },
+            "n0m6q": {
+              "enabled": true
+            },
+            "gepN7": {
+              "enabled": false
+            },
+            "nZMG7": {
+              "content": "Language"
+            },
+            "epquN": {
+              "content": "Auto-detect"
+            },
+            "uJ3kn": {
+              "content": "The model decides from what you say."
+            },
+            "oGhFz": {
+              "enabled": true
+            },
+            "tqbxd": {
+              "content": "Downloading · 38%"
+            },
+            "lxbwc": {
+              "content": "584 MB / 1.61 GB"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "Sxnv3",
+          "name": "STT Models · Local Heading",
+          "fill": "$text-primary",
+          "content": "STT Models · Local",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "hC9fJ",
+          "type": "ref",
+          "ref": "ctB3K",
+          "name": "STT Models · Local Omni Card",
+          "width": "fill_container",
+          "descendants": {
+            "Bima8": {
+              "content": "LFM3 Omni 2B"
+            },
+            "zAzF9": {
+              "icon": "audio-lines"
+            },
+            "LQuSJ": {
+              "content": "Transcribe, rewrite and read aloud"
+            },
+            "Je6Xj": {
+              "content": "18 speech languages"
+            },
+            "Zwc2T": {
+              "content": "Good on CPU"
+            },
+            "k6cfh": {
+              "content": "1.61 GB"
+            },
+            "Mn8xr": {
+              "icon": "check"
+            },
+            "lulD3": {
+              "content": "Use model"
+            },
+            "BjP9n": {
+              "enabled": true
+            },
+            "n0m6q": {
+              "enabled": true
+            },
+            "gepN7": {
+              "enabled": true
+            },
+            "nZMG7": {
+              "content": "Language"
+            },
+            "epquN": {
+              "content": "Auto-detect"
+            },
+            "uJ3kn": {
+              "content": "The model decides from what you say."
+            },
+            "oGhFz": {
+              "enabled": false
+            },
+            "tqbxd": {
+              "content": "Downloading · 38%"
+            },
+            "lxbwc": {
+              "content": "584 MB / 1.61 GB"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "p3uUm",
+          "name": "Language Models · Local Heading",
+          "fill": "$text-primary",
+          "content": "Language Models · Local",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "UtGkZ",
+          "type": "ref",
+          "ref": "ctB3K",
+          "name": "Language Models · Local Omni Card",
+          "width": "fill_container",
+          "descendants": {
+            "Bima8": {
+              "content": "LFM3 Omni 2B"
+            },
+            "zAzF9": {
+              "icon": "audio-lines"
+            },
+            "LQuSJ": {
+              "content": "Transcribe, rewrite and read aloud"
+            },
+            "Je6Xj": {
+              "content": "2.2B parameters"
+            },
+            "Zwc2T": {
+              "content": "Good on CPU"
+            },
+            "k6cfh": {
+              "content": "1.61 GB"
+            },
+            "Mn8xr": {
+              "icon": "check"
+            },
+            "lulD3": {
+              "content": "Use model"
+            },
+            "BjP9n": {
+              "enabled": true
+            },
+            "n0m6q": {
+              "enabled": true
+            },
+            "gepN7": {
+              "enabled": false
+            },
+            "nZMG7": {
+              "content": "Language"
+            },
+            "epquN": {
+              "content": "Auto-detect"
+            },
+            "uJ3kn": {
+              "content": "The model decides from what you say."
+            },
+            "oGhFz": {
+              "enabled": false
+            },
+            "tqbxd": {
+              "content": "Downloading · 38%"
+            },
+            "lxbwc": {
+              "content": "584 MB / 1.61 GB"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "UqB7H",
+          "name": "TTS Models · Local Heading",
+          "fill": "$text-primary",
+          "content": "TTS Models · Local",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "QWTqg",
+          "type": "ref",
+          "ref": "ctB3K",
+          "name": "TTS Models · Local Omni Card",
+          "width": "fill_container",
+          "descendants": {
+            "Bima8": {
+              "content": "LFM3 Omni 2B"
+            },
+            "zAzF9": {
+              "icon": "audio-lines"
+            },
+            "LQuSJ": {
+              "content": "Transcribe, rewrite and read aloud"
+            },
+            "Je6Xj": {
+              "content": "18 speech languages"
+            },
+            "Zwc2T": {
+              "content": "Good on CPU"
+            },
+            "k6cfh": {
+              "content": "1.61 GB"
+            },
+            "Mn8xr": {
+              "icon": "play"
+            },
+            "lulD3": {
+              "content": "Preview"
+            },
+            "BjP9n": {
+              "enabled": true
+            },
+            "n0m6q": {
+              "enabled": true
+            },
+            "gepN7": {
+              "enabled": true
+            },
+            "nZMG7": {
+              "content": "Voice"
+            },
+            "epquN": {
+              "content": "Female"
+            },
+            "uJ3kn": {
+              "content": "Preview plays a short sample with this voice."
+            },
+            "oGhFz": {
+              "enabled": false
+            },
+            "tqbxd": {
+              "content": "Downloading · 38%"
+            },
+            "lxbwc": {
+              "content": "584 MB / 1.61 GB"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "l1kUFH",
+          "name": "Shared deletion heading",
+          "fill": "$text-primary",
+          "content": "Delete from any screen",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "L2jpL",
+          "type": "ref",
+          "ref": "b9OE5C",
+          "name": "Delete Shared Omni Confirmation",
+          "width": "fill_container",
+          "descendants": {
+            "lKpPX": {
+              "content": "Delete model?"
+            },
+            "sB3u5": {
+              "content": "LFM3 Omni 2B (1.61 GB) is removed from this computer. These shared files are also removed from STT Models, Language Models and TTS Models. Any profiles or processes using this model will need it downloaded again."
+            },
+            "fWTSe": {
+              "fill": "$danger-soft",
+              "stroke": "$danger-border",
+              "strokeWidth": 1
+            },
+            "n4vdOm": {
+              "content": "Delete model",
+              "fill": "$danger"
+            },
+            "s7p7U": {
+              "enabled": false,
+              "width": 0
+            }
+          }
         }
       ]
     }

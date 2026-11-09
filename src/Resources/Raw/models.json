@@ -25,6 +25,12 @@
   ],
   "licenses": [
     {
+      "id": "LFM-Open-1.0",
+      "name": "LFM Open License v1.0 (conditions apply)",
+      "url": "https://huggingface.co/LiquidAI/LFM3-1.7B/blob/main/LICENSE",
+      "commercialUse": true
+    },
+    {
       "id": "Apache-2.0",
       "name": "Apache License 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0",

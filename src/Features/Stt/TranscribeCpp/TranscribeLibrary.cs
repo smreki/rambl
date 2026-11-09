@@ -1,4 +1,5 @@
 using Rambl.Common.IO;
+using Rambl.Common.Interop;
 using System.Runtime.InteropServices;
 
 namespace Rambl.Features.Stt.TranscribeCpp;
@@ -32,14 +33,7 @@ internal static class TranscribeLibrary
 
     private static string? Initialize()
     {
-        try
-        {
-            NativeLibrary.SetDllImportResolver(typeof(TranscribeLibrary).Assembly, Resolve);
-        }
-        catch (InvalidOperationException)
-        {
-            // Another resolver for this assembly is already in place; the default search is then tried.
-        }
+        NativeLibraryImports.Register(TranscribeNative.Library, Path.Combine(Folder, TranscribeNative.Library + ".dll"));
 
         try
         {
@@ -71,15 +65,6 @@ internal static class TranscribeLibrary
         {
             return "transcribe.cpp's library (transcribe.dll) could not be loaded.";
         }
-    }
-
-    private static nint Resolve(string libraryName, System.Reflection.Assembly assembly, DllImportSearchPath? searchPath)
-    {
-        if (libraryName != TranscribeNative.Library)
-            return 0;
-
-        var path = Path.Combine(Folder, TranscribeNative.Library + ".dll");
-        return NativeLibrary.TryLoad(path, out var handle) ? handle : 0;
     }
 
     // Every struct Rambl fills must be exactly as large as the library's, or an init function would write past it.

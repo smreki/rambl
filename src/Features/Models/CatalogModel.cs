@@ -19,6 +19,8 @@ namespace Rambl.Features.Models;
 /// <param name="ContextLength">Language models only: the trained context length in tokens, where it applies.</param>
 /// <param name="DefaultVoice">Text-to-speech models only: the <see cref="CatalogVoice.Id"/> chosen until the user picks another.</param>
 /// <param name="Voices">Text-to-speech models only: the voices the model speaks with.</param>
+/// <param name="Capabilities">The tasks sharing one installation, such as stt, text and tts.</param>
+/// <param name="AudioLanguages">The supported speech languages when they differ from text languages.</param>
 public sealed record CatalogModel(
     string Id,
     string Name,
@@ -37,5 +39,7 @@ public sealed record CatalogModel(
     string? Parameters = null,
     int? ContextLength = null,
     string? DefaultVoice = null,
-    IReadOnlyList<CatalogVoice>? Voices = null
+    IReadOnlyList<CatalogVoice>? Voices = null,
+    IReadOnlyList<string>? Capabilities = null,
+    ModelLanguages? AudioLanguages = null
 );

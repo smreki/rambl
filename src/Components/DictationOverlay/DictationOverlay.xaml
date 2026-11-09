@@ -11,6 +11,9 @@
             <Setter Property="BackgroundColor" Value="Transparent" />
             <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
         </Style>
+        <Style x:Key="TranscribingWaveBar" TargetType="BoxView" BasedOn="{StaticResource WaveBar}">
+            <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+        </Style>
         <!-- While post-processing the wave is violet, so it is never mistaken for recording. -->
         <Style x:Key="ProcessingWaveBar" TargetType="BoxView" BasedOn="{StaticResource WaveBar}">
             <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
@@ -45,7 +48,8 @@
         <Grid RowDefinitions="Auto,Auto,Auto">
             <!-- The waveform is centered in the room between the indicator and the time and close button, which is what the eye
                  compares it with; the card's own center would put it nearer the (wider) right group. The row has three
-                 looks: recording, processing (the same row with a violet wave, the step and a Skip button) and a failed process
+                 looks: recording, transcribing (neutral activity and frozen duration), post-processing (violet wave,
+                 step and Skip button) and a failure
                  (the waveform is replaced by the message, so the row grows with it). -->
             <Grid x:Name="ControlsRow" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" HeightRequest="28">
                 <Grid x:Name="IndicatorHost" VerticalOptions="Center" HeightRequest="20" WidthRequest="20">
@@ -60,6 +64,13 @@
                             <Ellipse WidthRequest="8" HeightRequest="8" HorizontalOptions="Center" VerticalOptions="Center"
                                      Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
                         </Grid>
+                    </Border>
+                    <Border x:Name="TranscribingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}"
+                            SemanticProperties.Description="Transcribing recorded speech">
+                        <ActivityIndicator x:Name="TranscribingSpinner" WidthRequest="14" HeightRequest="14" IsRunning="False"
+                                           HorizontalOptions="Center" VerticalOptions="Center"
+                                           Color="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
                     </Border>
                     <Border x:Name="ProcessingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
                             BackgroundColor="{AppThemeBinding Light={StaticResource ProcessingSoftLight}, Dark={StaticResource ProcessingSoftDark}}"
@@ -135,6 +146,10 @@
                     </Grid>
                 </HorizontalStackLayout>
             </Grid>
+
+            <Label x:Name="TranscribingStatus" Grid.Row="1" Margin="0,8,0,0" Text="Transcribing…" FontSize="12" FontAttributes="Bold"
+                   IsVisible="False" AutomationId="TranscribingStatus" SemanticProperties.Description="Transcribing recorded speech"
+                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
 
             <!-- The process that is running and its model, only while post-processing. -->
             <HorizontalStackLayout x:Name="ProcessingStatus" Grid.Row="1" Margin="0,8,0,0" Spacing="6" IsVisible="False">

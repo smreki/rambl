@@ -55,7 +55,8 @@ Requirements:
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) and the MAUI Windows workload: `dotnet workload install maui-windows` (or Visual Studio 2026 with *.NET Multi-platform App UI development*)
 - Microsoft Visual C++ Redistributable (x64), needed at run time by the native speech libraries
-- Internet access for the first build, which downloads pinned releases of parakeet.cpp, transcribe.cpp, llama.cpp, audio.cpp, the Kokoro eSpeak NG phonemizer and the Silero VAD model into `.native/` and checks each against a pinned hash
+- Visual Studio's **Desktop development with C++** workload, including CMake, to build the native language runtime
+- Internet access for the first build, which downloads pinned releases of parakeet.cpp, transcribe.cpp, audio.cpp, the Kokoro eSpeak NG phonemizer and the Silero VAD model, plus llama.cpp source, into `.native/` and checks each against a pinned hash
 
 The `rambl.ps1` helper wraps the usual commands:
 
@@ -131,7 +132,7 @@ rambl.ps1       development helper
 - [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0): speech recognition
 - [parakeet.cpp](https://github.com/mudler/parakeet.cpp) (MIT): speech recognition
 - [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) (MIT): speech recognition
-- [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT): language models, run as a separate `llama-server` process
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT): language models and LFM3 Omni, run inside Rambl through a private native DLL with statically linked ggml, multimodal audio support and upstream Jinja chat templates. Omni is downloaded once and shares one loaded model across STT, post-processing and TTS. Other speech models, such as Parakeet, can be selected independently. No server is started for these native paths. See [native inference](docs/native-inference.md) for validation and the remaining legacy audio.cpp server migration.
 - [audio.cpp](https://github.com/0xShug0/audio.cpp) (Apache-2.0): local voice synthesis in a separate server process
 - [eSpeak NG](https://github.com/espeak-ng/espeak-ng) (GPL-3.0-or-later): Kokoro phonemizer DLL and dictionaries from [espeakng-loader](https://pypi.org/project/espeakng-loader/); no Python runtime is installed
 - [ONNX Runtime](https://github.com/microsoft/onnxruntime) (MIT): Laya decision models

@@ -17,19 +17,82 @@ public sealed class ModelStore
     private const string PartialSuffix = ".partial";
 
     private readonly ILogger<ModelStore> logger;
+    private readonly IReadOnlyList<string> reuseRoots;
 
     /// <summary>Creates a store.</summary>
     /// <param name="root">The folder that holds the models; it is created when something is downloaded.</param>
     /// <param name="logger">The logger for records that cannot be read.</param>
+    /// <param name="reuseRoots">Earlier task-specific stores whose verified files can seed shared-model upgrades.</param>
     /// <exception cref="ArgumentException"><paramref name="root"/> is empty.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="logger"/> is null.</exception>
-    public ModelStore(string root, ILogger<ModelStore> logger)
+    public ModelStore(string root, ILogger<ModelStore> logger, IReadOnlyList<string>? reuseRoots = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(logger);
         Root = Path.GetFullPath(root);
         this.logger = logger;
+        this.reuseRoots = reuseRoots ?? [];
     }
+
+    /// <summary>Copies already-downloaded files into staging when a model moves to the shared store.</summary>
+    /// <param name="modelId">The shared model id.</param>
+    /// <param name="artifact">The complete artifact to install.</param>
+    /// <param name="staging">The new download's staging directory.</param>
+    /// <remarks>The downloader verifies reused files before committing. The old installation stays intact if the upgrade is cancelled.</remarks>
+    public void ReuseInstalledFiles(string modelId, ModelArtifact artifact, string staging)
+    {
+        foreach (var root in reuseRoots.Append(Root).Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            var source = Path.Combine(Path.GetFullPath(root), SafeName(modelId), SafeName(artifact.Id));
+            if (TryReadRecord(source) is not { } record || record.ModelId != modelId || record.Revision != artifact.Host.Revision)
+                continue;
+            foreach (var file in artifact.Files)
+            {
+                var from = FileInside(source, file.Path);
+                var to = FileInside(staging, file.Path);
+                if (!File.Exists(from) || File.Exists(to) || new FileInfo(from).Length != file.Bytes) continue;
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(to)!);
+                File.Copy(from, to);
+            }
+        }
+    }
+
+    /// <summary>Removes superseded task-specific copies after the full shared installation has been verified and committed.</summary>
+    /// <param name="modelId">The installed shared model.</param>
+    /// <param name="artifact">The verified shared artifact.</param>
+    public void RemoveSupersededCopies(string modelId, ModelArtifact artifact)
+    {
+        foreach (var root in reuseRoots)
+        {
+            var source = Path.Combine(Path.GetFullPath(root), SafeName(modelId), SafeName(artifact.Id));
+            if (string.Equals(source, ArtifactDirectory(modelId, artifact.Id), StringComparison.OrdinalIgnoreCase)) continue;
+            try
+            {
+                if (TryReadRecord(source) is not { } record || record.ModelId != modelId || record.Revision != artifact.Host.Revision) continue;
+                var known = artifact.Files.Select(file => FileInside(source, file.Path)).Append(Path.Combine(source, ManifestName)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+                if (Directory.EnumerateFiles(source, "*", SearchOption.AllDirectories).Any(file => !known.Contains(file))) continue;
+                Directory.Delete(source, recursive: true);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            { logger.LogWarning(ex, "Unable to remove superseded model files at {Folder}", source); }
+        }
+    }
+
+    private static string FileInside(string directory, string relative)
+    {
+        var full = Path.GetFullPath(Path.Combine(directory, relative));
+        if (!full.StartsWith(Path.GetFullPath(directory) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("A model file has an invalid relative path.");
+        return full;
+    }
+
+    /// <summary>Checks that a manifest matches the pinned artifact and all its components are present.</summary>
+    /// <param name="record">The installation manifest.</param>
+    /// <param name="artifact">The current pinned artifact.</param>
+    /// <returns>Whether this is a complete current installation.</returns>
+    public bool IsComplete(InstalledModel record, ModelArtifact artifact) =>
+        record.Revision == artifact.Host.Revision && record.Bytes == artifact.TotalBytes && artifact.Files.All(file =>
+            new FileInfo(FileInside(ArtifactDirectory(record.ModelId, record.ArtifactId), file.Path)) is { Exists: true } info && info.Length == file.Bytes);
 
     /// <summary>Gets the folder that holds the models.</summary>
     public string Root { get; }

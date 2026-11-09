@@ -25,6 +25,13 @@ internal sealed class OverlaySurface : IDictationSurface, IDisposable
     }
 
     /// <inheritdoc/>
+    public void ShowTranscribing()
+    {
+        overlay.ShowTranscribing();
+        window.Resize();
+    }
+
+    /// <inheritdoc/>
     public event EventHandler? CloseRequested;
 
     /// <inheritdoc/>

@@ -79,7 +79,7 @@ public sealed class SpeechTranscriber : IDisposable
             }
 
             token.ThrowIfCancellationRequested();
-            return session.Finish();
+            return session is ICancellableSpeechSession cancellable ? cancellable.Finish(token) : session.Finish();
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
         {

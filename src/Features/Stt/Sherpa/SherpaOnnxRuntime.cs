@@ -1,4 +1,5 @@
 using Rambl.Features.Models;
+using Rambl.Features.Inference.SherpaOnnx;
 
 
 namespace Rambl.Features.Stt.Sherpa;
@@ -56,6 +57,7 @@ internal sealed class SherpaOnnxRuntime(ISpeechDetector? detector = null) : IStt
                 var threads = Math.Clamp(Environment.ProcessorCount / 2, 2, 8);
                 try
                 {
+                    SherpaLibrary.EnsureAvailable();
                     // Whisper has no streaming recognizer in sherpa-onnx; only a transducer can stream.
                     return runtime.Streaming == StreamingSupport.Native && paths.Kind == SherpaModelKind.Transducer
                         ? new SherpaOnlineRecognizer(paths, threads)

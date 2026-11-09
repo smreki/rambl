@@ -9,7 +9,7 @@ namespace Rambl.Features.Stt.Sherpa;
 /// </remarks>
 /// <param name="recognizer">The loaded model.</param>
 /// <param name="detector">Finds the speech when silence is skipped, or null to transcribe everything.</param>
-internal sealed class SherpaOfflineSession(OfflineRecognizer recognizer, ISpeechDetector? detector) : ISpeechSession
+internal sealed class SherpaOfflineSession(OfflineRecognizer recognizer, ISpeechDetector? detector) : ICancellableSpeechSession
 {
     // Models of this kind are trained on short recordings (Whisper takes at most 30 s), so a long dictation is cut.
     private const double MaxSegmentSeconds = 30;
@@ -26,8 +26,11 @@ internal sealed class SherpaOfflineSession(OfflineRecognizer recognizer, ISpeech
 
     public void AcceptAudio(int sampleRate, ReadOnlySpan<float> block) => Keep(input.Convert(sampleRate, block));
 
-    public string Finish()
+    public string Finish() => Finish(CancellationToken.None);
+
+    public string Finish(CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         Keep(input.Flush());
 
         // Less than a tenth of a second is a stray key press, not speech.
@@ -38,12 +41,16 @@ internal sealed class SherpaOfflineSession(OfflineRecognizer recognizer, ISpeech
         var parts = new List<string>();
         foreach (var range in SpeechPieces.Plan(all, SpeechInput.ModelRate, detector, skipSilence: detector is not null, MaxSegmentSeconds, SearchSeconds))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             using var stream = recognizer.CreateStream();
             stream.AcceptWaveform(SpeechInput.ModelRate, all[range]);
             recognizer.Decode(stream);
+            // The native call cannot be interrupted; disposal still releases this segment's stream on cancellation.
+            cancellationToken.ThrowIfCancellationRequested();
             parts.Add(stream.Result.Text);
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
         return TranscriptText.Tidy(string.Join(' ', parts));
     }
 

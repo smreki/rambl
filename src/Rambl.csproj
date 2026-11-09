@@ -51,6 +51,7 @@
 	<ItemGroup Condition="'$(UseSherpaOnnx)' != 'true'">
 		<Compile Remove="Features\Stt\Sherpa\**" />
 		<Compile Remove="Features\Tts\Sherpa\**" />
+		<Compile Remove="Features\Inference\SherpaOnnx\**" />
 	</ItemGroup>
 
 	<!-- ONNX Runtime (Features/Decisions/Laya) runs the Laya decision models for voice commands. The native onnxruntime.dll
@@ -187,11 +188,8 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- llama.cpp (Features/LanguageModels/LlamaCpp) runs GGUF language models in a server process of its own, from one pinned
-	     release of the official prebuilt binaries. The build fetches the zip, checks it against the pinned SHA-256 and puts
-	     the server and its libraries into a llama.cpp folder next to the app. A new model architecture is supported by
-	     moving the pin. Only the Windows x64 CPU build is wired up; set this for another target once its release has been
-	     checked. -->
+	<!-- llama.cpp runs inside Rambl through a small C bridge. Build its pinned source with static ggml so STT's
+	     other ggml versions can coexist. No server, executable, or upstream ggml DLL is shipped for language inference. -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<UseLlamaCpp>true</UseLlamaCpp>
 	</PropertyGroup>
@@ -199,36 +197,32 @@
 	<PropertyGroup Condition="'$(UseLlamaCpp)' == 'true'">
 		<DefineConstants>$(DefineConstants);LLAMA_CPP</DefineConstants>
 		<LlamaCppVersion>b12182</LlamaCppVersion>
-		<LlamaCppZipName>llama-$(LlamaCppVersion)-bin-win-cpu-x64</LlamaCppZipName>
-		<LlamaCppZipSha256>e068c483e2ea97bf09121ec0bbe085bd43470bb67d9062c7c66162164aea5834</LlamaCppZipSha256>
-		<LlamaCppCacheDir>$(MSBuildProjectDirectory)\..\.native\llama.cpp\$(LlamaCppVersion)\</LlamaCppCacheDir>
+		<LlamaCppSourceSha256>adc18ac17ece6139a009399181dc31accb5ab5337115180df7b7006e56deaeef</LlamaCppSourceSha256>
+		<LlamaCppCacheDir>$(MSBuildProjectDirectory)\..\.native\rambl-llama\$(LlamaCppVersion)\</LlamaCppCacheDir>
+		<LlamaCppDll>$(LlamaCppCacheDir)build\Release\rambl-llama.dll</LlamaCppDll>
+		<LlamaCppAvx2Dll>$(LlamaCppCacheDir)build-avx2\Release\rambl-llama-avx2.dll</LlamaCppAvx2Dll>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(UseLlamaCpp)' != 'true'">
 		<Compile Remove="Features\LanguageModels\LlamaCpp\**" />
+		<Compile Remove="Features\Inference\LlamaCpp\**;Features\Stt\LlamaCpp\**;Features\Tts\LlamaCpp\**" />
 	</ItemGroup>
 
-	<Target Name="FetchLlamaCpp" BeforeTargets="AssignTargetPaths" Condition="'$(UseLlamaCpp)' == 'true'">
-		<PropertyGroup>
-			<LlamaCppZip>$(LlamaCppCacheDir)$(LlamaCppZipName).zip</LlamaCppZip>
-			<LlamaCppBinDir>$(LlamaCppCacheDir)$(LlamaCppZipName)\</LlamaCppBinDir>
-			<LlamaCppServer>$(LlamaCppBinDir)llama-server.exe</LlamaCppServer>
-		</PropertyGroup>
+	<Target Name="BuildLlamaCpp" Condition="'$(UseLlamaCpp)' == 'true'"
+	        Inputs="$(MSBuildProjectFullPath);$(MSBuildProjectDirectory)\..\tools\Build-LlamaNative.ps1;$(MSBuildProjectDirectory)\..\tools\native\llama\CMakeLists.txt;$(MSBuildProjectDirectory)\..\tools\native\llama\rambl-llama.cpp"
+	        Outputs="$(LlamaCppDll);$(LlamaCppAvx2Dll)">
+		<Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\tools\Build-LlamaNative.ps1&quot; -Version &quot;$(LlamaCppVersion)&quot; -SourceSha256 &quot;$(LlamaCppSourceSha256)&quot; -CacheDirectory &quot;$(LlamaCppCacheDir.TrimEnd('\'))&quot;" />
+	</Target>
 
-		<DownloadFile Condition="!Exists('$(LlamaCppServer)')"
-		              SourceUrl="https://github.com/ggml-org/llama.cpp/releases/download/$(LlamaCppVersion)/$(LlamaCppZipName).zip"
-		              DestinationFolder="$(LlamaCppCacheDir)" SkipUnchangedFiles="true" />
-		<GetFileHash Condition="!Exists('$(LlamaCppServer)')" Files="$(LlamaCppZip)" Algorithm="SHA256">
-			<Output TaskParameter="Items" ItemName="LlamaCppZipHash" />
-		</GetFileHash>
-		<Error Condition="!Exists('$(LlamaCppServer)') And '%(LlamaCppZipHash.FileHash)' != '$(LlamaCppZipSha256)'"
-		       Text="The downloaded llama.cpp release does not match the pinned SHA-256. Delete $(LlamaCppCacheDir) and build again, or update LlamaCppZipSha256 after checking the release." />
-		<Unzip Condition="!Exists('$(LlamaCppServer)')" SourceFiles="$(LlamaCppZip)" DestinationFolder="$(LlamaCppBinDir)" />
-
-		<!-- Only the server and what it loads; the release also has command line tools Rambl does not use. -->
+	<Target Name="FetchLlamaCpp" BeforeTargets="AssignTargetPaths" DependsOnTargets="BuildLlamaCpp" Condition="'$(UseLlamaCpp)' == 'true'">
 		<ItemGroup>
-			<LlamaCppFile Include="$(LlamaCppBinDir)llama-server.exe;$(LlamaCppBinDir)llama-server-impl.dll;$(LlamaCppBinDir)llama-common.dll;$(LlamaCppBinDir)llama.dll;$(LlamaCppBinDir)ggml*.dll;$(LlamaCppBinDir)mtmd.dll;$(LlamaCppBinDir)libomp.dll;$(LlamaCppBinDir)LICENSE*" />
-			<None Include="@(LlamaCppFile)" Link="llama.cpp\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<None Include="$(LlamaCppDll)" Link="llama.cpp\rambl-llama.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<None Include="$(LlamaCppAvx2Dll)" Link="llama.cpp\rambl-llama-avx2.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<None Include="$(LlamaCppCacheDir)llama.cpp-$(LlamaCppVersion)\LICENSE" Link="llama.cpp\LICENSE" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<LlamaCppLicense Include="$(LlamaCppCacheDir)llama.cpp-$(LlamaCppVersion)\licenses\*" />
+			<None Include="@(LlamaCppLicense)" Link="llama.cpp\licenses\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<LlamaCppVendorLicense Include="$(LlamaCppCacheDir)llama.cpp-$(LlamaCppVersion)\vendor\**\LICENSE*" />
+			<None Include="@(LlamaCppVendorLicense)" Link="llama.cpp\licenses\vendor\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
 		</ItemGroup>
 	</Target>
 
@@ -314,6 +308,17 @@
 
 	<!-- Optional single-file experiment. WinUI requires extracting the bundled Microsoft runtime at launch;
 	     keep Rambl's path-based native runtimes and data next to the executable. Not used by the release workflow. -->
+	<!-- A package downgrade can have older source timestamps than files from a previous publish. Always copy
+	     these native dependencies so incremental publishes cannot mix managed and native runtime versions. -->
+	<Target Name="ReplacePublishedSherpaRuntime" AfterTargets="ComputeResolvedFilesToPublishList">
+		<ItemGroup>
+			<ResolvedFileToPublish Update="@(ResolvedFileToPublish)"
+			                       Condition="'%(ResolvedFileToPublish.RelativePath)' == 'onnxruntime.dll' Or '%(ResolvedFileToPublish.RelativePath)' == 'onnxruntime_providers_shared.dll' Or '%(ResolvedFileToPublish.RelativePath)' == 'sherpa-onnx-c-api.dll'">
+				<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
+
 	<Target Name="KeepRamblNativeFilesOutsideBundle" BeforeTargets="_ComputeFilesToBundle"
 	        Condition="'$(RamblHybridPublish)' == 'true' And '$(PublishSingleFile)' == 'true'">
 		<ItemGroup>

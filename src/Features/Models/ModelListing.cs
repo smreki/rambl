@@ -20,6 +20,7 @@ namespace Rambl.Features.Models;
 /// <param name="License">The model's license.</param>
 /// <param name="Voices">Text-to-speech models only: the voices, A–Z by name.</param>
 /// <param name="DefaultVoice">Text-to-speech models only: the id of the voice chosen until the user picks another.</param>
+/// <param name="Capabilities">The tasks that share this model's installation and loaded weights.</param>
 public sealed record ModelListing(
     string Id,
     string Name,
@@ -39,9 +40,16 @@ public sealed record ModelListing(
     string? TypeId = null,
     ModelLicense? License = null,
     IReadOnlyList<CatalogVoice>? Voices = null,
-    string? DefaultVoice = null
+    string? DefaultVoice = null,
+    IReadOnlyList<string>? Capabilities = null
 )
 {
+    /// <summary>Gets whether multiple task screens use the same installation.</summary>
+    public bool IsShared => Capabilities is { Count: > 1 };
+
+    /// <summary>Gets the shared model explanation shown on its card.</summary>
+    public string SharedNotice => IsShared ? "STT · Post-processing · TTS · One shared download" : string.Empty;
+
     /// <summary>Gets the voice count as card text, for example "28 voices"; empty for a model that is not a text-to-speech model.</summary>
     public string VoicesText => Voices is not { Count: > 0 } voices ? string.Empty : voices.Count == 1 ? "1 voice" : $"{voices.Count} voices";
 
@@ -103,7 +111,8 @@ public sealed record ModelListing(
                     model.ModelType,
                     catalog.License(model.License.Id),
                     model.Voices is null ? null : [.. model.Voices.OrderBy(voice => voice.Name, StringComparer.OrdinalIgnoreCase)],
-                    model.DefaultVoice
+                    model.DefaultVoice,
+                    model.Capabilities
                 )
             );
         }

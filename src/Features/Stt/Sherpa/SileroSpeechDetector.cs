@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Rambl.Features.Inference.SherpaOnnx;
 using SherpaOnnx;
 
 namespace Rambl.Features.Stt.Sherpa;
@@ -40,7 +41,7 @@ internal sealed class SileroSpeechDetector(string modelPath, ILogger logger) : I
             {
                 samples.Slice(offset, WindowSize).CopyTo(window);
                 vad.AcceptWaveform(window);
-                Drain(vad, found);
+                Drain(vad, found, samples.Length);
             }
 
             // The last partial window is padded with silence, then the detector closes a stretch that is still open.
@@ -52,7 +53,7 @@ internal sealed class SileroSpeechDetector(string modelPath, ILogger logger) : I
             }
 
             vad.Flush();
-            Drain(vad, found);
+            Drain(vad, found, samples.Length);
             return found;
         }
     }
@@ -68,12 +69,16 @@ internal sealed class SileroSpeechDetector(string modelPath, ILogger logger) : I
         }
     }
 
-    private static void Drain(VoiceActivityDetector vad, List<Range> found)
+    private static void Drain(VoiceActivityDetector vad, List<Range> found, int sampleCount)
     {
         while (!vad.IsEmpty())
         {
             var segment = vad.Front();
-            found.Add(checked((int)segment.Start)..checked((int)(segment.Start + segment.Samples.Length)));
+            // The last window and Flush can include padded samples beyond the recording's end.
+            var start = (int)Math.Clamp((long)segment.Start, 0, sampleCount);
+            var end = (int)Math.Clamp(segment.Start + (long)segment.Samples.Length, 0, sampleCount);
+            if (end > start)
+                found.Add(start..end);
             vad.Pop();
         }
     }
@@ -90,6 +95,9 @@ internal sealed class SileroSpeechDetector(string modelPath, ILogger logger) : I
             if (!File.Exists(modelPath))
                 throw new FileNotFoundException("The Silero VAD model is missing.", modelPath);
 
+            // A failed Sherpa constructor still gets finalized. Check its DLL first so that a missing runtime
+            // cannot throw again from the finalizer and terminate the process after this catch has recovered.
+            SherpaLibrary.EnsureAvailable();
             var config = new VadModelConfig();
             config.SileroVad.Model = modelPath;
             config.SileroVad.Threshold = 0.4f;

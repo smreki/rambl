@@ -5,7 +5,8 @@ namespace Rambl.Features.Models;
 /// <summary>Loads a model catalog bundled with the app once and shares it.</summary>
 /// <param name="logger">The logger for load failures.</param>
 /// <param name="catalogAssetName">The catalog file: <c>stt-models.json</c> (the default), <c>language-models.json</c> or <c>tts-models.json</c>.</param>
-public sealed class ModelCatalogProvider(ILogger<ModelCatalogProvider> logger, string catalogAssetName = "stt-models.json")
+/// <param name="shared">The shared multimodal catalog to include for the task, or null for a standalone catalog.</param>
+public sealed class ModelCatalogProvider(ILogger<ModelCatalogProvider> logger, string catalogAssetName = "stt-models.json", ModelCatalogProvider? shared = null)
 {
     private const string CommonAssetName = "models.json";
     private Task<ModelCatalog>? loading;
@@ -22,7 +23,11 @@ public sealed class ModelCatalogProvider(ILogger<ModelCatalogProvider> logger, s
         {
             await using var common = await FileSystem.Current.OpenAppPackageFileAsync(CommonAssetName);
             await using var catalog = await FileSystem.Current.OpenAppPackageFileAsync(catalogAssetName);
-            return await Task.Run(() => ModelCatalog.Load(common, catalog, catalogAssetName));
+            var loaded = await Task.Run(() => ModelCatalog.Load(common, catalog, catalogAssetName));
+            if (shared is null)
+                return loaded;
+            var capability = catalogAssetName switch { "stt-models.json" => "stt", "tts-models.json" => "tts", _ => "text" };
+            return loaded.WithSharedModels(await shared.GetAsync(), capability);
         }
         catch (Exception ex)
         {

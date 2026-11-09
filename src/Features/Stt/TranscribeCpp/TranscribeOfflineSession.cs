@@ -5,7 +5,7 @@ namespace Rambl.Features.Stt.TranscribeCpp;
 /// A long dictation is cut at quiet places into pieces of at most 30 s, like the other runtimes do: several families
 /// (Whisper, Qwen3-ASR, Cohere) have a fixed context and refuse longer audio, and the others are trained on short clips.
 /// </remarks>
-internal sealed class TranscribeOfflineSession : ISpeechSession
+internal sealed class TranscribeOfflineSession : ICancellableSpeechSession
 {
     private const double MaxSegmentSeconds = 30;
     private const double SearchSeconds = 5;
@@ -41,9 +41,13 @@ internal sealed class TranscribeOfflineSession : ISpeechSession
     public void AcceptAudio(int sampleRate, ReadOnlySpan<float> block) => Keep(input.Convert(sampleRate, block));
 
     /// <inheritdoc/>
-    public string Finish()
+    public string Finish() => Finish(CancellationToken.None);
+
+    /// <inheritdoc/>
+    public string Finish(CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(session == 0, this);
+        cancellationToken.ThrowIfCancellationRequested();
         Keep(input.Flush());
 
         // Less than a tenth of a second is a stray key press, not speech.
@@ -55,12 +59,16 @@ internal sealed class TranscribeOfflineSession : ISpeechSession
         using var options = new TranscribeRunOptions(language);
         foreach (var range in SpeechPieces.Plan(all, SpeechInput.ModelRate, detector, skipSilence: detector is not null, MaxSegmentSeconds, SearchSeconds))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var piece = all[range];
             lock (recognizer.Gate)
             {
+                // Another session may have held the gate while this one was cancelled.
+                cancellationToken.ThrowIfCancellationRequested();
                 // A decode that ran out of room or started repeating itself still has the text up to there, which is
                 // better than losing the piece.
                 var status = TranscribeNative.Run(session, piece, piece.Length, ref options.Value);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (status is not (TranscribeNative.Ok or TranscribeNative.OutputTruncated or TranscribeNative.OutputRepetition))
                     throw new InvalidOperationException(TranscribeNative.Describe(status));
 
@@ -68,6 +76,7 @@ internal sealed class TranscribeOfflineSession : ISpeechSession
             }
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
         return TranscriptText.Tidy(string.Join(' ', parts));
     }
 

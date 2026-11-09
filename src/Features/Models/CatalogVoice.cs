@@ -12,7 +12,7 @@ namespace Rambl.Features.Models;
 public sealed record CatalogVoice(string Id, string Name, int Speaker, string? Language, string Gender)
 {
     /// <summary>Gets the voice as a select shows it, for example "Heart · US, female" or "F1 · female".</summary>
-    public string Label => $"{Name} · {Description}";
+    public string Label => string.Equals(Name, Description, StringComparison.OrdinalIgnoreCase) ? Name : $"{Name} · {Description}";
 
     /// <summary>Gets how the voice sounds, for example "US, female" or "female".</summary>
     public string Description

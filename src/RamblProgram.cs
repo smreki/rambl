@@ -92,6 +92,33 @@ public static class RamblProgram
             )
         );
 #endif
+#if LLAMA_CPP
+        builder.Services.AddSingleton<Features.Inference.LlamaCpp.OmniModelPool>();
+        builder.Services.AddSingleton(static services => new Features.Inference.LlamaCpp.LlamaCppRuntime(
+            services.GetRequiredService<Features.Inference.LlamaCpp.OmniModelPool>(), services.GetService<ISpeechDetector>()));
+#endif
+        builder.Services.AddKeyedSingleton(ModelLibraryKeys.Shared, static (services, _) =>
+            new ModelCatalogProvider(services.GetRequiredService<ILogger<ModelCatalogProvider>>(), "multimodal-models.json"));
+        builder.Services.AddKeyedSingleton(ModelLibraryKeys.Shared, static (services, _) => new ModelRuntimeRegistry(
+            [
+#if LLAMA_CPP
+                services.GetRequiredService<Features.Inference.LlamaCpp.LlamaCppRuntime>(),
+#endif
+            ]));
+        builder.Services.AddKeyedSingleton(ModelLibraryKeys.Shared, static (services, _) => new ModelLibrary(
+            services.GetRequiredKeyedService<ModelCatalogProvider>(ModelLibraryKeys.Shared),
+            new ModelStore(Path.Combine(AppDirectory(), "shared-models"), services.GetRequiredService<ILogger<ModelStore>>(),
+                [Path.Combine(AppDirectory(), "models"), Path.Combine(AppDirectory(), "language-models"), Path.Combine(AppDirectory(), "tts-models")]),
+            services.GetRequiredService<ModelDownloader>(),
+            services.GetRequiredKeyedService<ModelRuntimeRegistry>(ModelLibraryKeys.Shared),
+            services.GetRequiredService<ILogger<ModelLibrary>>(),
+            lifetime:
+#if LLAMA_CPP
+                services.GetRequiredService<Features.Inference.LlamaCpp.OmniModelPool>()
+#else
+                null
+#endif
+        ));
         builder.Services.AddSingleton(static services =>
         {
             var detector = services.GetService<ISpeechDetector>();
@@ -106,10 +133,16 @@ public static class RamblProgram
 #if TRANSCRIBE_CPP
                     new Features.Stt.TranscribeCpp.TranscribeCppRuntime(detector),
 #endif
+#if LLAMA_CPP
+                    services.GetRequiredService<Features.Inference.LlamaCpp.LlamaCppRuntime>(),
+#endif
                 ]
             );
         });
-        builder.Services.AddSingleton<ModelLibrary>();
+        builder.Services.AddSingleton(static services => new ModelLibrary(
+            services.GetRequiredService<ModelCatalogProvider>(), services.GetRequiredService<ModelStore>(),
+            services.GetRequiredService<ModelDownloader>(), services.GetRequiredService<ModelRuntimeRegistry>(),
+            services.GetRequiredService<ILogger<ModelLibrary>>(), services.GetRequiredKeyedService<ModelLibrary>(ModelLibraryKeys.Shared)));
         builder.Services.AddSingleton<SpeechEngine>();
         builder.Services.AddSingleton(static services =>
             new RecordingHistory(
@@ -142,8 +175,10 @@ public static class RamblProgram
             new InsertTextExecutor((ISettingsSource)Application.Current!, services.GetRequiredService<ITextInserter>())
         );
         builder.Services.AddSingleton<AppLayout>();
-        builder.Services.AddSingleton<ModelCatalogProvider>();
-#if (LLAMA_CPP || AUDIO_CPP) && WINDOWS
+        builder.Services.AddSingleton(static services => new ModelCatalogProvider(
+            services.GetRequiredService<ILogger<ModelCatalogProvider>>(), "stt-models.json",
+            services.GetRequiredKeyedService<ModelCatalogProvider>(ModelLibraryKeys.Shared)));
+#if AUDIO_CPP && WINDOWS
         // Model servers are ended with Rambl, however Rambl ends.
         builder.Services.AddSingleton<Common.Processes.IChildProcessGuard, Platforms.Windows.Processes.KillOnCloseJob>();
 #endif
@@ -155,10 +190,7 @@ public static class RamblProgram
                 new ModelRuntimeRegistry(
                     [
 #if LLAMA_CPP
-                        new Features.LanguageModels.LlamaCpp.LlamaCppRuntime(
-                            services.GetService<Common.Processes.IChildProcessGuard>(),
-                            services.GetRequiredService<ILogger<Features.LanguageModels.LlamaCpp.LlamaCppRuntime>>()
-                        ),
+                        services.GetRequiredService<Features.Inference.LlamaCpp.LlamaCppRuntime>(),
 #endif
 #if ONNX_RUNTIME
                         new Features.Decisions.Laya.LayaRuntime(),
@@ -173,11 +205,12 @@ public static class RamblProgram
                 // The language models have their own catalog and folder.
                 var logger = services.GetRequiredService<ILogger<ModelCatalogProvider>>();
                 return new ModelLibrary(
-                    new ModelCatalogProvider(logger, "language-models.json"),
+                    new ModelCatalogProvider(logger, "language-models.json", services.GetRequiredKeyedService<ModelCatalogProvider>(ModelLibraryKeys.Shared)),
                     new ModelStore(Path.Combine(AppDirectory(), "language-models"), services.GetRequiredService<ILogger<ModelStore>>()),
                     services.GetRequiredService<ModelDownloader>(),
                     services.GetRequiredKeyedService<ModelRuntimeRegistry>(ModelLibraryKeys.Language),
-                    services.GetRequiredService<ILogger<ModelLibrary>>()
+                    services.GetRequiredService<ILogger<ModelLibrary>>(),
+                    services.GetRequiredKeyedService<ModelLibrary>(ModelLibraryKeys.Shared)
                 );
             }
         );
@@ -203,6 +236,9 @@ public static class RamblProgram
                             services.GetRequiredService<ILogger<Features.Tts.AudioCpp.AudioCppRuntime>>()
                         ),
 #endif
+#if LLAMA_CPP
+                        services.GetRequiredService<Features.Inference.LlamaCpp.LlamaCppRuntime>(),
+#endif
                     ]
                 )
         );
@@ -210,11 +246,12 @@ public static class RamblProgram
             ModelLibraryKeys.Tts,
             static (services, _) =>
                 new ModelLibrary(
-                    new ModelCatalogProvider(services.GetRequiredService<ILogger<ModelCatalogProvider>>(), "tts-models.json"),
+                    new ModelCatalogProvider(services.GetRequiredService<ILogger<ModelCatalogProvider>>(), "tts-models.json", services.GetRequiredKeyedService<ModelCatalogProvider>(ModelLibraryKeys.Shared)),
                     new ModelStore(Path.Combine(AppDirectory(), "tts-models"), services.GetRequiredService<ILogger<ModelStore>>()),
                     services.GetRequiredService<ModelDownloader>(),
                     services.GetRequiredKeyedService<ModelRuntimeRegistry>(ModelLibraryKeys.Tts),
-                    services.GetRequiredService<ILogger<ModelLibrary>>()
+                    services.GetRequiredService<ILogger<ModelLibrary>>(),
+                    services.GetRequiredKeyedService<ModelLibrary>(ModelLibraryKeys.Shared)
                 )
         );
         builder.Services.AddSingleton(static services =>

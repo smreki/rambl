@@ -31,7 +31,7 @@ namespace Rambl.Features.Dictation;
 /// </para>
 /// <para>
 /// Every shortcut means dictate, then run the processes that share it, in order (see <see cref="PostProcessChain"/>). After
-/// the key is released the card stays up in its processing look until the chain is done; Skip and the cancel shortcut then
+/// the key is released the card shows transcription until the speech model finishes, then processing until the chain is done; Skip and the cancel shortcut then
 /// stop it and insert the original text, as does a process that fails. A new dictation cannot start meanwhile.
 /// </para>
 /// <para>
@@ -64,6 +64,7 @@ public sealed class DictationCoordinator : IDisposable
     private int session;
     private int cardVersion;
     private volatile SpeechTranscriber? transcriber;
+    private SpeechTranscriber? finalizing;
     private volatile RecordingSession? recording;
     private IReadOnlyList<PostProcess> sessionProcesses = [];
     private CommandSet? sessionSet;
@@ -144,7 +145,7 @@ public sealed class DictationCoordinator : IDisposable
     /// <summary>Gets whether a dictation is being recorded.</summary>
     public bool IsActive => active;
 
-    /// <summary>Gets whether post-processing is running after a dictation.</summary>
+    /// <summary>Gets whether transcription, post-processing or result insertion is running after recording.</summary>
     public bool IsProcessing => processing;
 
     /// <summary>Reacts to a shortcut the hook matched. Call it on the UI thread.</summary>
@@ -192,6 +193,7 @@ public sealed class DictationCoordinator : IDisposable
         StopMicrophone();
         transcriber?.Cancel();
         transcriber = null;
+        finalizing?.Cancel();
         recording?.Discard();
         recording = null;
         skip?.Cancel();
@@ -264,13 +266,19 @@ public sealed class DictationCoordinator : IDisposable
     {
         if (active)
             Stop(cancelled: true);
+        else if (finalizing is not null)
+            SkipProcessing();
         else if (!processing)
             surface.Hide();
     }
 
     private void OnSkipRequested(object? sender, EventArgs e) => SkipProcessing();
 
-    private void SkipProcessing() => skip?.Cancel();
+    private void SkipProcessing()
+    {
+        finalizing?.Cancel();
+        skip?.Cancel();
+    }
 
     private void Start(Shortcut binding)
     {
@@ -320,17 +328,19 @@ public sealed class DictationCoordinator : IDisposable
             finishingRecording?.Complete();
         }
 
-        // With processes or a command set to run, the card stays up and turns into the processing card; Esc and Skip then skip them.
+        // Every model may still be transcribing after release. Keep one owner of the card until insertion completes,
+        // including plain dictation with no post-processing. Cancel during this stage keeps the completed recording.
         var processes = cancelled || finishing is null ? [] : sessionProcesses;
         var set = cancelled || finishing is null ? null : sessionSet;
         sessionProcesses = [];
         sessionSet = null;
-        if (processes.Count > 0 || set is not null)
+        if (!cancelled && finishing is not null)
         {
             skip = new CancellationTokenSource();
             processing = true;
+            finalizing = finishing;
             Tracker.CancelEnabled = true;
-            surface.ShowProcessing(null);
+            surface.ShowTranscribing();
             StartObserving(finishing, finishingRecording, processes, set, skip);
         }
         else
@@ -357,7 +367,7 @@ public sealed class DictationCoordinator : IDisposable
     }
 
     // The task that follows a dictation to its end starts when the key is released, with the transcriber and the
-    // recording of that dictation, because a new dictation may begin before this one has finished.
+    // recording of that dictation. Its card remains owned until the result has been inserted.
     private void StartObserving(
         SpeechTranscriber? source,
         RecordingSession? recorded,
@@ -422,17 +432,29 @@ public sealed class DictationCoordinator : IDisposable
                 logger.LogError(ex, "The recording of the dictation could not be saved");
             }
 
+            if (ReferenceEquals(finalizing, source))
+                finalizing = null;
+
+            if (disposed || skipSource?.IsCancellationRequested == true)
+                return;
+
+            if (error is not null && skipSource is not null)
+            {
+                surface.ShowFailure("Transcription failed", error);
+                cardHold = FailureCardDuration;
+            }
+
             if (string.IsNullOrEmpty(text))
                 return;
 
             string? insert = text;
-            if (skipSource is not null)
+            if (skipSource is not null && (processes.Count > 0 || set is not null))
             {
                 var total = processes.Count + (set is null ? 0 : 1);
                 var result = text;
                 if (processes.Count > 0 && chain is not null)
                 {
-                    outcome = await RunChainAsync(text, processes, total, skipSource.Token);
+                    outcome = await RunChainAsync(text, processes, total, skipSource);
                     result = outcome.Text;
                 }
 
@@ -441,7 +463,7 @@ public sealed class DictationCoordinator : IDisposable
                 var insertsOnMiss = set is null || set.WhenNothingMatches == NoMatchAction.InsertText;
                 if (set is not null && runner is not null && (outcome is null || outcome.Succeeded))
                 {
-                    var command = await runner.RunAsync(set, result, new Progress<ChainProgress>(surface.ShowProcessing), processes.Count + 1, total, skipSource.Token);
+                    var command = await runner.RunAsync(set, result, new Progress<ChainProgress>(step => ReportProcessing(skipSource, step)), processes.Count + 1, total, skipSource.Token);
                     outcome = WithCommand(outcome, command, result);
                     insert = command.InsertsText ? result : null;
                     cardHold = ShowCommandOutcome(command, result);
@@ -478,24 +500,34 @@ public sealed class DictationCoordinator : IDisposable
         {
             source?.Dispose();
             recorded?.Dispose();
+            if (ReferenceEquals(finalizing, source))
+                finalizing = null;
             if (skipSource is not null)
                 await EndProcessingAsync(cardHold, skipSource);
         }
     }
 
     // Progress reports come back to the UI thread, where this runs; the step count includes a command set that runs after.
-    private async Task<ChainResult> RunChainAsync(string text, IReadOnlyList<PostProcess> processes, int total, CancellationToken token)
+    private async Task<ChainResult> RunChainAsync(string text, IReadOnlyList<PostProcess> processes, int total, CancellationTokenSource skipSource)
     {
         try
         {
-            var progress = new Progress<ChainProgress>(step => surface.ShowProcessing(step with { Total = Math.Max(step.Total, total) }));
-            return await chain!.RunAsync(text, processes, progress, null, token);
+            var progress = new Progress<ChainProgress>(step => ReportProcessing(skipSource, step with { Total = Math.Max(step.Total, total) }));
+            return await chain!.RunAsync(text, processes, progress, null, skipSource.Token);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Post-processing failed unexpectedly");
             return new(text, null, [.. processes.Select(process => process.Id)], null, "Something went wrong.", Skipped: false);
         }
+    }
+
+    // Progress<T> posts asynchronously. A fast step can finish before its progress callback reaches the dispatcher;
+    // that late callback must not change a finished card or the next dictation's card.
+    private void ReportProcessing(CancellationTokenSource owner, ChainProgress progress)
+    {
+        if (!disposed && processing && ReferenceEquals(skip, owner))
+            surface.ShowProcessing(progress);
     }
 
     private void ShowFailure(ChainResult outcome, bool inserted)

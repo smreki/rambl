@@ -1,7 +1,7 @@
 namespace Rambl.Features.Stt.ParakeetCpp;
 
 /// <summary>A dictation going through a parakeet.cpp model that transcribes whole recordings: audio is kept until it ends.</summary>
-internal sealed class ParakeetOfflineSession(nint context, string? language, ISpeechDetector? detector) : ISpeechSession
+internal sealed class ParakeetOfflineSession(nint context, string? language, ISpeechDetector? detector) : ICancellableSpeechSession
 {
     // The transducer models are trained on short recordings, so a long dictation is cut at quiet places.
     private const double MaxSegmentSeconds = 30;
@@ -18,8 +18,11 @@ internal sealed class ParakeetOfflineSession(nint context, string? language, ISp
 
     public void AcceptAudio(int sampleRate, ReadOnlySpan<float> block) => Keep(input.Convert(sampleRate, block));
 
-    public string Finish()
+    public string Finish() => Finish(CancellationToken.None);
+
+    public string Finish(CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         Keep(input.Flush());
 
         // Less than a tenth of a second is a stray key press, not speech.
@@ -30,6 +33,7 @@ internal sealed class ParakeetOfflineSession(nint context, string? language, ISp
         var parts = new List<string>();
         foreach (var range in SpeechPieces.Plan(all, SpeechInput.ModelRate, detector, skipSilence: detector is not null, MaxSegmentSeconds, SearchSeconds))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var piece = all[range];
             var transcript = ParakeetNative.Take(
                 ParakeetNative.TranscribePcm(
@@ -42,8 +46,11 @@ internal sealed class ParakeetOfflineSession(nint context, string? language, ISp
                 )
             ) ?? throw new InvalidOperationException(ParakeetRecognizer.LastError(context));
             parts.Add(transcript);
+            // The native call cannot be interrupted; stop before starting another segment or returning its text.
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
         return ParakeetText.Clean(string.Join(' ', parts));
     }
 
