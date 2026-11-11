@@ -73,6 +73,13 @@ internal sealed class TrayIconController : IDisposable
             action();
     });
 
+    /// <summary>Hides the main window only when its tray icon can restore it.</summary>
+    public void HideWindow()
+    {
+        if (!disposed && trayIcon.IsCreated)
+            window.AppWindow.Hide();
+    }
+
     private void OnWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
     {
         if (!disposed && trayIcon.IsCreated && sender.IsVisible &&

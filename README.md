@@ -98,6 +98,8 @@ Use `-r maccatalyst-x64` on an Intel Mac, and leave out `-t:Run` to build withou
 
 ### First dictation
 
+Windows startup options are in **Appearance → Startup**. **Start with Windows** opens Rambl when you sign in; **Start minimized** keeps the main window in the system tray on manual and automatic launches. Both are off by default and save immediately. Click the tray icon to reopen the window.
+
 1. Open **STT Models → Browse** and download a speech model. The first one you download becomes active.
 2. Check your microphone in **Audio**.
 3. Click into any text field, hold `Ctrl+Space`, speak and let go.

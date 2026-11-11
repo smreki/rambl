@@ -1,24 +1,32 @@
 using Microsoft.Extensions.Logging;
 using Rambl.Components;
 using Rambl.Features.Settings;
+using Rambl.Features.Dialogs;
 
 namespace Rambl.Views;
 
-/// <summary>Appearance settings: the color theme and where the dictation window appears.</summary>
+/// <summary>Appearance settings: the color theme, dictation window position and Windows startup behavior.</summary>
 public partial class Appearance : ContentView
 {
     private bool syncingSelection = true;
     private int pendingPositionSaves;
     private readonly ILogger<Appearance> logger;
+    private readonly IConfirmService confirm;
 
     /// <summary>Creates the appearance screen and restores the selected preferences.</summary>
     /// <param name="logger">The logger for settings and alert failures.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="logger"/> is null.</exception>
-    public Appearance(ILogger<Appearance> logger)
+    /// <param name="startup">The platform's startup support.</param>
+    /// <param name="confirm">The service for settings error dialogs.</param>
+    /// <exception cref="ArgumentNullException">A required dependency is null.</exception>
+    public Appearance(ILogger<Appearance> logger, IStartupRegistration startup, IConfirmService confirm)
     {
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(startup);
+        ArgumentNullException.ThrowIfNull(confirm);
         this.logger = logger;
+        this.confirm = confirm;
         InitializeComponent();
+        StartupSettings.IsVisible = StartupDivider.IsVisible = startup.IsSupported;
         SyncSelection();
     }
 
@@ -39,7 +47,41 @@ public partial class Appearance : ContentView
         var position = CurrentApp.Settings.DictationPosition.ToString();
         foreach (var choice in PositionGrid.Children.OfType<PositionChoice>())
             choice.IsChecked = choice.Value?.ToString() == position;
+        StartWithWindowsToggle.IsToggled = CurrentApp.Settings.StartWithWindows;
+        StartMinimizedToggle.IsToggled = CurrentApp.Settings.StartMinimized;
         syncingSelection = false;
+    }
+
+    private async void OnStartWithWindowsToggled(object? sender, ToggledEventArgs e)
+    {
+        if (!syncingSelection)
+            await SaveStartupAsync(settings => settings with { StartWithWindows = e.Value });
+    }
+
+    private async void OnStartMinimizedToggled(object? sender, ToggledEventArgs e)
+    {
+        if (!syncingSelection)
+            await SaveStartupAsync(settings => settings with { StartMinimized = e.Value });
+    }
+
+    private async Task SaveStartupAsync(Func<AppSettings, AppSettings> update)
+    {
+        StartupSettings.IsEnabled = false;
+        try
+        {
+            await CurrentApp.UpdateSettingsAsync(update);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unable to save startup settings");
+            await ShowAlertAsync("Unable to save startup settings",
+                "Check that config.toml is valid and writable and Windows allows startup changes, then try again.");
+        }
+        finally
+        {
+            SyncSelection();
+            StartupSettings.IsEnabled = true;
+        }
     }
 
     private async void OnThemeCheckedChanged(object? sender, CheckedChangedEventArgs e)
@@ -97,18 +139,14 @@ public partial class Appearance : ContentView
         }
     }
 
-    private async Task ShowAlertAsync(string title)
+    private async Task ShowAlertAsync(string title, string message = "Check that config.toml is valid and writable, then try again.")
     {
-        if (Window?.Page is not { } page)
+        if (Window?.Page is null)
             return;
 
         try
         {
-            await page.DisplayAlertAsync(
-                title,
-                "Check that config.toml is valid and writable, then try again.",
-                "OK"
-            );
+            await confirm.ConfirmAsync(new(title, message, new("OK"), CancelText: "Close"));
         }
         catch (Exception alertError)
         {

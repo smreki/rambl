@@ -8,6 +8,13 @@ public sealed record AppSettings
     /// <summary>Gets the preferred theme, or unspecified to follow the system.</summary>
     public AppTheme Theme { get; init; } = AppTheme.Unspecified;
 
+    /// <summary>Gets whether Rambl opens automatically when the user signs in to Windows.</summary>
+    public bool StartWithWindows { get; init; }
+
+    /// <summary>Gets whether Windows launches keep the main window hidden in the system tray.</summary>
+    /// <remarks>Applies to manual and automatic launches independently of <see cref="StartWithWindows"/>.</remarks>
+    public bool StartMinimized { get; init; }
+
     /// <summary>Gets where the dictation window appears on the screen.</summary>
     public DictationPosition DictationPosition { get; init; } = DictationPosition.TopCenter;
 

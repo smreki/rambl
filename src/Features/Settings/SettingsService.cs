@@ -149,6 +149,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
     {
         var defaults = new AppSettings();
         var appearance = FindTable(document, "appearance");
+        var startup = FindTable(document, "startup");
         var controls = FindTable(document, "controls");
         var audio = FindTable(document, "audio");
         var models = FindTable(document, "models");
@@ -158,6 +159,8 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
 
         return new()
         {
+            StartWithWindows = ReadBool(startup, "startup", "start_with_windows") ?? defaults.StartWithWindows,
+            StartMinimized = ReadBool(startup, "startup", "start_minimized") ?? defaults.StartMinimized,
             CloseReaderWhenFinished = ReadBool(readAloud, "read_aloud", "close_when_finished") ?? defaults.CloseReaderWhenFinished,
             HistoryEnabled = ReadBool(history, "history", "enabled") ?? defaults.HistoryEnabled,
             HistoryRetentionDays = ReadInt(history, "history", "retention_days") is >= 0 and var days
@@ -219,6 +222,10 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
 
     private static void WriteSettings(TomlTable document, AppSettings settings)
     {
+        var startup = GetOrAddTable(document, "startup");
+        startup["start_with_windows"] = settings.StartWithWindows;
+        startup["start_minimized"] = settings.StartMinimized;
+
         var appearance = GetOrAddTable(document, "appearance");
         appearance["theme"] = settings.Theme switch
         {

@@ -9,7 +9,7 @@
             <VerticalStackLayout Spacing="4">
                 <Label Style="{StaticResource PageTitle}" Text="Appearance"
                        SemanticProperties.HeadingLevel="Level1" />
-                <Label Style="{StaticResource PageSubtitle}" Text="Make Rambl feel at home on your desktop." />
+                <Label Style="{StaticResource PageSubtitle}" Text="Choose how Rambl looks and starts on your desktop." />
             </VerticalStackLayout>
             <VerticalStackLayout x:Name="Column" Spacing="28" HorizontalOptions="Start">
                 <VerticalStackLayout x:Name="ThemeSettings" Spacing="16">
@@ -73,6 +73,34 @@
                                                    MarkerHorizontal="End" MarkerVertical="End"
                                                    AutomationId="PositionBottomRight"
                                                    CheckedChanged="OnPositionCheckedChanged" />
+                    </Grid>
+                </VerticalStackLayout>
+                <BoxView x:Name="StartupDivider" Style="{StaticResource Divider}" HeightRequest="1" />
+
+                <VerticalStackLayout x:Name="StartupSettings" Spacing="20">
+                    <Label Text="Startup" FontFamily="InterSemiBold" FontSize="15"
+                           SemanticProperties.HeadingLevel="Level2" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Start with Windows" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="Open Rambl automatically when you sign in to Windows." />
+                        </VerticalStackLayout>
+                        <Switch x:Name="StartWithWindowsToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                AutomationId="StartWithWindows"
+                                SemanticProperties.Description="Start with Windows"
+                                Toggled="OnStartWithWindowsToggled" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Start minimized" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}"
+                                   Text="Keep the main window hidden in the system tray when Rambl starts." />
+                        </VerticalStackLayout>
+                        <Switch x:Name="StartMinimizedToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                                AutomationId="StartMinimized"
+                                SemanticProperties.Description="Start minimized"
+                                Toggled="OnStartMinimizedToggled" />
                     </Grid>
                 </VerticalStackLayout>
             </VerticalStackLayout>

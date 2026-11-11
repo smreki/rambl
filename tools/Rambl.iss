@@ -42,6 +42,16 @@ Name: "{autodesktop}\Rambl"; Filename: "{app}\Rambl.exe"; Tasks: desktopicon
 Filename: "{app}\Rambl.exe"; Description: "Launch Rambl"; Flags: nowait postinstall skipifsilent
 
 [Code]
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  Command: String;
+begin
+  if (CurUninstallStep = usUninstall) and
+    RegQueryStringValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'Rambl', Command) and
+    (CompareText(Command, '"' + ExpandConstant('{app}\Rambl.exe') + '"') = 0) then
+    RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'Rambl');
+end;
+
 function HasVCRuntime: Boolean;
 var
   Installed: Cardinal;

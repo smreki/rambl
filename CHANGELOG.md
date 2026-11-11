@@ -8,6 +8,7 @@ An offline Windows installer, shared local speech and language inference with LF
 
 ### Added
 
+- Windows startup preferences in Appearance: launch at sign-in and start minimized in the system tray, independently configurable and off by default.
 - A self-contained, per-user Windows installer (`Rambl-Setup.exe`) with bundled native runtimes and the Microsoft-signed x64 Visual C++ Redistributable. Installation and first launch need no runtime downloads; upgrades keep settings, models and recordings. Only installation of a missing Visual C++ prerequisite needs administrator permission.
 - Automatic installer builds and uploads for published GitHub Releases, accepting version tags with or without a `v` prefix. Build the installer locally with `rambl.ps1 setup`.
 - LFM3 Omni 2B for transcription, text post-processing and read aloud, with Female and Male voices and pitch-preserving speed control. One shared download and one loaded model serve all three tasks; download, cancellation and deletion stay in sync across the model screens. The model unloads after five minutes without use, and deletion waits for active inference before unloading and removing its files.

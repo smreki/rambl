@@ -76133,7 +76133,7 @@
           "y": 196,
           "name": "Section Description",
           "fill": "$text-secondary",
-          "content": "Appearance, Audio and Controls, including a shared shortcut.",
+          "content": "Appearance and startup, audio, and dictation controls, including a shared shortcut.",
           "fontFamily": "Inter",
           "fontSize": 28,
           "fontWeight": "normal"
@@ -76921,7 +76921,7 @@
                               "id": "nECC4",
                               "name": "Page Subtitle",
                               "fill": "$text-secondary",
-                              "content": "Make Rambl feel at home on your desktop.",
+                              "content": "Choose how Rambl looks and starts on your desktop.",
                               "fontFamily": "Inter",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -77274,6 +77274,165 @@
                                               "content": "Bottom right"
                                             }
                                           }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "lqPTG",
+                              "name": "Startup Section Divider",
+                              "fill": "$border",
+                              "width": 640,
+                              "height": 1
+                            },
+                            {
+                              "type": "frame",
+                              "id": "uDaLA",
+                              "name": "Startup Settings",
+                              "context": "Windows-only startup preferences. Both switches are independent and default off. Persist changes immediately. Start minimized applies to automatic and manual launches. When enabled, keep the main window hidden and show the system tray icon; opening Rambl from the tray restores the window.",
+                              "width": 640,
+                              "layout": "vertical",
+                              "gap": 20,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "A3tJI9",
+                                  "name": "Startup Title",
+                                  "fill": "$text-primary",
+                                  "content": "Startup",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 15,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "CVo5b",
+                                  "name": "Start with Windows Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "Iffsi",
+                                      "name": "Start with Windows Description",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "H2KZu3",
+                                          "name": "Start with Windows Label",
+                                          "fill": "$text-primary",
+                                          "content": "Start with Windows",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "eiUlJ",
+                                          "name": "Start with Windows Help",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Open Rambl automatically when you sign in to Windows.",
+                                          "lineHeight": 1.5,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "w6UNC",
+                                      "name": "Start with Windows Toggle — Off",
+                                      "context": "Start with Windows. Windows only. Default off. Saves immediately. This setting controls launch at user sign-in. Accessible label: Start with Windows. Enter or Space toggles the switch. On state: accent track and thumb aligned right. Off state: placeholder-stroke track and thumb aligned left.",
+                                      "width": 36,
+                                      "height": 20,
+                                      "fill": "$placeholder-stroke",
+                                      "cornerRadius": 10,
+                                      "padding": 2,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "LsTJ1",
+                                          "name": "Start with Windows Toggle Thumb",
+                                          "fill": "$content-bg",
+                                          "width": 16,
+                                          "height": 16
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "njChe",
+                                  "name": "Start minimized Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "h2x97",
+                                      "name": "Start minimized Description",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "RQrdU",
+                                          "name": "Start minimized Label",
+                                          "fill": "$text-primary",
+                                          "content": "Start minimized",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "VOZaW",
+                                          "name": "Start minimized Help",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Keep the main window hidden in the system tray when Rambl starts.",
+                                          "lineHeight": 1.5,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "ZPi9l",
+                                      "name": "Start minimized Toggle — Off",
+                                      "context": "Start minimized. Windows only. Default off. Saves immediately. Applies to every launch, independently of Start with Windows. Restore the window from the system tray. Accessible label: Start minimized. Enter or Space toggles the switch. On state: accent track and thumb aligned right. Off state: placeholder-stroke track and thumb aligned left.",
+                                      "width": 36,
+                                      "height": 20,
+                                      "fill": "$placeholder-stroke",
+                                      "cornerRadius": 10,
+                                      "padding": 2,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "ZXErC",
+                                          "name": "Start minimized Toggle Thumb",
+                                          "fill": "$content-bg",
+                                          "width": 16,
+                                          "height": 16
                                         }
                                       ]
                                     }
@@ -78220,7 +78379,7 @@
                               "id": "Ms8Hi",
                               "name": "Page Subtitle",
                               "fill": "$text-secondary",
-                              "content": "Make Rambl feel at home on your desktop.",
+                              "content": "Choose how Rambl looks and starts on your desktop.",
                               "fontFamily": "Inter",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -78573,6 +78732,165 @@
                                               "content": "Bottom right"
                                             }
                                           }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "k17yzl",
+                              "name": "Startup Section Divider",
+                              "fill": "$border",
+                              "width": 640,
+                              "height": 1
+                            },
+                            {
+                              "type": "frame",
+                              "id": "fxKbn",
+                              "name": "Startup Settings",
+                              "context": "Windows-only startup preferences. Both switches are independent and default off. Persist changes immediately. Start minimized applies to automatic and manual launches. When enabled, keep the main window hidden and show the system tray icon; opening Rambl from the tray restores the window.",
+                              "width": 640,
+                              "layout": "vertical",
+                              "gap": 20,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "g42yG",
+                                  "name": "Startup Title",
+                                  "fill": "$text-primary",
+                                  "content": "Startup",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 15,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "I7ilHR",
+                                  "name": "Start with Windows Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "M557v",
+                                      "name": "Start with Windows Description",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "M4aDY6",
+                                          "name": "Start with Windows Label",
+                                          "fill": "$text-primary",
+                                          "content": "Start with Windows",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "NKQHC",
+                                          "name": "Start with Windows Help",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Open Rambl automatically when you sign in to Windows.",
+                                          "lineHeight": 1.5,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "wQkoR",
+                                      "name": "Start with Windows Toggle — Off",
+                                      "context": "Start with Windows. Windows only. Default off. Saves immediately. This setting controls launch at user sign-in. Accessible label: Start with Windows. Enter or Space toggles the switch. On state: accent track and thumb aligned right. Off state: placeholder-stroke track and thumb aligned left.",
+                                      "width": 36,
+                                      "height": 20,
+                                      "fill": "$placeholder-stroke",
+                                      "cornerRadius": 10,
+                                      "padding": 2,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "QI3wx",
+                                          "name": "Start with Windows Toggle Thumb",
+                                          "fill": "$content-bg",
+                                          "width": 16,
+                                          "height": 16
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "R3CmQf",
+                                  "name": "Start minimized Row",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "R8LYm",
+                                      "name": "Start minimized Description",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "TZk4c",
+                                          "name": "Start minimized Label",
+                                          "fill": "$text-primary",
+                                          "content": "Start minimized",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "rtvna",
+                                          "name": "Start minimized Help",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Keep the main window hidden in the system tray when Rambl starts.",
+                                          "lineHeight": 1.5,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "QlLeS",
+                                      "name": "Start minimized Toggle — Off",
+                                      "context": "Start minimized. Windows only. Default off. Saves immediately. Applies to every launch, independently of Start with Windows. Restore the window from the system tray. Accessible label: Start minimized. Enter or Space toggles the switch. On state: accent track and thumb aligned right. Off state: placeholder-stroke track and thumb aligned left.",
+                                      "width": 36,
+                                      "height": 20,
+                                      "fill": "$placeholder-stroke",
+                                      "cornerRadius": 10,
+                                      "padding": 2,
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "anQKF",
+                                          "name": "Start minimized Toggle Thumb",
+                                          "fill": "$content-bg",
+                                          "width": 16,
+                                          "height": 16
                                         }
                                       ]
                                     }

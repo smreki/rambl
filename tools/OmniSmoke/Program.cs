@@ -35,6 +35,11 @@ internal static class Program
         }
         new SmokeContext().Run(async () =>
         {
+            if (args.Contains("--settings-only"))
+            {
+                await SettingsChecks.RunAsync(root);
+                return;
+            }
             if (args.Contains("--dictation-only"))
             {
                 await DictationChecks.RunAsync(root);

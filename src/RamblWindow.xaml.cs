@@ -27,6 +27,21 @@ public partial class RamblWindow : Window
 #endif
     }
 
+    /// <summary>Applies the initial tray preference after settings and the native window are ready.</summary>
+    /// <param name="startMinimized">Whether to keep the main window in the system tray.</param>
+    /// <remarks>Runs once at launch; changing this preference does not hide an open settings screen.</remarks>
+    internal void CompleteStartup(bool startMinimized)
+    {
+#if WINDOWS
+        if (startMinimized)
+        {
+            // MAUI activates the native window after creating its handler. Hide it after that activation,
+            // and only when a working tray icon gives the user a way to restore it.
+            Dispatcher.Dispatch(() => trayController?.HideWindow());
+        }
+#endif
+    }
+
 #if WINDOWS
     private Platforms.Windows.Tray.TrayIconController? trayController;
     private Platforms.Windows.Dictation.DictationController? dictationController;

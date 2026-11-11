@@ -156,6 +156,7 @@ public static class RamblProgram
         builder.Services.AddSingleton<IDictationRecorder>(static services => services.GetRequiredService<RecordingHistory>());
 #if WINDOWS
         builder.Services.AddSingleton<IAudioService, Platforms.Windows.Audio.WindowsAudioService>();
+        builder.Services.AddSingleton<IStartupRegistration, Platforms.Windows.Startup.WindowsStartupRegistration>();
         builder.Services.AddSingleton<IFolderService, Platforms.Windows.Storage.WindowsFolderService>();
         builder.Services.AddSingleton<IConfirmService, Platforms.Windows.Dialogs.WindowsConfirmService>();
         builder.Services.AddSingleton<ITextInserter>(static _ =>
@@ -165,6 +166,7 @@ public static class RamblProgram
         builder.Services.AddSingleton<ISelectionReader, Platforms.Windows.Input.WindowsSelectionReader>();
 #else
         builder.Services.AddSingleton<IAudioService, NullAudioService>();
+        builder.Services.AddSingleton<IStartupRegistration, NullStartupRegistration>();
         builder.Services.AddSingleton<IFolderService, NullFolderService>();
         builder.Services.AddSingleton<IConfirmService, AlertConfirmService>();
         builder.Services.AddSingleton<ITextInserter, NullTextInserter>();

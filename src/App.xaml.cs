@@ -10,21 +10,26 @@ public partial class App : Application, ISettingsSource
     private readonly IServiceProvider services;
     private readonly SettingsService settings;
     private readonly ILogger<App> logger;
+    private readonly IStartupRegistration startup;
+    private readonly SemaphoreSlim settingsGate = new(1, 1);
 
     /// <summary>Initializes a new instance of the <see cref="App"/> class.</summary>
     /// <param name="services">The application's service provider.</param>
     /// <param name="settings">The service that loads and saves user settings.</param>
     /// <param name="logger">The logger for configuration failures.</param>
+    /// <param name="startup">The platform's sign-in registration.</param>
     /// <exception cref="ArgumentNullException">A required dependency is null.</exception>
-    public App(IServiceProvider services, SettingsService settings, ILogger<App> logger)
+    public App(IServiceProvider services, SettingsService settings, ILogger<App> logger, IStartupRegistration startup)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(startup);
         InitializeComponent();
         this.services = services;
         this.settings = settings;
         this.logger = logger;
+        this.startup = startup;
     }
 
     /// <inheritdoc/>
@@ -43,9 +48,11 @@ public partial class App : Application, ISettingsSource
         if (sender is not Window window)
             return;
         window.Created -= OnWindowCreated;
+        var settingsLoaded = false;
         try
         {
             Apply(await settings.LoadAsync());
+            settingsLoaded = true;
         }
         catch (Exception ex)
         {
@@ -57,6 +64,19 @@ public partial class App : Application, ISettingsSource
             if (window.Page is { } page)
                 page.IsEnabled = true;
         }
+
+        try
+        {
+            if (settingsLoaded)
+                startup.SetEnabled(Settings.StartWithWindows);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unable to synchronize Windows startup registration");
+        }
+
+        if (window is RamblWindow mainWindow)
+            mainWindow.CompleteStartup(Settings.StartMinimized);
     }
 
     /// <summary>Applies and saves the appearance preference, including following the system.</summary>
@@ -78,9 +98,42 @@ public partial class App : Application, ISettingsSource
     /// <param name="update">Returns the new settings from the settings currently in the file.</param>
     /// <returns>A task that completes after the change is saved and applied.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="update"/> is null.</exception>
-    /// <remarks>Failures from <see cref="SettingsService.UpdateAsync"/> propagate and leave the current settings unchanged.</remarks>
-    public async Task UpdateSettingsAsync(Func<AppSettings, AppSettings> update) =>
-        Apply(await settings.UpdateAsync(update));
+    /// <remarks>
+    /// Store failures leave the current settings unchanged. If Windows rejects a startup change,
+    /// the saved startup preference is restored before the exception reaches the caller.
+    /// </remarks>
+    public async Task UpdateSettingsAsync(Func<AppSettings, AppSettings> update)
+    {
+        ArgumentNullException.ThrowIfNull(update);
+        await settingsGate.WaitAsync();
+        try
+        {
+            var previousStartup = Settings.StartWithWindows;
+            var saved = await settings.UpdateAsync(current =>
+            {
+                previousStartup = current.StartWithWindows;
+                return update(current);
+            });
+            if (saved.StartWithWindows != previousStartup)
+            {
+                try
+                {
+                    startup.SetEnabled(saved.StartWithWindows);
+                }
+                catch
+                {
+                    // Keep the preference and the switch unchanged if Windows rejects the registration.
+                    Apply(await settings.UpdateAsync(current => current with { StartWithWindows = previousStartup }));
+                    throw;
+                }
+            }
+            Apply(saved);
+        }
+        finally
+        {
+            settingsGate.Release();
+        }
+    }
 
     private void Apply(AppSettings applied)
     {

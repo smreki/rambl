@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.8" />
+    <PackageReference Include="Tomlyn" Version="2.10.2" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <Using Include="Microsoft.Maui.Storage" />
     <Using Include="Microsoft.Maui" />
@@ -26,6 +27,7 @@
     <Compile Include="../../src/Features/Dictation/DictationCoordinator.cs;../../src/Features/Dictation/IDictationSurface.cs;../../src/Features/Dictation/IUiDispatcher.cs;../../src/Features/Dictation/IResultExecutor.cs;../../src/Features/Dictation/ShortcutTracker.cs;../../src/Features/Dictation/ShortcutAction.cs;../../src/Features/Dictation/TrackResult.cs" />
     <Compile Include="../../src/Features/Stt/SpeechEngine.cs;../../src/Features/Stt/SpeechLease.cs;../../src/Features/Stt/SpeechTranscriber.cs" />
     <Compile Include="../../src/Features/Settings/AppSettings.cs;../../src/Features/Settings/ISettingsSource.cs;../../src/Features/Settings/ActivationMode.cs;../../src/Features/Settings/DictationPosition.cs" />
+    <Compile Include="../../src/Features/Settings/SettingsService.cs;../../src/Features/Settings/SettingsTomlContext.cs" />
     <Compile Include="../../src/Features/Audio/*.cs" />
     <Compile Include="../../src/Features/History/IDictationRecorder.cs;../../src/Features/History/RecordingSession.cs;../../src/Features/History/RecordingInfo.cs;../../src/Features/History/ReadingInfo.cs" />
     <Compile Include="../../src/Features/PostProcessing/*.cs" />
