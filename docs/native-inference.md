@@ -45,7 +45,7 @@ LFM3 Text remains a separate optional text checkpoint. d1-Omni is also a separat
 Build Windows first:
 
 ```powershell
-dotnet build src/Rambl.csproj -f net10.0-windows10.0.19041.0
+dotnet build src/Rambl.csproj -f net11.0-windows10.0.19041.0
 ```
 
 Run installation tests without downloading models:

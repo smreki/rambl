@@ -6,7 +6,7 @@ param(
     [Parameter(Position = 1)]
     [string]$Project = "src\Rambl.csproj",
 
-    [string]$Framework = "net10.0-windows10.0.19041.0",
+    [string]$Framework = "net11.0-windows10.0.19041.0",
 
     [string]$InnoSetupCompiler
 )

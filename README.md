@@ -2,7 +2,7 @@
 
 Local-first push-to-talk dictation for the desktop. Hold a shortcut, speak, let go, and the text is pasted into the app you are working in. Speech recognition and text rewriting run on your computer, so nothing you say leaves it.
 
-Built with C# and .NET 10 MAUI. Version 0.5.0, in development.
+Built with C# and .NET 11 MAUI. Version 0.5.0, in development.
 
 > **Note:** Rambl is an educational project, built to learn and experiment. If you are looking for a mature, feature-rich tool, try one of these open source projects instead:
 >
@@ -53,10 +53,12 @@ Windows 10 version 1809 or newer, x64. macOS 12 or newer, Apple Silicon or Intel
 
 Requirements:
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) and the MAUI Windows workload: `dotnet workload install maui-windows` (or Visual Studio 2026 with *.NET Multi-platform App UI development*)
+- [.NET 11 SDK](https://dotnet.microsoft.com/download/dotnet/11.0) and the MAUI Windows workload: `dotnet workload install maui-windows` (or Visual Studio 2026 with *.NET Multi-platform App UI development*)
 - Microsoft Visual C++ Redistributable (x64), needed at run time by the native speech libraries
 - Visual Studio's **Desktop development with C++** workload, including CMake, to build the native language runtime
 - Internet access for the first build, which downloads pinned releases of parakeet.cpp, transcribe.cpp, audio.cpp, the Kokoro eSpeak NG phonemizer and the Silero VAD model, plus llama.cpp source, into `.native/` and checks each against a pinned hash
+
+`global.json` selects SDK 11.0.100 (with patch roll-forward) and workload set 11.100.1; the app uses MAUI 11.0.0. Run workload installation commands from the repository root to use that workload set. If upgrading an existing checkout, run `dotnet workload install maui-windows` again to install the .NET 11 workload.
 
 The `rambl.ps1` helper wraps the usual commands:
 
@@ -71,7 +73,7 @@ The `rambl.ps1` helper wraps the usual commands:
 If script execution is blocked, use `powershell -ExecutionPolicy Bypass -File .\rambl.ps1 run`. Without the script:
 
 ```powershell
-dotnet run --project src\Rambl.csproj -f net10.0-windows10.0.19041.0
+dotnet run --project src\Rambl.csproj -f net11.0-windows10.0.19041.0
 ```
 
 In Visual Studio, open `Rambl.slnx`, select **Windows Machine** and press F5.
@@ -86,10 +88,10 @@ To inspect an **experimental** hybrid single-file publish, run `.\rambl.ps1 buil
 
 ### macOS
 
-Requirements: the .NET 10 SDK, an Xcode version supported by the installed MAUI workload (see [MAUI release versions](https://github.com/dotnet/maui/wiki/Release-Versions)), and `sudo dotnet workload install maui-maccatalyst`.
+Requirements: the .NET 11 SDK, an Xcode version supported by the installed MAUI workload (see [MAUI release versions](https://github.com/dotnet/maui/wiki/Release-Versions)), and `sudo dotnet workload install maui-maccatalyst`.
 
 ```sh
-dotnet build src/Rambl.csproj -t:Run -f net10.0-maccatalyst -r maccatalyst-arm64
+dotnet build src/Rambl.csproj -t:Run -f net11.0-maccatalyst -r maccatalyst-arm64
 ```
 
 Use `-r maccatalyst-x64` on an Intel Mac, and leave out `-t:Run` to build without launching.

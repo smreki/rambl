@@ -32,10 +32,10 @@ jobs:
             throw "Release tag $env:RELEASE_TAG does not match ApplicationDisplayVersion in src/Rambl.csproj."
           }
 
-      - name: Set up .NET 10
+      - name: Set up .NET SDK
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.0.x
+          global-json-file: global.json
 
       - name: Install MAUI Windows workload
         run: dotnet workload install maui-windows
