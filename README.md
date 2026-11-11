@@ -20,7 +20,7 @@ Built with C# and .NET 11 MAUI. Version 0.5.0, in development.
 4. **Voice command** (optional). A decision model picks one of your commands and Rambl presses its keys.
 5. **Result.** The text is pasted into the focused app.
 
-Each recording and transcript is saved before the later steps run, so a failed step never loses what you said.
+When History keeps a dictation, its recording and transcript are saved before the later steps run, so a failed step does not discard them.
 
 ## Features
 
@@ -31,7 +31,7 @@ Each recording and transcript is saved before the later steps run, so a failed s
 - **Read Aloud:** select text anywhere and press a profile's shortcut to hear it, optionally rewritten first (for example translated). A small panel follows along word by word; the reader window shows the whole text. A profile can keep its readings in the History.
 - **Post Processing:** processes with a shortcut, a language model, a time limit and a prompt. Processes on one shortcut run in the order you set. Skip one, or let it fail or time out, and your original text is inserted.
 - **Voice Commands:** command sets that press keys by voice, such as `Ctrl+A` or `Home → Shift+End → Delete`, with a Try it panel to test phrases.
-- **History:** every dictation is kept as a WAV file with its transcript, and so is every reading of a profile that saves to the History. Play, copy, retranscribe or delete recordings, and choose how long they are kept (30 days by default).
+- **History:** dictations longer than 10 seconds are kept as WAV files with their transcripts by default. In History settings, change **Save recordings longer than** or set it to 0 to disable the duration filter; Reset restores 10 seconds. This affects new dictations only: existing History stays, and shorter dictations still transcribe and insert normally. Profiles that save read-aloud recordings keep them independently. Play, copy, retranscribe or delete recordings, and choose how long they are kept (30 days by default).
 - **Audio:** pick the microphone and speaker, watch a live level meter, play start and stop sounds, mute other apps while dictating, and skip silence before transcribing (Silero VAD).
 - **Appearance:** light, dark or system theme, and where the dictation card appears.
 - **Tray:** on Windows, minimize to the tray to keep Rambl running.

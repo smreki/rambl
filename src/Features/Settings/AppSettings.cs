@@ -57,6 +57,12 @@ public sealed record AppSettings
     /// <summary>Gets whether each dictation's audio and transcript is kept in the History.</summary>
     public bool HistoryEnabled { get; init; } = true;
 
+    /// <summary>Gets the whole-second threshold new dictation recordings must exceed to be kept; 0 disables filtering.</summary>
+    public int HistoryMinimumDurationSeconds { get; init; } = DefaultHistoryMinimumDurationSeconds;
+
+    /// <summary>The default duration threshold for new dictation recordings, in seconds.</summary>
+    public const int DefaultHistoryMinimumDurationSeconds = 10;
+
     /// <summary>Gets how many days recordings are kept before they are deleted automatically; 0 keeps them forever.</summary>
     public int HistoryRetentionDays { get; init; } = DefaultHistoryRetentionDays;
 

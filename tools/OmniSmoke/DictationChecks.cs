@@ -17,7 +17,7 @@ internal static class DictationChecks
 {
     internal static async Task RunAsync(string root)
     {
-        foreach (var scenario in new[] { "plain", "toggle", "cancel-key", "cancel-card", "empty", "failure", "processing", "skip-processing", "instant-processing" })
+        foreach (var scenario in new[] { "plain", "toggle", "cancel-key", "cancel-card", "empty", "failure", "processing", "skip-processing", "instant-processing", "short-plain", "short-processing" })
             await CheckAsync(root, scenario);
         Console.WriteLine("ALL DICTATION CARD CHECKS PASSED");
     }
@@ -55,10 +55,11 @@ internal static class DictationChecks
         var audio = new TestAudio();
         var surface = new TestSurface();
         var executor = new TestExecutor { Immediate = scenario == "instant-processing" };
-        var recorder = new TestRecorder(scratch);
+        var shortRecording = scenario.StartsWith("short-", StringComparison.Ordinal);
+        var recorder = new TestRecorder(scratch, shortRecording ? TimeSpan.FromSeconds(10) : null);
         var generator = new ControlledLanguage { Immediate = scenario == "instant-processing" };
         var processes = new PostProcessLibrary(new(Path.Combine(scratch, "processes"), NullLogger<PostProcessStore>.Instance), NullLogger<PostProcessLibrary>.Instance);
-        if (scenario is "processing" or "skip-processing" or "instant-processing")
+        if (scenario is "processing" or "skip-processing" or "instant-processing" or "short-processing")
             await processes.SaveAsync(new("polish", "Polish", null, settings.Settings.DictationShortcut, "text", "Rewrite: {{original}}"));
         var chain = new PostProcessChain(processes, generator, generator, NullLogger<PostProcessChain>.Instance);
         using (var coordinator = new DictationCoordinator(settings, audio, speech, [executor], surface, new TestDispatcher(), NullLogger.Instance, recorder, processes, chain))
@@ -74,9 +75,9 @@ internal static class DictationChecks
             else if (scenario == "cancel-card") surface.Close();
             else runtime.Release.TrySetResult();
 
-            if (scenario is "plain" or "toggle" or "processing" or "skip-processing")
+            if (scenario is "plain" or "toggle" or "processing" or "skip-processing" or "short-plain" or "short-processing")
             {
-                if (scenario is "processing" or "skip-processing")
+                if (scenario is "processing" or "skip-processing" or "short-processing")
                 {
                     await generator.Started.Task.WaitAsync(TimeSpan.FromSeconds(10));
                     Require(surface.Mode == "processing", "Post-processing did not follow transcription.");
@@ -91,12 +92,15 @@ internal static class DictationChecks
             await Task.Yield();
             Require(!coordinator.IsProcessing, "Card ownership remained busy after completion.");
             Require(surface.Mode == "hidden", "Late progress changed the finished card.");
-            Require(recorder.Saved is not null && File.Exists(recorder.Saved.AudioPath), "Completed recording was lost.");
+            if (shortRecording)
+                Require(recorder.Saved is null && !File.Exists(Path.Combine(scratch, "test.wav")), "Short recording was kept in History.");
+            else
+                Require(recorder.Saved is not null && File.Exists(recorder.Saved.AudioPath), "Completed recording was lost.");
             if (scenario.StartsWith("cancel", StringComparison.Ordinal)) Require(executor.Text is null, "Cancelled transcription inserted text.");
             if (scenario == "failure") Require(surface.Failed, "Transcription failure was not shown.");
             if (scenario == "empty") Require(executor.Text is null, "Empty transcript reached insertion.");
-            if (scenario is "plain" or "toggle" or "skip-processing") Require(executor.Text == "hello meeting", "Original transcript was not inserted.");
-            if (scenario is "processing" or "instant-processing") Require(executor.Text == "Hello, meeting.", "Processed transcript was not inserted.");
+            if (scenario is "plain" or "toggle" or "skip-processing" or "short-plain") Require(executor.Text == "hello meeting", "Original transcript was not inserted.");
+            if (scenario is "processing" or "instant-processing" or "short-processing") Require(executor.Text == "Hello, meeting.", "Processed transcript was not inserted.");
         }
         Directory.Delete(scratch, recursive: true);
         Console.WriteLine("PASS dictation card: " + scenario);
@@ -181,10 +185,10 @@ internal static class DictationChecks
         }
     }
 
-    private sealed class TestRecorder(string directory) : IDictationRecorder
+    private sealed class TestRecorder(string directory, TimeSpan? saveLongerThan = null) : IDictationRecorder
     {
         public RecordingInfo? Saved { get; private set; }
-        public RecordingSession Begin() => new("test", DateTimeOffset.Now, Path.Combine(directory, "test.wav.part"), Path.Combine(directory, "test.wav"), 16000, static () => { });
+        public RecordingSession Begin() => new("test", DateTimeOffset.Now, Path.Combine(directory, "test.wav.part"), Path.Combine(directory, "test.wav"), 16000, static () => { }, saveLongerThan);
         public Task SaveAsync(RecordingInfo recording, string? transcript, string? error) { Saved = recording with { Transcript = transcript, Error = error }; return Task.CompletedTask; }
         public Task SaveProcessingAsync(string recordingId, ChainResult outcome) => Task.CompletedTask;
     }

@@ -12,7 +12,8 @@ namespace Rambl.Features.History;
 /// <remarks>
 /// <para>
 /// Dictations are kept while <see cref="AppSettings.HistoryEnabled"/> is on, in <see cref="AppSettings.RecordingsDirectory"/>
-/// or the default folder. Turning it off stops new recordings and keeps the existing ones. Readings are kept by the
+/// or the default folder, when their audio exceeds <see cref="AppSettings.HistoryMinimumDurationSeconds"/>.
+/// Turning it off stops new recordings and keeps the existing ones. Readings are kept by the
 /// read-aloud profiles that ask for it, whatever that setting is, in the same folder and for as long.
 /// </para>
 /// <para>
@@ -121,7 +122,8 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
 
         try
         {
-            return CurrentStore().Begin(DateTimeOffset.Now);
+            return CurrentStore().Begin(DateTimeOffset.Now,
+                saveLongerThan: TimeSpan.FromSeconds(settings.Settings.HistoryMinimumDurationSeconds));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {

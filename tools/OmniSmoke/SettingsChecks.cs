@@ -18,6 +18,7 @@ internal static class SettingsChecks
         {
             var defaults = await service.LoadAsync();
             Require(!defaults.StartWithWindows && !defaults.StartMinimized, "New installations must start with both preferences off.");
+            Require(defaults.HistoryMinimumDurationSeconds == 10, "New installations must default the history duration to 10 seconds.");
 
             await File.WriteAllTextAsync(path, """
                 [appearance]
@@ -29,6 +30,23 @@ internal static class SettingsChecks
                 """);
             var migrated = await service.LoadAsync();
             Require(!migrated.StartWithWindows && !migrated.StartMinimized, "Earlier configurations must default both preferences off.");
+            Require(migrated.HistoryMinimumDurationSeconds == 10, "Earlier configurations must use the 10-second duration default.");
+            await service.UpdateAsync(settings => settings with { HistoryMinimumDurationSeconds = 0 });
+            Require((await service.LoadAsync()).HistoryMinimumDurationSeconds == 0, "Zero must persist and disable duration filtering.");
+            await service.UpdateAsync(settings => settings with { HistoryMinimumDurationSeconds = 25 });
+            Require((await service.LoadAsync()).HistoryMinimumDurationSeconds == 25, "A custom history duration must survive reloading.");
+            var beforeInvalidDuration = await File.ReadAllTextAsync(path);
+            var invalidDurationRejected = false;
+            try
+            {
+                await service.UpdateAsync(settings => settings with { HistoryMinimumDurationSeconds = -1 });
+            }
+            catch (InvalidOperationException)
+            {
+                invalidDurationRejected = true;
+            }
+            Require(invalidDurationRejected && await File.ReadAllTextAsync(path) == beforeInvalidDuration,
+                "Negative duration updates must not overwrite settings.");
 
             await service.UpdateAsync(settings => settings with { StartMinimized = true });
             var minimized = await service.LoadAsync();
@@ -44,7 +62,7 @@ internal static class SettingsChecks
             Require(persisted.Contains("future_option = \"keep me\"", StringComparison.Ordinal)
                 && persisted.Contains("value = 42", StringComparison.Ordinal), "Saving must preserve unknown settings.");
 
-            foreach (var invalid in new[] { "[startup", "[startup]\nstart_with_windows = \"yes\"", "[startup]\nstart_minimized = 1" })
+            foreach (var invalid in new[] { "[startup", "[startup]\nstart_with_windows = \"yes\"", "[startup]\nstart_minimized = 1", "[history]\nminimum_duration_seconds = \"ten\"" })
             {
                 await File.WriteAllTextAsync(path, invalid);
                 var rejected = false;
@@ -61,6 +79,7 @@ internal static class SettingsChecks
             }
             Console.WriteLine("PASS startup defaults, migration, independent preferences, persistence and unknown-key preservation");
             Console.WriteLine("PASS invalid TOML and startup types are never overwritten");
+            Console.WriteLine("PASS history duration defaults, migration, custom/zero values and negative update rejection");
         }
         finally
         {

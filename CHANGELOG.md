@@ -8,6 +8,7 @@ An offline Windows installer, shared local speech and language inference with LF
 
 ### Added
 
+- A minimum recording duration in History settings, defaulting to 10 seconds. Shorter dictations still transcribe and insert normally, but their audio is not kept in History. Set the duration to 0 to disable filtering; existing recordings and read-aloud History are unaffected.
 - Windows startup preferences in Appearance: launch at sign-in and start minimized in the system tray, independently configurable and off by default.
 - A self-contained, per-user Windows installer (`Rambl-Setup.exe`) with bundled native runtimes and the Microsoft-signed x64 Visual C++ Redistributable. Installation and first launch need no runtime downloads; upgrades keep settings, models and recordings. Only installation of a missing Visual C++ prerequisite needs administrator permission.
 - Automatic installer builds and uploads for published GitHub Releases, accepting version tags with or without a `v` prefix. Build the installer locally with `rambl.ps1 setup`.

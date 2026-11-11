@@ -47,12 +47,16 @@ public sealed class RecordingStore
     /// <summary>Starts a recording.</summary>
     /// <param name="startedAt">When it starts, which names its files and month folder.</param>
     /// <param name="sampleRate">The sample rate the audio is saved at.</param>
+    /// <param name="saveLongerThan">An exclusive duration threshold, or null to keep the existing half-second minimum.</param>
     /// <returns>The session that receives the audio.</returns>
     /// <exception cref="IOException">The folder cannot be created.</exception>
     /// <exception cref="UnauthorizedAccessException">Access to the folder is denied.</exception>
-    public RecordingSession Begin(DateTimeOffset startedAt, int sampleRate = RecordingSession.SampleRate)
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sampleRate"/> is not positive or <paramref name="saveLongerThan"/> is negative.</exception>
+    public RecordingSession Begin(DateTimeOffset startedAt, int sampleRate = RecordingSession.SampleRate, TimeSpan? saveLongerThan = null)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(sampleRate);
+        if (saveLongerThan < TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(saveLongerThan));
         var local = startedAt.ToLocalTime();
         var id = $"{local.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}-{Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(3))}";
         var folder = Path.Combine(Root, local.ToString("yyyy-MM", CultureInfo.InvariantCulture));
@@ -67,7 +71,7 @@ public sealed class RecordingStore
         {
             lock (activeGate)
                 _ = activeParts.Remove(partPath);
-        });
+        }, saveLongerThan);
     }
 
     /// <summary>Lists every recording, newest first, after repairing what an interrupted run left behind.</summary>

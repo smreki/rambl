@@ -8,15 +8,15 @@ namespace Rambl.Features.History;
 /// <remarks>
 /// <see cref="Write"/> is safe to call from the capture thread: it only queues the audio, and a background task resamples
 /// and writes it. Call <see cref="Complete"/> to keep the recording or <see cref="Discard"/> to throw it away; either way
-/// <see cref="Outcome"/> then tells what became of it. A recording shorter than <see cref="MinimumDuration"/>, such as
-/// an accidental tap, is not kept.
+/// <see cref="Outcome"/> then tells what became of it. A configurable dictation threshold excludes recordings at or
+/// below that duration. Other callers use <see cref="MinimumDuration"/> to exclude accidental taps.
 /// </remarks>
 public sealed class RecordingSession : IDisposable
 {
     /// <summary>The sample rate dictations are saved at: what speech models work with, so a stored recording transcribes as it did live.</summary>
     public const int SampleRate = 16000;
 
-    /// <summary>The shortest recording that is kept.</summary>
+    /// <summary>The minimum used by callers that do not supply their own duration threshold.</summary>
     public static readonly TimeSpan MinimumDuration = TimeSpan.FromMilliseconds(500);
 
     private readonly Channel<Chunk> chunks = Channel.CreateUnbounded<Chunk>(new() { SingleReader = true });
@@ -25,14 +25,16 @@ public sealed class RecordingSession : IDisposable
     private readonly string audioPath;
     private readonly Action onEnded;
     private readonly int sampleRate;
+    private readonly TimeSpan? saveLongerThan;
 
-    internal RecordingSession(string id, DateTimeOffset createdAt, string partPath, string audioPath, int sampleRate, Action onEnded)
+    internal RecordingSession(string id, DateTimeOffset createdAt, string partPath, string audioPath, int sampleRate, Action onEnded, TimeSpan? saveLongerThan = null)
     {
         Id = id;
         CreatedAt = createdAt;
         this.partPath = partPath;
         this.audioPath = audioPath;
         this.sampleRate = sampleRate;
+        this.saveLongerThan = saveLongerThan;
         this.onEnded = onEnded;
         Outcome = Task.Run(RunAsync);
     }
@@ -109,7 +111,9 @@ public sealed class RecordingSession : IDisposable
             if (writer is not null && resampler is not null)
                 WriteFlushed(writer, resampler, converted);
 
-            if (writer is null || writer.SampleCount < MinimumDuration.TotalSeconds * sampleRate)
+            if (writer is null || (saveLongerThan is { } threshold
+                ? writer.SampleCount <= threshold.TotalSeconds * sampleRate
+                : writer.SampleCount < MinimumDuration.TotalSeconds * sampleRate))
             {
                 writer?.Dispose();
                 writer = null;

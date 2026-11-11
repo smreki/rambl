@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Rambl.Features.Audio;
 using Rambl.Features.Dialogs;
@@ -25,6 +26,9 @@ public partial class HistorySettings : ContentView
     private bool subscribed;
     private int count;
     private long size;
+    private int pendingDurationSaves;
+    private int durationRevision;
+    private int? requestedDuration;
 
     /// <summary>Creates the settings layer.</summary>
     /// <param name="history">Supplies the recordings and does the work on them.</param>
@@ -48,6 +52,9 @@ public partial class HistorySettings : ContentView
         this.confirmations = confirmations;
         this.logger = logger;
         InitializeComponent();
+#if WINDOWS
+        Platforms.Windows.Handlers.NativeEntry.MakeBorderless(MinimumDurationEntry, removePadding: true, centerVertically: true);
+#endif
     }
 
     /// <summary>Occurs when the user asks to go back to the list of recordings.</summary>
@@ -107,6 +114,14 @@ public partial class HistorySettings : ContentView
         try
         {
             SaveToggle.IsToggled = settings.HistoryEnabled;
+            if (pendingDurationSaves == 0 && !MinimumDurationEntry.IsFocused)
+            {
+                MinimumDurationEntry.Text = settings.HistoryMinimumDurationSeconds.ToString(CultureInfo.InvariantCulture);
+                SetMinimumDurationError(null);
+            }
+            MinimumDurationRow.IsEnabled = settings.HistoryEnabled;
+            MinimumDurationRow.Opacity = settings.HistoryEnabled ? 1 : 0.45;
+            UpdateMinimumDurationReset();
             RetentionSelect.SetItems(
                 RetentionLabels(settings.HistoryRetentionDays),
                 RetentionIndex(settings.HistoryRetentionDays)
@@ -166,6 +181,98 @@ public partial class HistorySettings : ContentView
     }
 
     // ---- changing settings
+
+    private void OnMinimumDurationTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (syncing)
+            return;
+        durationRevision++;
+        SetMinimumDurationError(null);
+        UpdateMinimumDurationReset();
+    }
+
+    private void OnMinimumDurationFocused(object? sender, FocusEventArgs e) => UpdateMinimumDurationBorder();
+
+    private async void OnMinimumDurationUnfocused(object? sender, FocusEventArgs e)
+    {
+        UpdateMinimumDurationBorder();
+        await SaveMinimumDurationAsync();
+    }
+
+    private async void OnMinimumDurationCompleted(object? sender, EventArgs e) => await SaveMinimumDurationAsync();
+
+    private async void OnResetMinimumDuration(object? sender, EventArgs e)
+    {
+        MinimumDurationEntry.Text = AppSettings.DefaultHistoryMinimumDurationSeconds.ToString(CultureInfo.InvariantCulture);
+        await SaveMinimumDurationAsync();
+    }
+
+    private async Task SaveMinimumDurationAsync()
+    {
+        if (syncing || !CurrentApp.Settings.HistoryEnabled)
+            return;
+        if (!int.TryParse(MinimumDurationEntry.Text?.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var seconds))
+        {
+            SetMinimumDurationError("Enter a valid whole number of seconds, 0 or greater.");
+            return;
+        }
+        if (pendingDurationSaves > 0 && requestedDuration == seconds)
+            return;
+        if (pendingDurationSaves == 0 && seconds == CurrentApp.Settings.HistoryMinimumDurationSeconds)
+        {
+            SyncMinimumDuration();
+            return;
+        }
+
+        var revision = durationRevision;
+        string? error = null;
+        requestedDuration = seconds;
+        pendingDurationSaves++;
+        try
+        {
+            await CurrentApp.UpdateSettingsAsync(settings => settings with { HistoryMinimumDurationSeconds = seconds });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unable to save the minimum recording duration");
+            error = "The value could not be saved. The previous setting was restored.";
+        }
+        finally
+        {
+            if (--pendingDurationSaves == 0 && revision == durationRevision)
+            {
+                SyncMinimumDuration();
+                SetMinimumDurationError(error);
+            }
+        }
+    }
+
+    private void SyncMinimumDuration()
+    {
+        syncing = true;
+        MinimumDurationEntry.Text = CurrentApp.Settings.HistoryMinimumDurationSeconds.ToString(CultureInfo.InvariantCulture);
+        syncing = false;
+        SetMinimumDurationError(null);
+        UpdateMinimumDurationReset();
+    }
+
+    private void UpdateMinimumDurationReset() => ResetMinimumDuration.IsEnabled = CurrentApp.Settings.HistoryEnabled
+        && MinimumDurationEntry.Text != AppSettings.DefaultHistoryMinimumDurationSeconds.ToString(CultureInfo.InvariantCulture);
+
+    private void SetMinimumDurationError(string? message)
+    {
+        MinimumDurationError.Text = message;
+        MinimumDurationError.IsVisible = message is not null;
+        UpdateMinimumDurationBorder();
+    }
+
+    private void UpdateMinimumDurationBorder()
+    {
+        var key = MinimumDurationError.IsVisible ? "Danger" : MinimumDurationEntry.IsFocused ? "Accent" : "Border";
+        var resources = Application.Current!.Resources;
+        MinimumDurationOutline.SetAppTheme<Brush>(Border.StrokeProperty,
+            new SolidColorBrush((Color)resources[key + "Light"]), new SolidColorBrush((Color)resources[key + "Dark"]));
+    }
 
     private async void OnSaveToggled(object? sender, ToggledEventArgs e)
     {

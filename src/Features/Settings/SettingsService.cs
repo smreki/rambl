@@ -55,7 +55,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
     /// <param name="update">Returns the new settings from the settings currently in the file.</param>
     /// <returns>The settings that were saved.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="update"/> is null.</exception>
-    /// <exception cref="InvalidOperationException"><paramref name="update"/> returned null or an undefined theme, dictation position, or activation mode, a feedback volume outside 0–100, an input channel below 1, or negative retention days.</exception>
+    /// <exception cref="InvalidOperationException"><paramref name="update"/> returned null or an undefined theme, dictation position, or activation mode, a feedback volume outside 0–100, an input channel below 1, or negative history retention or minimum duration.</exception>
     /// <exception cref="IOException">The configuration cannot be read or saved.</exception>
     /// <exception cref="InvalidDataException">The configuration has invalid setting types.</exception>
     /// <exception cref="UnauthorizedAccessException">Access to the configuration file is denied.</exception>
@@ -78,6 +78,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
                 || settings.FeedbackVolume is < 0 or > 100
                 || settings.InputChannel is < 1
                 || settings.HistoryRetentionDays < 0
+                || settings.HistoryMinimumDurationSeconds < 0
             )
                 throw new InvalidOperationException("The settings update returned undefined settings.");
 
@@ -163,6 +164,9 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
             StartMinimized = ReadBool(startup, "startup", "start_minimized") ?? defaults.StartMinimized,
             CloseReaderWhenFinished = ReadBool(readAloud, "read_aloud", "close_when_finished") ?? defaults.CloseReaderWhenFinished,
             HistoryEnabled = ReadBool(history, "history", "enabled") ?? defaults.HistoryEnabled,
+            HistoryMinimumDurationSeconds = ReadInt(history, "history", "minimum_duration_seconds") is >= 0 and var seconds
+                ? seconds
+                : defaults.HistoryMinimumDurationSeconds,
             HistoryRetentionDays = ReadInt(history, "history", "retention_days") is >= 0 and var days
                 ? days
                 : defaults.HistoryRetentionDays,
@@ -264,6 +268,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
 
         var history = GetOrAddTable(document, "history");
         history["enabled"] = settings.HistoryEnabled;
+        history["minimum_duration_seconds"] = (long)settings.HistoryMinimumDurationSeconds;
         history["retention_days"] = (long)settings.HistoryRetentionDays;
         SetOrRemove(history, "directory", settings.RecordingsDirectory);
 

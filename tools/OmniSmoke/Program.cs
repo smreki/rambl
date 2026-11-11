@@ -35,6 +35,11 @@ internal static class Program
         }
         new SmokeContext().Run(async () =>
         {
+            if (args.Contains("--history-only"))
+            {
+                await HistoryChecks.RunAsync(root);
+                return;
+            }
             if (args.Contains("--settings-only"))
             {
                 await SettingsChecks.RunAsync(root);

@@ -29,11 +29,45 @@
                         <VerticalStackLayout Spacing="5" VerticalOptions="Center">
                             <Label Text="Save recordings" FontFamily="InterMedium" FontSize="13" />
                             <Label Style="{StaticResource SettingHelp}"
-                                   Text="Keep the audio and transcript of each dictation on this computer. Turn this off and nothing new is saved; what is already here stays until you clear it." />
+                                   Text="Keep dictation audio and transcripts on this computer. Turn this off and nothing new is saved; existing recordings stay." />
                         </VerticalStackLayout>
                         <Switch x:Name="SaveToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
                                 AutomationId="SaveRecordings"
                                 SemanticProperties.Description="Save recordings" Toggled="OnSaveToggled" />
+                    </Grid>
+                    <Grid x:Name="MinimumDurationRow" ColumnDefinitions="320,*" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="Save recordings longer than" FontFamily="InterMedium" FontSize="13" />
+                            <Label Style="{StaticResource SettingHelp}" Text="Skip short dictations. Set to 0 to save all durations." />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="End">
+                            <Grid ColumnDefinitions="208,Auto" ColumnSpacing="8">
+                                <Border x:Name="MinimumDurationOutline" HeightRequest="36" StrokeShape="RoundRectangle 6"
+                                        StrokeThickness="1" Padding="12,0"
+                                        Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <Entry x:Name="MinimumDurationEntry" FontFamily="Inter" FontSize="13"
+                                               MinimumHeightRequest="0" VerticalOptions="Center" BackgroundColor="Transparent"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                                               Keyboard="Numeric" ReturnType="Done" MaxLength="10"
+                                               AutomationId="HistoryMinimumDuration"
+                                               SemanticProperties.Description="Save recordings longer than, in seconds"
+                                               TextChanged="OnMinimumDurationTextChanged" Completed="OnMinimumDurationCompleted"
+                                               Focused="OnMinimumDurationFocused" Unfocused="OnMinimumDurationUnfocused" />
+                                        <Label Grid.Column="1" Text="seconds" FontFamily="Inter" FontSize="12" VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                                    </Grid>
+                                </Border>
+                                <Button x:Name="ResetMinimumDuration" Grid.Column="1" Style="{StaticResource InputResetButton}"
+                                        AutomationId="ResetHistoryMinimumDuration"
+                                        SemanticProperties.Description="Reset minimum recording duration to 10 seconds"
+                                        Clicked="OnResetMinimumDuration" />
+                            </Grid>
+                            <Label x:Name="MinimumDurationError" IsVisible="False" FontSize="12" WidthRequest="296"
+                                   AutomationId="HistoryMinimumDurationError"
+                                   TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
+                        </VerticalStackLayout>
                     </Grid>
                     <Grid x:Name="RetentionRow" ColumnDefinitions="320,*" ColumnSpacing="16">
                         <VerticalStackLayout Spacing="5" VerticalOptions="Center">

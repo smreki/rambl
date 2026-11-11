@@ -10989,7 +10989,7 @@
                                           "fill": "$text-secondary",
                                           "textGrowth": "fixed-width",
                                           "width": "fill_container",
-                                          "content": "Keep the audio and transcript of each dictation on this computer. Turn this off and nothing new is saved; what is already here stays until you clear it.",
+                                          "content": "Keep dictation audio and transcripts on this computer. Turn this off and nothing new is saved; existing recordings stay.",
                                           "fontFamily": "Inter",
                                           "fontSize": 12,
                                           "fontWeight": "normal"
@@ -11000,7 +11000,7 @@
                                       "type": "frame",
                                       "id": "E1bAAy",
                                       "name": "Save recordings Toggle",
-                                      "context": "Save recordings. Default on. Accessible label: Save recordings. Turning it off disables the retention select but keeps the recordings that exist.",
+                                      "context": "Save recordings. Default on. Accessible label: Save recordings. Turning it off disables the minimum duration input and retention select, retains their saved values, and keeps existing recordings.",
                                       "width": 36,
                                       "height": 20,
                                       "fill": "$accent",
@@ -11016,6 +11016,111 @@
                                           "fill": "$content-bg",
                                           "width": 16,
                                           "height": 16
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "GAFEW",
+                                  "name": "Minimum Recording Duration Row",
+                                  "context": "Minimum saved duration for new dictation recordings. Default 10 seconds. A value of 0 disables duration filtering. When greater than 0, keep only completed recordings whose recorded audio duration is strictly longer than this threshold. Dictation still transcribes and inserts normally. Existing history and read-aloud profiles are unaffected. Disable the entire row while Save recordings is off, retaining its value.",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "XDP6f",
+                                      "name": "Minimum Recording Duration Description",
+                                      "width": 320,
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "jgLF1",
+                                          "name": "Minimum Recording Duration Label",
+                                          "fill": "$text-primary",
+                                          "content": "Save recordings longer than",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "j85x0",
+                                          "name": "Minimum Recording Duration Help",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Skip short dictations. Set to 0 to save all durations.",
+                                          "lineHeight": 1.5,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "tR35H",
+                                      "name": "Minimum Recording Duration Input With Reset",
+                                      "width": "fill_container",
+                                      "gap": 8,
+                                      "justifyContent": "end",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "q8Yzs",
+                                          "name": "Minimum Recording Duration Input",
+                                          "context": "Editable numeric field in seconds. Default 10 seconds. Accept non-negative whole seconds. Accessible label: Save recordings longer than, in seconds. Commit on Enter or focus loss and save immediately. Reject empty, negative and nonnumeric input without changing the saved value; show inline validation text using the danger token. Keep the saved value if persistence fails. Disabled while Save recordings is off. Keyboard focus uses the existing accent ring.",
+                                          "width": 208,
+                                          "height": 36,
+                                          "fill": "$content-bg",
+                                          "cornerRadius": 6,
+                                          "stroke": "$border",
+                                          "strokeWidth": 1,
+                                          "gap": 8,
+                                          "padding": [
+                                            0,
+                                            12
+                                          ],
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "YT2GI",
+                                              "name": "Minimum Recording Duration Value",
+                                              "fill": "$text-primary",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "10",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 13,
+                                              "fontWeight": "normal"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "zpULP",
+                                              "name": "Minimum Recording Duration Unit",
+                                              "fill": "$text-secondary",
+                                              "content": "seconds",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "pYYuw",
+                                          "type": "ref",
+                                          "ref": "rTEk5",
+                                          "name": "Reset Minimum Recording Duration Button",
+                                          "context": "Reset minimum recording duration to 10 seconds. Disabled when already 10 or Save recordings is off. Accessible label: Reset minimum recording duration to 10 seconds.",
+                                          "opacity": 0.45
                                         }
                                       ]
                                     }
@@ -12442,7 +12547,7 @@
                                           "fill": "$text-secondary",
                                           "textGrowth": "fixed-width",
                                           "width": "fill_container",
-                                          "content": "Keep the audio and transcript of each dictation on this computer. Turn this off and nothing new is saved; what is already here stays until you clear it.",
+                                          "content": "Keep dictation audio and transcripts on this computer. Turn this off and nothing new is saved; existing recordings stay.",
                                           "fontFamily": "Inter",
                                           "fontSize": 12,
                                           "fontWeight": "normal"
@@ -12453,7 +12558,7 @@
                                       "type": "frame",
                                       "id": "VoGNq",
                                       "name": "Save recordings Toggle",
-                                      "context": "Save recordings. Default on. Accessible label: Save recordings. Turning it off disables the retention select but keeps the recordings that exist.",
+                                      "context": "Save recordings. Default on. Accessible label: Save recordings. Turning it off disables the minimum duration input and retention select, retains their saved values, and keeps existing recordings.",
                                       "width": 36,
                                       "height": 20,
                                       "fill": "$accent",
@@ -12469,6 +12574,111 @@
                                           "fill": "$content-bg",
                                           "width": 16,
                                           "height": 16
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "ZrrY1",
+                                  "name": "Minimum Recording Duration Row",
+                                  "context": "Minimum saved duration for new dictation recordings. Default 10 seconds. A value of 0 disables duration filtering. When greater than 0, keep only completed recordings whose recorded audio duration is strictly longer than this threshold. Dictation still transcribes and inserts normally. Existing history and read-aloud profiles are unaffected. Disable the entire row while Save recordings is off, retaining its value.",
+                                  "width": "fill_container",
+                                  "gap": 16,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "KBdoe",
+                                      "name": "Minimum Recording Duration Description",
+                                      "width": 320,
+                                      "layout": "vertical",
+                                      "gap": 5,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "PHb5Z",
+                                          "name": "Minimum Recording Duration Label",
+                                          "fill": "$text-primary",
+                                          "content": "Save recordings longer than",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "c47Bh",
+                                          "name": "Minimum Recording Duration Help",
+                                          "fill": "$text-secondary",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Skip short dictations. Set to 0 to save all durations.",
+                                          "lineHeight": 1.5,
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "jRnLa",
+                                      "name": "Minimum Recording Duration Input With Reset",
+                                      "width": "fill_container",
+                                      "gap": 8,
+                                      "justifyContent": "end",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "MIkEE",
+                                          "name": "Minimum Recording Duration Input",
+                                          "context": "Editable numeric field in seconds. Default 10 seconds. Accept non-negative whole seconds. Accessible label: Save recordings longer than, in seconds. Commit on Enter or focus loss and save immediately. Reject empty, negative and nonnumeric input without changing the saved value; show inline validation text using the danger token. Keep the saved value if persistence fails. Disabled while Save recordings is off. Keyboard focus uses the existing accent ring.",
+                                          "width": 208,
+                                          "height": 36,
+                                          "fill": "$content-bg",
+                                          "cornerRadius": 6,
+                                          "stroke": "$border",
+                                          "strokeWidth": 1,
+                                          "gap": 8,
+                                          "padding": [
+                                            0,
+                                            12
+                                          ],
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "rfJOn",
+                                              "name": "Minimum Recording Duration Value",
+                                              "fill": "$text-primary",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "10",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 13,
+                                              "fontWeight": "normal"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "guTvS",
+                                              "name": "Minimum Recording Duration Unit",
+                                              "fill": "$text-secondary",
+                                              "content": "seconds",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "x7TlQw",
+                                          "type": "ref",
+                                          "ref": "rTEk5",
+                                          "name": "Reset Minimum Recording Duration Button",
+                                          "context": "Reset minimum recording duration to 10 seconds. Disabled when already 10 or Save recordings is off. Accessible label: Reset minimum recording duration to 10 seconds.",
+                                          "opacity": 0.45
                                         }
                                       ]
                                     }
