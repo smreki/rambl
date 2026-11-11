@@ -1,77 +1,77 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "asd-ste100": {
       "source": "danyuchn/asd-ste100-skill",
       "sourceType": "github",
       "skillPath": "SKILL.md",
-      "computedHash": "23bf96514f961571f564f4e4dc97ac5b553f20a8e9ef29a8cc093833417e0f7d"
+      "computedHash": "c899343c6dc12b58046b0d38c3b330dbad4a42cea14260241b8bf97195963ac1"
     },
     "csharp-async": {
       "source": "github/awesome-copilot",
       "sourceType": "github",
       "skillPath": "skills/csharp-async/SKILL.md",
-      "computedHash": "e889958419757528e43fb674607d13fffe331a6673cfcef2b0ab8ff9fb569bb8"
+      "computedHash": "5fd249fbacf89f08f93a2b8ede8cb030a7d7671577d829277a0042d5c89752c7"
     },
     "csharp-docs": {
       "source": "github/awesome-copilot",
       "sourceType": "github",
       "skillPath": "skills/csharp-docs/SKILL.md",
-      "computedHash": "93da3063bb770f13feec581efa3ff232c69a5a94b75cddfc4ad6e82909835cfe"
+      "computedHash": "1ee3057e274d274947dbaebc25c48d692ba05c7318cbbb02eb7e03bea07179c4"
     },
     "dotnet-best-practices": {
       "source": "github/awesome-copilot",
       "sourceType": "github",
       "skillPath": "skills/dotnet-best-practices/SKILL.md",
-      "computedHash": "9ef94db7f06c167d544369817e5a4415eeb7886dcff0d47026837a1aada260e3"
+      "computedHash": "2e386d6bb04d6e0c706faa8755059d961c57d9319dab2ce19c41d28198cc7be9"
     },
     "maui-app-lifecycle": {
       "source": "dotnet/skills",
       "sourceType": "github",
       "skillPath": "plugins/dotnet-maui/skills/maui-app-lifecycle/SKILL.md",
-      "computedHash": "1c0ac15003d80e1a2de8b11ca93ccb4eda511dc9dc1d1313a03ed9eb7a05c865"
+      "computedHash": "4eb5ab26c9b8c2e222fab9d2c575338d516a5211cb70bee0349cc359e56c375f"
     },
     "maui-collectionview": {
       "source": "dotnet/skills",
       "sourceType": "github",
       "skillPath": "plugins/dotnet-maui/skills/maui-collectionview/SKILL.md",
-      "computedHash": "46ade85ecae104dcb9395ed2c8bd43a9db10c0959aa323055663f9194fded81b"
+      "computedHash": "f2720989250f7182460bae4215ae7e42d8c38c3a1c15ac7458d863e45b214425"
     },
     "maui-data-binding": {
       "source": "dotnet/skills",
       "sourceType": "github",
       "skillPath": "plugins/dotnet-maui/skills/maui-data-binding/SKILL.md",
-      "computedHash": "a852745c93d83ae3e11604e9bb1ee13ae0c0206ab45be4c92a6fe602639dc9c7"
+      "computedHash": "d90b9cd84389ab18ef7f884c0e4538f73266e39cfcabb0771f9e1e3111d66f03"
     },
     "maui-dependency-injection": {
       "source": "dotnet/skills",
       "sourceType": "github",
       "skillPath": "plugins/dotnet-maui/skills/maui-dependency-injection/SKILL.md",
-      "computedHash": "2ce8daba43b4f7da58341d8f24048f12517ebbb7bdae71ce9831b75b98f1cf8d"
+      "computedHash": "468f8fe37099737f4193103f27637663f5f762878c51e2b746437b1d8ecc50ee"
     },
     "maui-safe-area": {
       "source": "dotnet/skills",
       "sourceType": "github",
       "skillPath": "plugins/dotnet-maui/skills/maui-safe-area/SKILL.md",
-      "computedHash": "1895016131b1caeaedc05db2b919b08e3cc45bda2a6779d5df446ab3ad27726b"
+      "computedHash": "abb3ce931c7093012161b7ec594f4cd7c4478b63877f7b20a850773e01132083"
     },
     "maui-shell-navigation": {
       "source": "dotnet/skills",
       "sourceType": "github",
       "skillPath": "plugins/dotnet-maui/skills/maui-shell-navigation/SKILL.md",
-      "computedHash": "632d90c74a1e22fb6eeec4842e309cc9ad2a87d383dbf4f294d1c3aa12ce8423"
+      "computedHash": "5336684220f93206004c9591725ab443abc2b92a8ea52d3f9a1ceb6aa9dafcfb"
     },
     "maui-theming": {
       "source": "dotnet/skills",
       "sourceType": "github",
       "skillPath": "plugins/dotnet-maui/skills/maui-theming/SKILL.md",
-      "computedHash": "2af7e6648249556626d620be7d8f96a1be676f2c4f4e0b8a3ab881bfa4d782e0"
+      "computedHash": "264ad113a4ccf4e1b29c7729def2f7f5b3c5f819d822f3fa093e0f6a2dd0070a"
     },
     "modern-csharp-coding-standards": {
       "source": "aaronontheweb/dotnet-skills",
       "sourceType": "github",
       "skillPath": "skills/csharp-coding-standards/SKILL.md",
-      "computedHash": "a213ff646fb345bad5fb363bcfb30635251f7916d5f83a5984f71d62ef736f50"
+      "computedHash": "7c275063c6e3cdf63b505293a4dae8d12bae0e7697c1cae5d2085110ce8d2dca"
     }
   }
 }
