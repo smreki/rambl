@@ -124,7 +124,13 @@ public partial class Appearance : ContentView
         pendingPositionSaves++;
         try
         {
-            await CurrentApp.UpdateSettingsAsync(settings => settings with { DictationPosition = position });
+            // Choosing a position here also puts back a card that was dragged somewhere else.
+            await CurrentApp.UpdateSettingsAsync(settings => settings with
+            {
+                DictationPosition = position,
+                DictationCardPosition = null,
+                MeetingCardPosition = null,
+            });
         }
         catch (Exception ex)
         {

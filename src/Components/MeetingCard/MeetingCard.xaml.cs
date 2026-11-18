@@ -46,6 +46,7 @@ public partial class MeetingCard : ContentView
     private bool browsing;
     private bool captioned;
     private bool hasEarlier;
+    private double captionHeight;
     private string? selectedProcess;
     private IDispatcherTimer? timer;
     private IDispatcherTimer? waveformTimer;
@@ -86,6 +87,9 @@ public partial class MeetingCard : ContentView
 
     /// <summary>Occurs when the card's height may have changed, so the window around it has to be fitted again.</summary>
     public event EventHandler? HeightChanged;
+
+    /// <summary>Gets the grip the card is moved by; the window that hosts the card follows its drag.</summary>
+    public DragGrip DragHandle => Grip;
 
     /// <summary>Gets whether the list of apps is shown in place of the two lines.</summary>
     public bool IsBrowsingApps => browsing;
@@ -191,8 +195,8 @@ public partial class MeetingCard : ContentView
 
     /// <summary>Shows who is speaking and what they say while a streaming model transcribes, leaving the list of apps if it is open.</summary>
     /// <param name="speaker">Who is speaking now.</param>
-    /// <param name="words">Their latest words, which get three lines; a longer text is cut at its end.</param>
-    /// <param name="earlierSpeaker">Who spoke before, shown dimmed above with three lines of their own, or null for nobody.</param>
+    /// <param name="words">Their latest words, which get up to three lines; a longer text is cut at its end.</param>
+    /// <param name="earlierSpeaker">Who spoke before, shown dimmed above with up to three lines of their own, or null for nobody.</param>
     /// <param name="earlierWords">The last words of <paramref name="earlierSpeaker"/>.</param>
     public void ShowCaptions(string speaker, string words, string? earlierSpeaker, string? earlierWords)
     {
@@ -208,11 +212,22 @@ public partial class MeetingCard : ContentView
         SetText(CaptionDetailLabel, words);
         SetText(EarlierTitleLabel, earlierSpeaker);
         SetText(EarlierDetailLabel, earlierWords);
+
+        // A block is as high as its text, so the card also changes height when the words wrap onto another line.
+        var height = MeasureCaption(CaptionDetailLabel) + (earlier ? MeasureCaption(EarlierDetailLabel) : 0);
+        changed |= height != captionHeight;
+        captionHeight = height;
         if (!changed)
             return;
 
         ApplyView();
         HeightChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private double MeasureCaption(Label label)
+    {
+        var width = Card.WidthRequest - Card.Padding.HorizontalThickness - (2 * Card.StrokeThickness);
+        return label.Measure(width, double.PositiveInfinity).Height;
     }
 
     private void ShowLines(Look next, string title, string detail)
@@ -429,6 +444,21 @@ public partial class MeetingCard : ContentView
     {
         var resources = Application.Current!.Resources;
         target.SetAppThemeColor(property, (Color)resources[token + "Light"], (Color)resources[token + "Dark"]);
+    }
+
+    // While it is held by its grip the card's outline is the accent.
+    private void OnGripDragStarted(object? sender, EventArgs e) => SetOutline("Accent");
+
+    private void OnGripDragEnded(object? sender, EventArgs e) => SetOutline("Border");
+
+    private void SetOutline(string token)
+    {
+        var resources = Application.Current!.Resources;
+        Card.SetAppTheme<Brush>(
+            Border.StrokeProperty,
+            new SolidColorBrush((Color)resources[token + "Light"]),
+            new SolidColorBrush((Color)resources[token + "Dark"])
+        );
     }
 
     private void OnStopClicked(object? sender, EventArgs e) => StopRequested?.Invoke(this, EventArgs.Empty);

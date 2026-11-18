@@ -350,7 +350,7 @@ public sealed class MeetingCoordinator : IDisposable
         surface.ShowState(new(MeetingCardMode.Recording, speaker, text, Captioned: true, earlier?.Speaker, earlier?.Text));
     }
 
-    // A speaker's block has three lines, so it shows the end of what they say: the words that were just said.
+    // A speaker's block has three lines at most, so it shows the end of what they say: the words that were just said.
     private static string Tail(string text)
     {
         text = text.Trim();

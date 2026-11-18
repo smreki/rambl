@@ -171,6 +171,8 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
             MeetingInputDeviceId = NullIfEmpty(ReadString(meetings, "meetings", "input_device")),
             MeetingAudioOnly = ReadBool(meetings, "meetings", "audio_only") ?? defaults.MeetingAudioOnly,
             MeetingModelId = NullIfEmpty(ReadString(meetings, "meetings", "model")),
+            MeetingCardPosition = ReadPoint(meetings, "meetings", "card_x", "card_y"),
+            DictationCardPosition = ReadPoint(appearance, "appearance", "dictation_card_x", "dictation_card_y"),
             StartWithWindows = ReadBool(startup, "startup", "start_with_windows") ?? defaults.StartWithWindows,
             StartMinimized = ReadBool(startup, "startup", "start_minimized") ?? defaults.StartMinimized,
             CloseReaderWhenFinished = ReadBool(readAloud, "read_aloud", "close_when_finished") ?? defaults.CloseReaderWhenFinished,
@@ -257,6 +259,8 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
             DictationPosition.BottomRight => "bottom-right",
             _ => "top-center",
         };
+        SetOrRemove(appearance, "dictation_card_x", settings.DictationCardPosition is { } dictationCard ? (long)dictationCard.X : null);
+        SetOrRemove(appearance, "dictation_card_y", settings.DictationCardPosition is { } dictationCardY ? (long)dictationCardY.Y : null);
 
         var controls = GetOrAddTable(document, "controls");
         controls["activation_mode"] = settings.ActivationMode switch
@@ -296,6 +300,8 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
         SetOrRemove(meetings, "input_device", settings.MeetingInputDeviceId);
         meetings["audio_only"] = settings.MeetingAudioOnly;
         SetOrRemove(meetings, "model", settings.MeetingModelId);
+        SetOrRemove(meetings, "card_x", settings.MeetingCardPosition is { } meetingCard ? (long)meetingCard.X : null);
+        SetOrRemove(meetings, "card_y", settings.MeetingCardPosition is { } meetingCardY ? (long)meetingCardY.Y : null);
 
         // The tables only exist while there is something in them, so a config that never used them stays free of them.
         var languageModels = FindTable(document, "language_models");
@@ -382,6 +388,10 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
         return value as string
             ?? throw new InvalidDataException($"{section}.{key} must be a string.");
     }
+
+    // A dragged card's place needs both coordinates; one alone is ignored.
+    private static ScreenPoint? ReadPoint(TomlTable? table, string section, string xKey, string yKey) =>
+        ReadInt(table, section, xKey) is { } x && ReadInt(table, section, yKey) is { } y ? new ScreenPoint(x, y) : null;
 
     private static int? ReadInt(TomlTable? table, string section, string key)
     {

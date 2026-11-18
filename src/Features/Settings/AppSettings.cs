@@ -18,6 +18,14 @@ public sealed record AppSettings
     /// <summary>Gets where the dictation window appears on the screen.</summary>
     public DictationPosition DictationPosition { get; init; } = DictationPosition.TopCenter;
 
+    /// <summary>Gets where the user dragged the dictation card to, or null to place it by <see cref="DictationPosition"/>.</summary>
+    /// <remarks>The top-left corner of the card's window, which includes the margin that holds its shadow.</remarks>
+    public ScreenPoint? DictationCardPosition { get; init; }
+
+    /// <summary>Gets where the user dragged the meeting card to, or null to place it by <see cref="DictationPosition"/>.</summary>
+    /// <remarks>The top-left corner of the card's window, which includes the margin that holds its shadow.</remarks>
+    public ScreenPoint? MeetingCardPosition { get; init; }
+
     /// <summary>Gets the id of the speaker for feedback sounds, or null to follow the system default output.</summary>
     public string? OutputDeviceId { get; init; }
 

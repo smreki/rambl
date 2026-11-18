@@ -76,7 +76,13 @@ internal sealed class DictationController : IDisposable
     {
         ArgumentNullException.ThrowIfNull(dispatcher);
 
-        surface = new(mauiContext);
+        ArgumentNullException.ThrowIfNull(settings);
+
+        surface = new(
+            mauiContext,
+            () => settings.Settings.DictationCardPosition,
+            point => CardPositionStore.Save(logger, current => current with { DictationCardPosition = point })
+        );
         coordinator = new(settings, audio, speech, executors, surface, new DispatcherQueueDispatcher(dispatcher), logger, recorder, library, chain, commands, runner);
         meetings = new(settings, mauiContext, dispatcher, audio, callAudio, history, meetingLibrary, speech, speakers, library, logger);
 

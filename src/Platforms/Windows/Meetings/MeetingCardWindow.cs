@@ -4,7 +4,6 @@ using Microsoft.UI.Windowing;
 using Rambl.Components;
 using Rambl.Features.Settings;
 using Rambl.Platforms.Windows.Dictation;
-using Windows.Graphics;
 using WinRT.Interop;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
 
@@ -25,7 +24,6 @@ internal sealed class MeetingCardWindow : IDisposable
     private const long WsExToolWindow = 0x80;
     private const long WsExNoActivate = 0x08000000;
     private const uint WmNcCalcSize = 0x0083;
-    private const int MonitorDefaultToPrimary = 1;
     private const uint SwpNoSize = 0x1;
     private const uint SwpNoMove = 0x2;
     private const uint SwpNoActivate = 0x10;
@@ -38,9 +36,7 @@ internal sealed class MeetingCardWindow : IDisposable
     private readonly nint hwnd;
     private readonly SubclassProc subclassProc;
     private MeetingCard card;
-    private DictationPosition position;
-    private RectInt32 workArea;
-    private double scale = 1;
+    private readonly CardPlacement placement = new();
     private bool activatable;
     private nint focusBefore;
 
@@ -92,24 +88,13 @@ internal sealed class MeetingCardWindow : IDisposable
         native.Content = content.ToPlatform(mauiContext);
     }
 
-    /// <summary>Places the card at a corner or edge of the screen with the focused window and shows it without activating it.</summary>
-    /// <param name="position">Where on the screen's work area the card goes.</param>
-    public void Show(DictationPosition position)
+    /// <summary>Places the card and shows it without activating it.</summary>
+    /// <param name="position">Where on the work area of the screen with the focused window the card goes.</param>
+    /// <param name="custom">Where the user dragged the card to, which wins over <paramref name="position"/>, or null.</param>
+    public void Show(DictationPosition position, ScreenPoint? custom)
     {
-        var monitor = MonitorFromWindow(GetForegroundWindow(), MonitorDefaultToPrimary);
-        var info = new MonitorInfo { Size = Marshal.SizeOf<MonitorInfo>() };
-        if (!GetMonitorInfo(monitor, ref info))
+        if (!placement.Begin(position, custom))
             return;
-
-        _ = GetDpiForMonitor(monitor, 0, out var dpi, out _);
-        scale = dpi / 96.0;
-        this.position = position;
-        workArea = new RectInt32(
-            info.Work.Left,
-            info.Work.Top,
-            info.Work.Right - info.Work.Left,
-            info.Work.Bottom - info.Work.Top
-        );
 
         Place();
         native.AppWindow.Show(activateWindow: false);
@@ -119,11 +104,33 @@ internal sealed class MeetingCardWindow : IDisposable
     }
 
     /// <summary>Fits the window to the card again, for example after the list of apps opened or closed.</summary>
-    /// <remarks>The edge nearest the screen's edge stays put: a card at the bottom grows upwards.</remarks>
+    /// <remarks>The edge nearest the screen's edge stays put: a card at the bottom grows upwards. A dragged card grows downwards.</remarks>
     public void Resize()
     {
-        if (workArea.Width > 0)
+        if (placement.IsReady)
             Place();
+    }
+
+    /// <summary>Starts moving the window with the mouse.</summary>
+    public void BeginDrag() => placement.BeginDrag(native.AppWindow);
+
+    /// <summary>Moves the window by how far the mouse has moved since <see cref="BeginDrag"/>.</summary>
+    public void Drag() => placement.Drag(native.AppWindow);
+
+    /// <summary>Ends the move and fits the window to the monitor it is on now.</summary>
+    /// <returns>The place to remember for later showings.</returns>
+    public ScreenPoint EndDrag()
+    {
+        var point = placement.EndDrag(native.AppWindow);
+        Place();
+        return point;
+    }
+
+    /// <summary>Puts the window back at its corner or edge of the screen.</summary>
+    public void ResetPosition()
+    {
+        placement.Reset();
+        Resize();
     }
 
     /// <summary>Lets the window take keyboard focus while the list of apps is open, or makes it a no-activate window again.</summary>
@@ -174,49 +181,18 @@ internal sealed class MeetingCardWindow : IDisposable
         card.FocusSearch();
     }
 
-    // The card's own margin already provides the gap between the card and the edges of the work area.
     private void Place()
     {
         var size = card.MeasureCard(WindowWidth);
-        var width = (int)Math.Ceiling(WindowWidth * scale);
-        var height = Math.Min((int)Math.Ceiling(size.Height * scale), workArea.Height);
-
-        var left = workArea.X;
-        var right = workArea.X + workArea.Width - width;
-        var x = position switch
-        {
-            DictationPosition.TopLeft or DictationPosition.BottomLeft => left,
-            DictationPosition.TopRight or DictationPosition.BottomRight => right,
-            _ => left + (right - left) / 2,
-        };
-        var y = position is DictationPosition.BottomLeft or DictationPosition.BottomCenter or DictationPosition.BottomRight
-            ? workArea.Y + workArea.Height - height
-            : workArea.Y;
-        native.AppWindow.MoveAndResize(new RectInt32(x, y, width, height));
+        var width = (int)Math.Ceiling(WindowWidth * placement.Scale);
+        var height = Math.Min((int)Math.Ceiling(size.Height * placement.Scale), placement.MaxHeight);
+        native.AppWindow.MoveAndResize(placement.Place(width, height));
     }
 
     private static nint OnMessage(nint hwnd, uint message, nint wParam, nint lParam, nuint id, nuint data) =>
         message == WmNcCalcSize && wParam != 0 ? 0 : DefSubclassProc(hwnd, message, wParam, lParam);
 
     private delegate nint SubclassProc(nint hwnd, uint message, nint wParam, nint lParam, nuint id, nuint data);
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct NativeRect
-    {
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct MonitorInfo
-    {
-        public int Size;
-        public NativeRect Monitor;
-        public NativeRect Work;
-        public uint Flags;
-    }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct Margins
@@ -237,16 +213,6 @@ internal sealed class MeetingCardWindow : IDisposable
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool IsWindow(nint hwnd);
-
-    [DllImport("user32.dll")]
-    private static extern nint MonitorFromWindow(nint hwnd, int flags);
-
-    [DllImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool GetMonitorInfo(nint monitor, ref MonitorInfo info);
-
-    [DllImport("shcore.dll")]
-    private static extern int GetDpiForMonitor(nint monitor, int type, out uint dpiX, out uint dpiY);
 
     [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
     private static extern long GetWindowLongPtr(nint hwnd, int index);

@@ -15,14 +15,22 @@ internal sealed class MeetingCardSurface : IMeetingSurface, IDisposable
     private readonly MeetingCardWindow window;
     private AppTheme builtForTheme = Microsoft.Maui.Controls.Application.Current!.RequestedTheme;
     private MeetingCardState? state;
+    private readonly Func<ScreenPoint?> readPosition;
+    private readonly Action<ScreenPoint?> savePosition;
     private IReadOnlyList<CallAudioApp> apps = [];
 
     /// <summary>Opens the hidden card window.</summary>
     /// <param name="mauiContext">The MAUI context used to create the card's native view.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="mauiContext"/> is null.</exception>
-    public MeetingCardSurface(IMauiContext mauiContext)
+    /// <param name="readPosition">Gets where the user dragged the card to, or null when it follows the chosen corner or edge.</param>
+    /// <param name="savePosition">Remembers where the card was dragged to; null when it was put back.</param>
+    /// <exception cref="ArgumentNullException">An argument is null.</exception>
+    public MeetingCardSurface(IMauiContext mauiContext, Func<ScreenPoint?> readPosition, Action<ScreenPoint?> savePosition)
     {
         ArgumentNullException.ThrowIfNull(mauiContext);
+        ArgumentNullException.ThrowIfNull(readPosition);
+        ArgumentNullException.ThrowIfNull(savePosition);
+        this.readPosition = readPosition;
+        this.savePosition = savePosition;
         Attach(card);
         window = new(card, mauiContext);
     }
@@ -49,7 +57,7 @@ internal sealed class MeetingCardSurface : IMeetingSurface, IDisposable
         RebuildForTheme();
         LeaveApps();
         card.Start();
-        window.Show(position);
+        window.Show(position, readPosition());
     }
 
     /// <inheritdoc/>
@@ -144,6 +152,10 @@ internal sealed class MeetingCardSurface : IMeetingSurface, IDisposable
         target.BrowseAppsRequested += OnBrowseAppsRequested;
         target.AppChosen += OnAppChosen;
         target.HeightChanged += OnHeightChanged;
+        target.DragHandle.DragStarted += OnDragStarted;
+        target.DragHandle.DragMoved += OnDragMoved;
+        target.DragHandle.DragEnded += OnDragEnded;
+        target.DragHandle.ResetRequested += OnResetRequested;
     }
 
     private void Detach(MeetingCard target)
@@ -153,6 +165,10 @@ internal sealed class MeetingCardSurface : IMeetingSurface, IDisposable
         target.BrowseAppsRequested -= OnBrowseAppsRequested;
         target.AppChosen -= OnAppChosen;
         target.HeightChanged -= OnHeightChanged;
+        target.DragHandle.DragStarted -= OnDragStarted;
+        target.DragHandle.DragMoved -= OnDragMoved;
+        target.DragHandle.DragEnded -= OnDragEnded;
+        target.DragHandle.ResetRequested -= OnResetRequested;
     }
 
     private void OnStopRequested(object? sender, EventArgs e) => StopRequested?.Invoke(this, e);
@@ -169,6 +185,18 @@ internal sealed class MeetingCardSurface : IMeetingSurface, IDisposable
             : apps.FirstOrDefault(app => string.Equals(app.ProcessName, processName, StringComparison.OrdinalIgnoreCase));
         LeaveApps();
         AppChosen?.Invoke(this, chosen);
+    }
+
+    private void OnDragStarted(object? sender, EventArgs e) => window.BeginDrag();
+
+    private void OnDragMoved(object? sender, EventArgs e) => window.Drag();
+
+    private void OnDragEnded(object? sender, EventArgs e) => savePosition(window.EndDrag());
+
+    private void OnResetRequested(object? sender, EventArgs e)
+    {
+        window.ResetPosition();
+        savePosition(null);
     }
 
     private void OnHeightChanged(object? sender, EventArgs e) => window.Resize();

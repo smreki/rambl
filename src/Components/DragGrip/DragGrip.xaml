@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.DragGrip"
+             WidthRequest="20" HeightRequest="28">
+    <!-- The transparent background makes the whole area take the pointer, not only the six dots. The pointer is read
+         from the native view (GripPointer): MAUI's pan gesture reports no drag in a window that is never activated. -->
+    <Border x:Name="Fill" StrokeThickness="0" StrokeShape="RoundRectangle 5" BackgroundColor="Transparent"
+            SemanticProperties.Description="Move card"
+            ToolTipProperties.Text="Drag to move. Double-click to put it back.">
+        <Label x:Name="Glyph" Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.GripVertical}"
+               HorizontalOptions="Center" VerticalOptions="Center"
+               TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+    </Border>
+</ContentView>

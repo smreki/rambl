@@ -87,6 +87,9 @@ public partial class DictationOverlay : ContentView
     /// <summary>Occurs when the user taps Skip while a process is running.</summary>
     public event EventHandler? SkipRequested;
 
+    /// <summary>Gets the grip the card is moved by; the window that hosts the card follows its drag.</summary>
+    public DragGrip DragHandle => Grip;
+
     /// <summary>Gets or sets the live transcript shown under the waveform.</summary>
     /// <remarks>
     /// It is only shown while it has text, so there is no placeholder. It wraps and the card grows to fit it; only a
@@ -329,6 +332,21 @@ public partial class DictationOverlay : ContentView
         var from = text.Length - MaxTranscriptCharacters;
         var space = text.IndexOf(' ', from);
         return "…" + (space < 0 ? text[from..] : text[(space + 1)..]);
+    }
+
+    // While it is held by its grip the card's outline is the accent.
+    private void OnGripDragStarted(object? sender, EventArgs e) => SetOutline("Accent");
+
+    private void OnGripDragEnded(object? sender, EventArgs e) => SetOutline("Border");
+
+    private void SetOutline(string token)
+    {
+        var resources = Application.Current!.Resources;
+        Card.SetAppTheme<Brush>(
+            Border.StrokeProperty,
+            new SolidColorBrush((Color)resources[token + "Light"]),
+            new SolidColorBrush((Color)resources[token + "Dark"])
+        );
     }
 
     private void OnCloseClicked(object? sender, EventArgs e) => CloseRequested?.Invoke(this, EventArgs.Empty);

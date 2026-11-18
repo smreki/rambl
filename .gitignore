@@ -290,4 +290,7 @@ __pycache__/
 
 # Native libraries fetched at build time (see UseParakeetCpp in src/Rambl.csproj)
 .native/
+
+# VS Code CMake Tools output for tools/native/llama; the real build goes to .native/
+/build/
 .tmp/

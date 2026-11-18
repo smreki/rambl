@@ -26,11 +26,11 @@
             <Setter Property="LineBreakMode" Value="TailTruncation" />
             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
         </Style>
-        <!-- Three lines of 18. -->
+        <!-- One to three lines: as high as its text, with no empty lines below. -->
         <Style x:Key="CaptionText" TargetType="Label">
             <Setter Property="FontSize" Value="13" />
             <Setter Property="LineHeight" Value="1.15" />
-            <Setter Property="HeightRequest" Value="54" />
+            <Setter Property="MinimumHeightRequest" Value="18" />
             <Setter Property="MaxLines" Value="3" />
             <Setter Property="LineBreakMode" Value="WordWrap" />
             <Setter Property="VerticalTextAlignment" Value="Start" />
@@ -73,12 +73,17 @@
         <VerticalStackLayout x:Name="Body" Spacing="6">
             <!-- As on the dictation card, the waveform is centered in the room between the indicator and the right group. -->
             <Grid x:Name="ControlsRow" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" HeightRequest="28">
-                <Border WidthRequest="20" HeightRequest="20" VerticalOptions="Center" StrokeThickness="0"
-                        StrokeShape="RoundRectangle 10" SemanticProperties.Description="Recording"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}">
-                    <Ellipse WidthRequest="8" HeightRequest="8" HorizontalOptions="Center" VerticalOptions="Center"
-                             Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
-                </Border>
+                <!-- The grip moves the card; the window that hosts the card does the moving. -->
+                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                    <components:DragGrip x:Name="Grip" VerticalOptions="Center" AutomationId="MeetingCardGrip"
+                                         DragStarted="OnGripDragStarted" DragEnded="OnGripDragEnded" />
+                    <Border WidthRequest="20" HeightRequest="20" VerticalOptions="Center" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 10" SemanticProperties.Description="Recording"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}">
+                        <Ellipse WidthRequest="8" HeightRequest="8" HorizontalOptions="Center" VerticalOptions="Center"
+                                 Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    </Border>
+                </HorizontalStackLayout>
 
                 <HorizontalStackLayout x:Name="Waveform" Grid.Column="1" Spacing="3" HeightRequest="24"
                                        HorizontalOptions="Center" VerticalOptions="Center"
@@ -108,9 +113,9 @@
             <Label x:Name="RecordingTitleLabel" Style="{StaticResource CardTitle}" AutomationId="MeetingTitle" />
             <Label x:Name="RecordingDetailLabel" Style="{StaticResource CardDetail}" AutomationId="MeetingDetail" />
 
-            <!-- Live transcript: a block per speaker, the name and three lines of what they are saying. The earlier
-                 speaker's block, dimmed, is above the current one. The three lines are always kept, so the card does
-                 not change height with every word. -->
+            <!-- Live transcript: a block per speaker, the name and up to three lines of what they are saying. The earlier
+                 speaker's block, dimmed, is above the current one. A block is as high as its text, so the card grows
+                 only when a line is added. -->
             <VerticalStackLayout x:Name="Captions" Spacing="10" IsVisible="False">
                 <VerticalStackLayout x:Name="EarlierBlock" Spacing="6" Opacity="0.6" IsVisible="False">
                     <Label x:Name="EarlierTitleLabel" Style="{StaticResource CardTitle}" AutomationId="MeetingEarlierSpeaker" />

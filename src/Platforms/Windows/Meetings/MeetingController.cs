@@ -50,7 +50,12 @@ internal sealed class MeetingController : IDisposable
     )
     {
         ArgumentNullException.ThrowIfNull(dispatcher);
-        surface = new(mauiContext);
+        ArgumentNullException.ThrowIfNull(settings);
+        surface = new(
+            mauiContext,
+            () => settings.Settings.MeetingCardPosition,
+            point => Dictation.CardPositionStore.Save(logger, current => current with { MeetingCardPosition = point })
+        );
         coordinator = new(settings, audio, callAudio, surface, new DispatcherQueueDispatcher(dispatcher), history, library, speech, speakers, processes, logger);
 
         // While a window is being chosen for call audio, the card's own Browse apps button must stay clickable.

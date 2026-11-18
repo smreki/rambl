@@ -52,48 +52,54 @@
                  step and Skip button) and a failure
                  (the waveform is replaced by the message, so the row grows with it). -->
             <Grid x:Name="ControlsRow" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" HeightRequest="28">
-                <Grid x:Name="IndicatorHost" VerticalOptions="Center" HeightRequest="20" WidthRequest="20">
-                    <Border x:Name="RecordingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}"
-                            SemanticProperties.Description="Recording">
-                        <!-- Two ripples grow out of the dot, half a period apart, and fade before they reach the edge of the
-                             circle (which clips them), so recording reads as a pulse. -->
-                        <Grid>
-                            <Ellipse x:Name="PulseRingA" Style="{StaticResource PulseRing}" />
-                            <Ellipse x:Name="PulseRingB" Style="{StaticResource PulseRing}" />
-                            <Ellipse WidthRequest="8" HeightRequest="8" HorizontalOptions="Center" VerticalOptions="Center"
-                                     Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
-                        </Grid>
-                    </Border>
-                    <Border x:Name="TranscribingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}"
-                            SemanticProperties.Description="Transcribing recorded speech">
-                        <ActivityIndicator x:Name="TranscribingSpinner" WidthRequest="14" HeightRequest="14" IsRunning="False"
-                                           HorizontalOptions="Center" VerticalOptions="Center"
-                                           Color="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
-                    </Border>
-                    <Border x:Name="ProcessingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource ProcessingSoftLight}, Dark={StaticResource ProcessingSoftDark}}"
-                            SemanticProperties.Description="Processing">
-                        <Label x:Name="ProcessingGlyph" Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.WandSparkles}"
-                               HorizontalOptions="Center" VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
-                    </Border>
-                    <Border x:Name="FailureIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource WarningSoftLight}, Dark={StaticResource WarningSoftDark}}"
-                            SemanticProperties.Description="A process did not run">
-                        <Label Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.TriangleAlert}"
-                               HorizontalOptions="Center" VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
-                    </Border>
-                    <Border x:Name="CommandIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}"
-                            SemanticProperties.Description="A voice command ran">
-                        <Label Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.Check}"
-                               HorizontalOptions="Center" VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
-                    </Border>
-                </Grid>
+                <!-- The grip moves the card; the window that hosts the card does the moving. It sits partly in the
+                     card's padding, so the waveform keeps its room beside the Skip button. -->
+                <HorizontalStackLayout Spacing="4" Margin="-6,0,0,0">
+                    <components:DragGrip x:Name="Grip" VerticalOptions="Start" AutomationId="DictationCardGrip"
+                                         DragStarted="OnGripDragStarted" DragEnded="OnGripDragEnded" />
+                    <Grid x:Name="IndicatorHost" VerticalOptions="Center" HeightRequest="20" WidthRequest="20">
+                        <Border x:Name="RecordingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}"
+                                SemanticProperties.Description="Recording">
+                            <!-- Two ripples grow out of the dot, half a period apart, and fade before they reach the edge of the
+                                 circle (which clips them), so recording reads as a pulse. -->
+                            <Grid>
+                                <Ellipse x:Name="PulseRingA" Style="{StaticResource PulseRing}" />
+                                <Ellipse x:Name="PulseRingB" Style="{StaticResource PulseRing}" />
+                                <Ellipse WidthRequest="8" HeightRequest="8" HorizontalOptions="Center" VerticalOptions="Center"
+                                         Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                            </Grid>
+                        </Border>
+                        <Border x:Name="TranscribingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}"
+                                SemanticProperties.Description="Transcribing recorded speech">
+                            <ActivityIndicator x:Name="TranscribingSpinner" WidthRequest="14" HeightRequest="14" IsRunning="False"
+                                               HorizontalOptions="Center" VerticalOptions="Center"
+                                               Color="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                        </Border>
+                        <Border x:Name="ProcessingIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource ProcessingSoftLight}, Dark={StaticResource ProcessingSoftDark}}"
+                                SemanticProperties.Description="Processing">
+                            <Label x:Name="ProcessingGlyph" Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.WandSparkles}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource ProcessingLight}, Dark={StaticResource ProcessingDark}}" />
+                        </Border>
+                        <Border x:Name="FailureIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource WarningSoftLight}, Dark={StaticResource WarningSoftDark}}"
+                                SemanticProperties.Description="A process did not run">
+                            <Label Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.TriangleAlert}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                        </Border>
+                        <Border x:Name="CommandIndicator" Style="{StaticResource OverlayIndicator}" VerticalOptions="Center" IsVisible="False"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}"
+                                SemanticProperties.Description="A voice command ran">
+                            <Label Style="{StaticResource Icon}" FontSize="12" Text="{x:Static components:Icons.Check}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        </Border>
+                    </Grid>
+                </HorizontalStackLayout>
 
                 <HorizontalStackLayout x:Name="Waveform" Grid.Column="1" Spacing="3" HeightRequest="24"
                                        HorizontalOptions="Center" VerticalOptions="Center"

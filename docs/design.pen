@@ -4630,8 +4630,31 @@
                       "id": "Kd1V0",
                       "name": "Recording Indicator Area",
                       "height": "fill_container",
+                      "gap": 4,
                       "alignItems": "center",
                       "children": [
+                        {
+                          "type": "frame",
+                          "id": "QFqmR",
+                          "name": "Drag handle · rest",
+                          "width": 20,
+                          "height": 28,
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "HLcXH",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$text-muted"
+                            }
+                          ]
+                        },
                         {
                           "type": "frame",
                           "id": "DIAo1",
@@ -5008,8 +5031,31 @@
                       "id": "Po7Og",
                       "name": "Processing Indicator Area",
                       "height": "fill_container",
+                      "gap": 4,
                       "alignItems": "center",
                       "children": [
+                        {
+                          "type": "frame",
+                          "id": "Q8ayM",
+                          "name": "Drag handle · rest",
+                          "width": 20,
+                          "height": 28,
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "oCDKq",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$text-muted"
+                            }
+                          ]
+                        },
                         {
                           "type": "frame",
                           "id": "nMVFS",
@@ -5433,6 +5479,28 @@
                   "width": "fill_container",
                   "gap": 12,
                   "children": [
+                    {
+                      "type": "frame",
+                      "id": "H4KOZ",
+                      "name": "Drag handle · rest",
+                      "width": 20,
+                      "height": 28,
+                      "cornerRadius": 5,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "bXlrp",
+                          "name": "Grip icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "grip-vertical",
+                          "library": "lucide",
+                          "fill": "$text-muted"
+                        }
+                      ]
+                    },
                     {
                       "type": "frame",
                       "id": "zrxhv",
@@ -5988,8 +6056,31 @@
                       "id": "f1KNL",
                       "name": "Recording Indicator Area",
                       "height": "fill_container",
+                      "gap": 4,
                       "alignItems": "center",
                       "children": [
+                        {
+                          "type": "frame",
+                          "id": "aA8JL",
+                          "name": "Drag handle · rest",
+                          "width": 20,
+                          "height": 28,
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "o0zsNg",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$text-muted"
+                            }
+                          ]
+                        },
                         {
                           "type": "frame",
                           "id": "MIdy7",
@@ -97863,7 +97954,7 @@
       "y": 0,
       "name": "Review · Meeting Recording",
       "width": 2920,
-      "height": 9116,
+      "height": 9560,
       "fill": "#8080800F",
       "layout": "none",
       "children": [
@@ -102594,8 +102685,31 @@
                           "id": "u4B5oO",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "Ztq3d",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "JzrxQ",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "qJqug",
@@ -102994,8 +103108,31 @@
                           "id": "hFgFL",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "FlJrY",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "gMPf8",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "Wzi4O",
@@ -103428,8 +103565,31 @@
                           "id": "RQfs8",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "EHwuG",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "JsQ7U",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "aWB98",
@@ -110753,8 +110913,31 @@
                           "id": "jSlos",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "vuWqK",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "GQbhB",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "qC29G",
@@ -111153,8 +111336,31 @@
                           "id": "shoPP",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "sYUlJ",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "w1lhM",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "juLi2",
@@ -111587,8 +111793,31 @@
                           "id": "cA9oM",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "DVRKX",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "MhbdN",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "bNqQa",
@@ -114265,8 +114494,31 @@
                           "id": "Jqx9w",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "iM7lv",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "z3CWW3",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "MOaXB",
@@ -114710,8 +114962,31 @@
                           "id": "zzj4w",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "uwAwj",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "QtEqS",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "WPE5G",
@@ -115320,8 +115595,31 @@
                           "id": "J67bBB",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "yoU7C",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "zfhsW",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "ljZjc",
@@ -115838,8 +116136,31 @@
                           "id": "KASHS",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "ZI6C4",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "LtAnn",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "qptiF",
@@ -116640,8 +116961,31 @@
                           "id": "Z2FfL",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "SdwsY",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "Re57C",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "TFB1C",
@@ -117158,8 +117502,31 @@
                           "id": "gTwbo",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "ZiL6K",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "rWLAC",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "uKXRh",
@@ -118150,8 +118517,31 @@
                           "id": "PNv59",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "CPp0W",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "DdpuV",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "T5yJL0",
@@ -118809,8 +119199,31 @@
                           "id": "QfKk8",
                           "name": "Recording Indicator Area",
                           "height": "fill_container",
+                          "gap": 6,
                           "alignItems": "center",
                           "children": [
+                            {
+                              "type": "frame",
+                              "id": "i4EMuu",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "aUqcM",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
                             {
                               "type": "frame",
                               "id": "DzdKa",
@@ -127766,6 +128179,2170 @@
                       "fontFamily": "Inter",
                       "fontSize": 12,
                       "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "SxsP3",
+          "x": 120,
+          "y": 9136,
+          "name": "Drag handle heading",
+          "fill": "$text-secondary",
+          "content": "Recording card · drag handle",
+          "fontFamily": "Inter",
+          "fontSize": 30,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "TcPa8",
+          "x": 120,
+          "y": 9200,
+          "name": "Recording card drag handle — Light",
+          "theme": {
+            "mode": "light"
+          },
+          "clip": true,
+          "width": 1280,
+          "fill": "$sidebar-bg",
+          "cornerRadius": 8,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "gap": 28,
+          "padding": 36,
+          "children": [
+            {
+              "type": "frame",
+              "id": "h1QdDd",
+              "name": "Handle states",
+              "width": 380,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "n2ZIo",
+                  "name": "Preview label",
+                  "fill": "$text-secondary",
+                  "content": "Handle states",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "A4hjM",
+                  "name": "States row",
+                  "gap": 36,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YCZLb",
+                      "name": "State · Rest",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "eNL6x",
+                          "name": "Drag handle · rest",
+                          "width": 20,
+                          "height": 28,
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "z0CiW",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$text-muted"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "dpWr4",
+                          "name": "State name",
+                          "fill": "$text-primary",
+                          "content": "Rest",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "rRQLP",
+                          "name": "State note",
+                          "fill": "$text-muted",
+                          "content": "Muted grip",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "L43lAq",
+                      "name": "State · Hover",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "pTmXw",
+                          "name": "Drag handle · hover",
+                          "width": 20,
+                          "height": 28,
+                          "fill": "$placeholder",
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "VIk7a",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$text-secondary"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "weJDo",
+                          "name": "State name",
+                          "fill": "$text-primary",
+                          "content": "Hover",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "jkobk",
+                          "name": "State note",
+                          "fill": "$text-muted",
+                          "content": "Move cursor",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "d5yCS",
+                      "name": "State · Dragging",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "n4FpK0",
+                          "name": "Drag handle · drag",
+                          "width": 20,
+                          "height": 28,
+                          "fill": "$accent-soft",
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "o6J7zT",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$accent"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "S1NTl",
+                          "name": "State name",
+                          "fill": "$text-primary",
+                          "content": "Dragging",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "H0k1eJ",
+                          "name": "State note",
+                          "fill": "$text-muted",
+                          "content": "Accent while held",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "k9bYN",
+                  "name": "Behavior note",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Drag the grip to move the card anywhere on screen. The card never takes focus, and it stays where it was dropped for later recordings. Double-click the grip, or choose a position in Appearance, to put it back. The dictation card has the same grip.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sgJVT",
+              "name": "Card · handle at rest",
+              "width": 380,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "gT1BD",
+                  "name": "Preview label",
+                  "fill": "$text-secondary",
+                  "content": "Card · handle at rest",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "Yk2TZ",
+                  "name": "Meeting recording card",
+                  "width": 380,
+                  "fill": "$content-bg",
+                  "cornerRadius": 10,
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "p0lecc",
+                      "name": "Recording Controls",
+                      "width": "fill_container",
+                      "height": 28,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "DiRdn",
+                          "name": "Recording Indicator Area",
+                          "height": "fill_container",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "S74uS",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "XjzF1",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "fOyZv",
+                              "name": "Recording Indicator",
+                              "width": 20,
+                              "height": 20,
+                              "fill": "$accent-soft",
+                              "cornerRadius": 10,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "FgOZt",
+                                  "name": "Recording Dot",
+                                  "fill": "$accent",
+                                  "width": 8,
+                                  "height": 8
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "zsskq",
+                          "name": "Waveform Area",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "jTGdE",
+                              "name": "Speech With Short Pause",
+                              "height": 24,
+                              "gap": 3,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "t1YA6",
+                                  "name": "Waveform Segment 1",
+                                  "opacity": 0.55,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "PXunX",
+                                  "name": "Waveform Segment 2",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "jf8rU",
+                                  "name": "Waveform Segment 3",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "HfoVa",
+                                  "name": "Waveform Segment 4",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 20
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "YUNZ6",
+                                  "name": "Waveform Segment 5",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "RTV0O",
+                                  "name": "Waveform Segment 6",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 24
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "X7odIK",
+                                  "name": "Waveform Segment 7",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 13
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "fmjyJ",
+                                  "name": "Waveform Segment 8",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "CWO3v",
+                                  "name": "Waveform Segment 9",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "ZjP9e",
+                                  "name": "Waveform Segment 10",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "FDHVO",
+                                  "name": "Waveform Segment 11",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "uGOKG",
+                                  "name": "Waveform Segment 12",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "j6B9wl",
+                                  "name": "Waveform Segment 13",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "n5jPC3",
+                                  "name": "Waveform Segment 14",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "XSBVJ",
+                                  "name": "Waveform Segment 15",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "yKzhi",
+                                  "name": "Waveform Segment 16",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 18
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "H894A",
+                                  "name": "Waveform Segment 17",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "DmmtR",
+                                  "name": "Waveform Segment 18",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 22
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "ahO1o",
+                                  "name": "Waveform Segment 19",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "ZYJBJ",
+                                  "name": "Waveform Segment 20",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "v5v39",
+                                  "name": "Waveform Segment 21",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "GHbAp",
+                                  "name": "Waveform Segment 22",
+                                  "opacity": 0.55,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "TJC3F",
+                          "name": "Timer And Close",
+                          "height": "fill_container",
+                          "gap": 10,
+                          "justifyContent": "end",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "h3jVgf",
+                              "name": "Elapsed Time",
+                              "fill": "$text-secondary",
+                              "content": "00:11",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "eJLfX",
+                              "name": "Time And Close Divider",
+                              "fill": "$border",
+                              "width": 1,
+                              "height": 14
+                            },
+                            {
+                              "type": "frame",
+                              "id": "lV4qg",
+                              "name": "Stop meeting recording",
+                              "width": 28,
+                              "height": 28,
+                              "fill": "$placeholder",
+                              "cornerRadius": 14,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "a1aP6F",
+                                  "name": "Stop recording icon",
+                                  "width": 13,
+                                  "height": 13,
+                                  "icon": "square",
+                                  "library": "lucide",
+                                  "fill": "$text-secondary"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ortSS",
+                      "name": "Live transcript",
+                      "context": "Shown while a streaming model transcribes the meeting. One block per speaker: the name and the last three lines of what they are saying; when the text is longer, its beginning is cut and marked with an ellipsis, so the newest words are always in view. When another speaker starts, a second block appears below the first, which is dimmed. At most two blocks are shown: when a third speaker starts, the oldest block goes. Every block keeps the height of three lines, also while its text is shorter, so the card does not change height with every word; it grows downward when the second block appears.",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "YN9aH",
+                          "name": "Speaker block · current",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JBZxz",
+                              "name": "Speaker or source",
+                              "fill": "$text-primary",
+                              "content": "Speaker 1",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "fpg3E",
+                              "name": "Current phrase",
+                              "fill": "$text-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "…so I can take the first five minutes to walk through the numbers from last quarter, and then we open it up for questions before we decide",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Fqrok",
+              "name": "Card · being dragged",
+              "width": 380,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "rsP42",
+                  "name": "Preview label",
+                  "fill": "$text-secondary",
+                  "content": "Card · being dragged",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "WtKBg",
+                  "name": "Meeting recording card",
+                  "width": 380,
+                  "fill": "$content-bg",
+                  "cornerRadius": 10,
+                  "stroke": "$accent",
+                  "strokeWidth": 1,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$overlay-shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 28
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x9bSqe",
+                      "name": "Recording Controls",
+                      "width": "fill_container",
+                      "height": 28,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "dKW5G",
+                          "name": "Recording Indicator Area",
+                          "height": "fill_container",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "D8xWW",
+                              "name": "Drag handle · drag",
+                              "width": 20,
+                              "height": 28,
+                              "fill": "$accent-soft",
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "DKkZ8",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$accent"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "fBjR0",
+                              "name": "Recording Indicator",
+                              "width": 20,
+                              "height": 20,
+                              "fill": "$accent-soft",
+                              "cornerRadius": 10,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "qXplK",
+                                  "name": "Recording Dot",
+                                  "fill": "$accent",
+                                  "width": 8,
+                                  "height": 8
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "smIxx",
+                          "name": "Waveform Area",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "selIN",
+                              "name": "Speech With Short Pause",
+                              "height": 24,
+                              "gap": 3,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "qkVQk",
+                                  "name": "Waveform Segment 1",
+                                  "opacity": 0.55,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "lqzrO",
+                                  "name": "Waveform Segment 2",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "JbWiK",
+                                  "name": "Waveform Segment 3",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "uYq1q",
+                                  "name": "Waveform Segment 4",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 20
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "W6zIU",
+                                  "name": "Waveform Segment 5",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "L2Dhc",
+                                  "name": "Waveform Segment 6",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 24
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "Lx7zg",
+                                  "name": "Waveform Segment 7",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 13
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "ghudz",
+                                  "name": "Waveform Segment 8",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "QCUO1",
+                                  "name": "Waveform Segment 9",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "K9HPmG",
+                                  "name": "Waveform Segment 10",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "HoU8B",
+                                  "name": "Waveform Segment 11",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "W8oL9",
+                                  "name": "Waveform Segment 12",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "HgpVO",
+                                  "name": "Waveform Segment 13",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "i8Zkvm",
+                                  "name": "Waveform Segment 14",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "CI86O",
+                                  "name": "Waveform Segment 15",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "TzBdC",
+                                  "name": "Waveform Segment 16",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 18
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "DfjBx",
+                                  "name": "Waveform Segment 17",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "WGvIw",
+                                  "name": "Waveform Segment 18",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 22
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "YTwQT",
+                                  "name": "Waveform Segment 19",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "BoypG",
+                                  "name": "Waveform Segment 20",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "R5q55",
+                                  "name": "Waveform Segment 21",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "JoJ4q",
+                                  "name": "Waveform Segment 22",
+                                  "opacity": 0.55,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "q394d",
+                          "name": "Timer And Close",
+                          "height": "fill_container",
+                          "gap": 10,
+                          "justifyContent": "end",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "j5yDj6",
+                              "name": "Elapsed Time",
+                              "fill": "$text-secondary",
+                              "content": "00:11",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "i5WIwP",
+                              "name": "Time And Close Divider",
+                              "fill": "$border",
+                              "width": 1,
+                              "height": 14
+                            },
+                            {
+                              "type": "frame",
+                              "id": "IlmPA",
+                              "name": "Stop meeting recording",
+                              "width": 28,
+                              "height": 28,
+                              "fill": "$placeholder",
+                              "cornerRadius": 14,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "w7PPr6",
+                                  "name": "Stop recording icon",
+                                  "width": 13,
+                                  "height": 13,
+                                  "icon": "square",
+                                  "library": "lucide",
+                                  "fill": "$text-secondary"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mLYj3",
+                      "name": "Live transcript",
+                      "context": "Shown while a streaming model transcribes the meeting. One block per speaker: the name and the last three lines of what they are saying; when the text is longer, its beginning is cut and marked with an ellipsis, so the newest words are always in view. When another speaker starts, a second block appears below the first, which is dimmed. At most two blocks are shown: when a third speaker starts, the oldest block goes. Every block keeps the height of three lines, also while its text is shorter, so the card does not change height with every word; it grows downward when the second block appears.",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "OMyFp",
+                          "name": "Speaker block · current",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "hDvao",
+                              "name": "Speaker or source",
+                              "fill": "$text-primary",
+                              "content": "Speaker 1",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "p1mPZn",
+                              "name": "Current phrase",
+                              "fill": "$text-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "…so I can take the first five minutes to walk through the numbers from last quarter, and then we open it up for questions before we decide",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "P0G81",
+          "x": 1520,
+          "y": 9200,
+          "name": "Recording card drag handle — Dark",
+          "theme": {
+            "mode": "dark"
+          },
+          "clip": true,
+          "width": 1280,
+          "fill": "$sidebar-bg",
+          "cornerRadius": 8,
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "gap": 28,
+          "padding": 36,
+          "children": [
+            {
+              "type": "frame",
+              "id": "Rg0FQ",
+              "name": "Handle states",
+              "width": 380,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "L2oQGO",
+                  "name": "Preview label",
+                  "fill": "$text-secondary",
+                  "content": "Handle states",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "C4vWCm",
+                  "name": "States row",
+                  "gap": 36,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "W4fxc5",
+                      "name": "State · Rest",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "h5ADHD",
+                          "name": "Drag handle · rest",
+                          "width": 20,
+                          "height": 28,
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "njAiH",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$text-muted"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "f8szh",
+                          "name": "State name",
+                          "fill": "$text-primary",
+                          "content": "Rest",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "OX9lj",
+                          "name": "State note",
+                          "fill": "$text-muted",
+                          "content": "Muted grip",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QVfUV",
+                      "name": "State · Hover",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "fhrTV",
+                          "name": "Drag handle · hover",
+                          "width": 20,
+                          "height": 28,
+                          "fill": "$placeholder",
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "dLBxr",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$text-secondary"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "aDxuB",
+                          "name": "State name",
+                          "fill": "$text-primary",
+                          "content": "Hover",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "DRBhr",
+                          "name": "State note",
+                          "fill": "$text-muted",
+                          "content": "Move cursor",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ydv1E",
+                      "name": "State · Dragging",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "FVSHJ",
+                          "name": "Drag handle · drag",
+                          "width": 20,
+                          "height": 28,
+                          "fill": "$accent-soft",
+                          "cornerRadius": 5,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Y87Tak",
+                              "name": "Grip icon",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "grip-vertical",
+                              "library": "lucide",
+                              "fill": "$accent"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "nrriL",
+                          "name": "State name",
+                          "fill": "$text-primary",
+                          "content": "Dragging",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "MwGzg",
+                          "name": "State note",
+                          "fill": "$text-muted",
+                          "content": "Accent while held",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "CuHOl",
+                  "name": "Behavior note",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Drag the grip to move the card anywhere on screen. The card never takes focus, and it stays where it was dropped for later recordings. Double-click the grip, or choose a position in Appearance, to put it back. The dictation card has the same grip.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EVNz2",
+              "name": "Card · handle at rest",
+              "width": 380,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Y32Oi",
+                  "name": "Preview label",
+                  "fill": "$text-secondary",
+                  "content": "Card · handle at rest",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "VKACh",
+                  "name": "Meeting recording card",
+                  "width": 380,
+                  "fill": "$content-bg",
+                  "cornerRadius": 10,
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "GVlPo",
+                      "name": "Recording Controls",
+                      "width": "fill_container",
+                      "height": 28,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cgYQe",
+                          "name": "Recording Indicator Area",
+                          "height": "fill_container",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "TkxTn",
+                              "name": "Drag handle · rest",
+                              "width": 20,
+                              "height": 28,
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "OuzQR",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$text-muted"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "N3vgh",
+                              "name": "Recording Indicator",
+                              "width": 20,
+                              "height": 20,
+                              "fill": "$accent-soft",
+                              "cornerRadius": 10,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "HQ3g1",
+                                  "name": "Recording Dot",
+                                  "fill": "$accent",
+                                  "width": 8,
+                                  "height": 8
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "y6QxD",
+                          "name": "Waveform Area",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "bnjci",
+                              "name": "Speech With Short Pause",
+                              "height": 24,
+                              "gap": 3,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "Jze2l",
+                                  "name": "Waveform Segment 1",
+                                  "opacity": 0.55,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "WYyBX",
+                                  "name": "Waveform Segment 2",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "s4A2ly",
+                                  "name": "Waveform Segment 3",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "ymeri",
+                                  "name": "Waveform Segment 4",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 20
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "h24Nvj",
+                                  "name": "Waveform Segment 5",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "hfK2m",
+                                  "name": "Waveform Segment 6",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 24
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "kPHm7",
+                                  "name": "Waveform Segment 7",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 13
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "zQk8X",
+                                  "name": "Waveform Segment 8",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "B0oKm",
+                                  "name": "Waveform Segment 9",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "Tx7mr",
+                                  "name": "Waveform Segment 10",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "L0EsF",
+                                  "name": "Waveform Segment 11",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "kOPGc",
+                                  "name": "Waveform Segment 12",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "LIqkL",
+                                  "name": "Waveform Segment 13",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "K21jx",
+                                  "name": "Waveform Segment 14",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "KSwYy",
+                                  "name": "Waveform Segment 15",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "GxU3J",
+                                  "name": "Waveform Segment 16",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 18
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "E62Th",
+                                  "name": "Waveform Segment 17",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "RGyiC",
+                                  "name": "Waveform Segment 18",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 22
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "fCEPG",
+                                  "name": "Waveform Segment 19",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "F6al7",
+                                  "name": "Waveform Segment 20",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "xyM3P",
+                                  "name": "Waveform Segment 21",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "c4JvB9",
+                                  "name": "Waveform Segment 22",
+                                  "opacity": 0.55,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "hGaW7",
+                          "name": "Timer And Close",
+                          "height": "fill_container",
+                          "gap": 10,
+                          "justifyContent": "end",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "yfNZU",
+                              "name": "Elapsed Time",
+                              "fill": "$text-secondary",
+                              "content": "00:11",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "q1EPd",
+                              "name": "Time And Close Divider",
+                              "fill": "$border",
+                              "width": 1,
+                              "height": 14
+                            },
+                            {
+                              "type": "frame",
+                              "id": "jVtvw",
+                              "name": "Stop meeting recording",
+                              "width": 28,
+                              "height": 28,
+                              "fill": "$placeholder",
+                              "cornerRadius": 14,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "KrTmM",
+                                  "name": "Stop recording icon",
+                                  "width": 13,
+                                  "height": 13,
+                                  "icon": "square",
+                                  "library": "lucide",
+                                  "fill": "$text-secondary"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "sdCBh",
+                      "name": "Live transcript",
+                      "context": "Shown while a streaming model transcribes the meeting. One block per speaker: the name and the last three lines of what they are saying; when the text is longer, its beginning is cut and marked with an ellipsis, so the newest words are always in view. When another speaker starts, a second block appears below the first, which is dimmed. At most two blocks are shown: when a third speaker starts, the oldest block goes. Every block keeps the height of three lines, also while its text is shorter, so the card does not change height with every word; it grows downward when the second block appears.",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "a9pGlK",
+                          "name": "Speaker block · current",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "YVliM",
+                              "name": "Speaker or source",
+                              "fill": "$text-primary",
+                              "content": "Speaker 1",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "D884b",
+                              "name": "Current phrase",
+                              "fill": "$text-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "…so I can take the first five minutes to walk through the numbers from last quarter, and then we open it up for questions before we decide",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QaYIV",
+              "name": "Card · being dragged",
+              "width": 380,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "k9RTxa",
+                  "name": "Preview label",
+                  "fill": "$text-secondary",
+                  "content": "Card · being dragged",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "n909mY",
+                  "name": "Meeting recording card",
+                  "width": 380,
+                  "fill": "$content-bg",
+                  "cornerRadius": 10,
+                  "stroke": "$accent",
+                  "strokeWidth": 1,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$overlay-shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 28
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "MrrwM",
+                      "name": "Recording Controls",
+                      "width": "fill_container",
+                      "height": 28,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ilC1X",
+                          "name": "Recording Indicator Area",
+                          "height": "fill_container",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "alP43",
+                              "name": "Drag handle · drag",
+                              "width": 20,
+                              "height": 28,
+                              "fill": "$accent-soft",
+                              "cornerRadius": 5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "g4cIpQ",
+                                  "name": "Grip icon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "grip-vertical",
+                                  "library": "lucide",
+                                  "fill": "$accent"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "xWybV",
+                              "name": "Recording Indicator",
+                              "width": 20,
+                              "height": 20,
+                              "fill": "$accent-soft",
+                              "cornerRadius": 10,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "xMl9v",
+                                  "name": "Recording Dot",
+                                  "fill": "$accent",
+                                  "width": 8,
+                                  "height": 8
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "WGhXY",
+                          "name": "Waveform Area",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "dqfbl",
+                              "name": "Speech With Short Pause",
+                              "height": 24,
+                              "gap": 3,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "q8zRv",
+                                  "name": "Waveform Segment 1",
+                                  "opacity": 0.55,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "DpKZm",
+                                  "name": "Waveform Segment 2",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "CIUqa",
+                                  "name": "Waveform Segment 3",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "QNbWo",
+                                  "name": "Waveform Segment 4",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 20
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "L1BkDE",
+                                  "name": "Waveform Segment 5",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "UH4Zg",
+                                  "name": "Waveform Segment 6",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 24
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "SE6pC",
+                                  "name": "Waveform Segment 7",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 13
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "FzKLY",
+                                  "name": "Waveform Segment 8",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "LowHk",
+                                  "name": "Waveform Segment 9",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "jZxek",
+                                  "name": "Waveform Segment 10",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "F0shJS",
+                                  "name": "Waveform Segment 11",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "wfVeE",
+                                  "name": "Waveform Segment 12",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "zdDSS",
+                                  "name": "Waveform Segment 13",
+                                  "opacity": 0.45,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "azUq7",
+                                  "name": "Waveform Segment 14",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "fDkW9",
+                                  "name": "Waveform Segment 15",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "Y73dS",
+                                  "name": "Waveform Segment 16",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 18
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "OJbPU",
+                                  "name": "Waveform Segment 17",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "zAi4q",
+                                  "name": "Waveform Segment 18",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 22
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "h9Lhhu",
+                                  "name": "Waveform Segment 19",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 12
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "vCSub",
+                                  "name": "Waveform Segment 20",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 6
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "E0ugxj",
+                                  "name": "Waveform Segment 21",
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 4
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "sPd4D",
+                                  "name": "Waveform Segment 22",
+                                  "opacity": 0.55,
+                                  "fill": "$accent",
+                                  "width": 3,
+                                  "height": 3
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "c2IId",
+                          "name": "Timer And Close",
+                          "height": "fill_container",
+                          "gap": 10,
+                          "justifyContent": "end",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Hqoty",
+                              "name": "Elapsed Time",
+                              "fill": "$text-secondary",
+                              "content": "00:11",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "UmoBx",
+                              "name": "Time And Close Divider",
+                              "fill": "$border",
+                              "width": 1,
+                              "height": 14
+                            },
+                            {
+                              "type": "frame",
+                              "id": "hpKSW",
+                              "name": "Stop meeting recording",
+                              "width": 28,
+                              "height": 28,
+                              "fill": "$placeholder",
+                              "cornerRadius": 14,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "ywKkd",
+                                  "name": "Stop recording icon",
+                                  "width": 13,
+                                  "height": 13,
+                                  "icon": "square",
+                                  "library": "lucide",
+                                  "fill": "$text-secondary"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TxQP6",
+                      "name": "Live transcript",
+                      "context": "Shown while a streaming model transcribes the meeting. One block per speaker: the name and the last three lines of what they are saying; when the text is longer, its beginning is cut and marked with an ellipsis, so the newest words are always in view. When another speaker starts, a second block appears below the first, which is dimmed. At most two blocks are shown: when a third speaker starts, the oldest block goes. Every block keeps the height of three lines, also while its text is shorter, so the card does not change height with every word; it grows downward when the second block appears.",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "jOMDy",
+                          "name": "Speaker block · current",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ucHlP",
+                              "name": "Speaker or source",
+                              "fill": "$text-primary",
+                              "content": "Speaker 1",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "hpA5u",
+                              "name": "Current phrase",
+                              "fill": "$text-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "…so I can take the first five minutes to walk through the numbers from last quarter, and then we open it up for questions before we decide",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 }

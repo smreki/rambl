@@ -48,6 +48,16 @@ internal static class SettingsChecks
             Require(invalidDurationRejected && await File.ReadAllTextAsync(path) == beforeInvalidDuration,
                 "Negative duration updates must not overwrite settings.");
 
+            Require(migrated.DictationCardPosition is null && migrated.MeetingCardPosition is null, "Cards that were never dragged must have no saved place.");
+            await service.UpdateAsync(settings => settings with { DictationCardPosition = new(-1200, 40), MeetingCardPosition = new(300, 900) });
+            var dragged = await service.LoadAsync();
+            Require(dragged.DictationCardPosition == new ScreenPoint(-1200, 40) && dragged.MeetingCardPosition == new ScreenPoint(300, 900),
+                "Dragged card places, also on a monitor left of the primary one, must survive reloading.");
+            await service.UpdateAsync(settings => settings with { DictationCardPosition = null, MeetingCardPosition = null });
+            var putBack = await File.ReadAllTextAsync(path);
+            Require((await service.LoadAsync()).DictationCardPosition is null && !putBack.Contains("card_x", StringComparison.Ordinal),
+                "Putting a card back must remove its saved place.");
+
             await service.UpdateAsync(settings => settings with { StartMinimized = true });
             var minimized = await service.LoadAsync();
             Require(minimized.StartMinimized && !minimized.StartWithWindows, "Starting minimized must not enable sign-in startup.");
