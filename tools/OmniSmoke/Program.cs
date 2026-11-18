@@ -263,7 +263,7 @@ internal static class Program
         var runtime = artifact.Runtimes.First();
         if (runtime.Name == "transcribe.cpp")
         {
-            var folder = Directory.EnumerateFiles(Path.Combine(root, ".native/transcribe.cpp/0.4.1"), "transcribe.dll", SearchOption.AllDirectories).Select(Path.GetDirectoryName).First()!;
+            var folder = Directory.EnumerateFiles(Path.Combine(root, ".native/transcribe.cpp/0.4.2"), "transcribe.dll", SearchOption.AllDirectories).Select(Path.GetDirectoryName).First()!;
             NativeLibraryImports.Register("transcribe", Path.Combine(folder, "transcribe.dll"));
             Directory.CreateDirectory(TranscribeLibrary.Folder);
             foreach (var dependency in Directory.EnumerateFiles(folder, "*.dll")) File.Copy(dependency, Path.Combine(TranscribeLibrary.Folder, Path.GetFileName(dependency)), true);

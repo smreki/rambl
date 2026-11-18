@@ -18,7 +18,7 @@ internal sealed class AudioCppSynthesizer : ITtsSynthesizer
     private static readonly TimeSpan StartTimeout = TimeSpan.FromMinutes(3);
     private static readonly TimeSpan RequestTimeout = TimeSpan.FromMinutes(5);
     // Keep this in step with AudioCppVersion and its verified archive hash in Rambl.csproj.
-    private const string ExpectedVersion = "0.9.4";
+    private const string ExpectedVersion = "0.9.5";
     private readonly Process process;
     private readonly HttpClient client;
     private readonly string configPath;

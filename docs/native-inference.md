@@ -24,6 +24,8 @@ Requests for an installation are serialized. Each task gets its own prompt and s
 
 `llama.cpp/rambl-llama.dll` is built from the verified, pinned llama.cpp source with static llama.cpp, ggml, CPU backend, Jinja chat templates and `mtmd` audio support. It does not depend on the STT runtimes' differently versioned ggml DLLs. The C bridge is ABI 2; upstream C++ structs stay inside the bridge. Managed calls retain native handles through copying borrowed text/PCM results. Native crashes can affect Rambl itself.
 
+The pinned upstream release is stable `v1.0.0`. GitHub extracts its source archive into `llama.cpp-1.0.0`; the build and license packaging strip the tag's leading `v` when locating that directory. The bridge's C boundary is unchanged, so it remains ABI 2.
+
 ## Task behavior
 
 | Task | Implementation |
@@ -79,6 +81,10 @@ The harness keeps native DLLs and the VAD asset outside the bundle, matching the
 
 The Windows build, storage tests and full native checks passed on the development machine, including Parakeet Unified EN through transcribe.cpp. A measured CPU run generated 2.88 seconds of speech in 8.22 seconds; this is functional validation, not a claim of real-time performance or general transcription accuracy. Check the running app in both themes and return Appearance to System after UI testing.
 
+The `v1.0.0` upgrade passed the Windows build, `rambl.ps1 build`, and the full Omni suite with both automatic AVX2 selection and `DOTNET_EnableAVX2=0`. The hybrid single-file harness also passed the full suite and the isolated missing-native VAD check. These runs covered silence skipping, repeated recordings, padded final windows, cancellation recovery, shared unloading, Parakeet coexistence, and the installed EuroLLM 1.7B and Qwen3.5 2B text models. Both bridge DLLs retain static ggml linkage.
+
+The subsequent dependency update uses MAUI 11.0.10, Tomlyn 2.11.1, transcribe.cpp 0.4.2, audio.cpp 0.9.5 and Lucide 1.73.0. Settings, History, dictation and full native smoke checks passed; transcribe.cpp 0.4.2 retained its public struct layouts. An isolated harness using the production audio.cpp synthesizer and existing test weights checked Kokoro and Qwen3-TTS on CPU and Vulkan, including repeated synthesis, normal and accelerated speech, cancellation and reload. All 82 existing icon codepoints matched the new font. Sherpa 1.13.8 and its matching ONNX Runtime Managed 1.28 remain pinned for the built-in phonemizer. Build and publish always replace transcribe.cpp's full native DLL set because release timestamps can predate the previous pin.
+
 To compare CPU kernels on the same fixed 16-bit PCM fixture, place it at `.native/omni-tests/speech.wav`, then run `--benchmark-stt --baseline` and `--benchmark-stt` in separate harness processes. Both use the same production adapter, model, VAD and decoding settings, warm the model first and time three transcriptions. On the development machine a 4.160-second synthetic recording measured 8.703/8.535/8.514 seconds with the baseline and 0.681/0.596/0.599 seconds with AVX2 (median 14.25× speedup). Loading was measured separately, at 0.563 and 1.188 seconds respectively. These are local fixture measurements, not a general latency or accuracy guarantee. `DOTNET_EnableAVX2=0` can verify automatic selection of the fallback in a separate test process.
 
 ## Upstream references
@@ -86,4 +92,4 @@ To compare CPU kernels on the same fixed 16-bit PCM fixture, place it at `.nativ
 - [LFM3 Omni model card and architecture](https://huggingface.co/LiquidAI/LFM3-Omni-2B)
 - [LFM3 Omni GGUF prompts, voices and projector](https://huggingface.co/LiquidAI/LFM3-Omni-2B-GGUF)
 - [d1 Omni GGUF](https://huggingface.co/LiquidAI/d1-Omni-2B-GGUF)
-- [Pinned llama.cpp source](https://github.com/ggml-org/llama.cpp/tree/b12182)
+- [Pinned llama.cpp source](https://github.com/ggml-org/llama.cpp/tree/v1.0.0)

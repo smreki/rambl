@@ -6,7 +6,7 @@ namespace Rambl.Features.Inference.LlamaCpp;
 internal static class LlamaNative
 {
     internal const string Library = "rambl-llama";
-    internal const string Version = "b12182";
+    internal const string Version = "v1.0.0";
     internal const int AbiVersion = 2;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

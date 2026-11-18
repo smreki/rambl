@@ -10,7 +10,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<MauiVersion>11.0.0</MauiVersion>
+		<MauiVersion>11.0.10</MauiVersion>
 
 		<!-- Enable XAML source generation for faster build times and improved performance.
 		     This generates C# code from XAML at compile time instead of runtime inflation.
@@ -152,9 +152,9 @@
 
 	<PropertyGroup Condition="'$(UseTranscribeCpp)' == 'true'">
 		<DefineConstants>$(DefineConstants);TRANSCRIBE_CPP</DefineConstants>
-		<TranscribeCppVersion>0.4.1</TranscribeCppVersion>
+		<TranscribeCppVersion>0.4.2</TranscribeCppVersion>
 		<TranscribeCppArchiveName>transcribe-native-$(TranscribeCppVersion)-windows-x86_64-cpu-vulkan</TranscribeCppArchiveName>
-		<TranscribeCppArchiveSha256>272eb97795048ccb557c85bb9dd44c9e530e1c928443114c39816a8a5f76269d</TranscribeCppArchiveSha256>
+		<TranscribeCppArchiveSha256>6094102cf57b404b050707ceb258b12ce647b92e801b5d46077214e5b030c8aa</TranscribeCppArchiveSha256>
 		<TranscribeCppCacheDir>$(MSBuildProjectDirectory)\..\.native\transcribe.cpp\$(TranscribeCppVersion)\</TranscribeCppCacheDir>
 	</PropertyGroup>
 
@@ -182,10 +182,20 @@
 
 		<ItemGroup>
 			<TranscribeCppFile Include="$(TranscribeCppBinDir)transcribe.dll;$(TranscribeCppBinDir)ggml.dll;$(TranscribeCppBinDir)ggml-base.dll;$(TranscribeCppBinDir)ggml-cpu-*.dll" />
-			<None Include="@(TranscribeCppFile)" Link="transcribe.cpp\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<!-- Release timestamps can be older than the previous pin; always replace the full native set. -->
+			<None Include="@(TranscribeCppFile)" Link="transcribe.cpp\%(Filename)%(Extension)" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
 			<TranscribeCppLicense Include="$(TranscribeCppBinDir)licenses\**\*" />
 			<None Include="@(TranscribeCppLicense)" Link="transcribe.cpp\licenses\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
 		</ItemGroup>
+	</Target>
+
+	<!-- Release archives normalize timestamps, so different DLLs can have the same timestamp and size.
+	     The SDK's normal copy can skip even Always items in that case; force these copies explicitly. -->
+	<Target Name="CopyTranscribeCppOutput" AfterTargets="CopyFilesToOutputDirectory" Condition="'$(UseTranscribeCpp)' == 'true'">
+		<Copy SourceFiles="@(TranscribeCppFile)" DestinationFolder="$(OutDir)transcribe.cpp" SkipUnchangedFiles="false" />
+	</Target>
+	<Target Name="CopyTranscribeCppPublish" AfterTargets="Publish" Condition="'$(UseTranscribeCpp)' == 'true'">
+		<Copy SourceFiles="@(TranscribeCppFile)" DestinationFolder="$(PublishDir)transcribe.cpp" SkipUnchangedFiles="false" />
 	</Target>
 
 	<!-- llama.cpp runs inside Rambl through a small C bridge. Build its pinned source with static ggml so STT's
@@ -196,9 +206,10 @@
 
 	<PropertyGroup Condition="'$(UseLlamaCpp)' == 'true'">
 		<DefineConstants>$(DefineConstants);LLAMA_CPP</DefineConstants>
-		<LlamaCppVersion>b12182</LlamaCppVersion>
-		<LlamaCppSourceSha256>adc18ac17ece6139a009399181dc31accb5ab5337115180df7b7006e56deaeef</LlamaCppSourceSha256>
+		<LlamaCppVersion>v1.0.0</LlamaCppVersion>
+		<LlamaCppSourceSha256>3f5f750e36326aea4d65c7623e7d597a33e395d65f4d76e5e0532171f252532b</LlamaCppSourceSha256>
 		<LlamaCppCacheDir>$(MSBuildProjectDirectory)\..\.native\rambl-llama\$(LlamaCppVersion)\</LlamaCppCacheDir>
+		<LlamaCppSourceDir>$(LlamaCppCacheDir)llama.cpp-$([System.Text.RegularExpressions.Regex]::Replace('$(LlamaCppVersion)', '^v', ''))\</LlamaCppSourceDir>
 		<LlamaCppDll>$(LlamaCppCacheDir)build\Release\rambl-llama.dll</LlamaCppDll>
 		<LlamaCppAvx2Dll>$(LlamaCppCacheDir)build-avx2\Release\rambl-llama-avx2.dll</LlamaCppAvx2Dll>
 	</PropertyGroup>
@@ -218,10 +229,10 @@
 		<ItemGroup>
 			<None Include="$(LlamaCppDll)" Link="llama.cpp\rambl-llama.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
 			<None Include="$(LlamaCppAvx2Dll)" Link="llama.cpp\rambl-llama-avx2.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-			<None Include="$(LlamaCppCacheDir)llama.cpp-$(LlamaCppVersion)\LICENSE" Link="llama.cpp\LICENSE" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-			<LlamaCppLicense Include="$(LlamaCppCacheDir)llama.cpp-$(LlamaCppVersion)\licenses\*" />
+			<None Include="$(LlamaCppSourceDir)LICENSE" Link="llama.cpp\LICENSE" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+			<LlamaCppLicense Include="$(LlamaCppSourceDir)licenses\*" />
 			<None Include="@(LlamaCppLicense)" Link="llama.cpp\licenses\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-			<LlamaCppVendorLicense Include="$(LlamaCppCacheDir)llama.cpp-$(LlamaCppVersion)\vendor\**\LICENSE*" />
+			<LlamaCppVendorLicense Include="$(LlamaCppSourceDir)vendor\**\LICENSE*" />
 			<None Include="@(LlamaCppVendorLicense)" Link="llama.cpp\licenses\vendor\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
 		</ItemGroup>
 	</Target>
@@ -234,9 +245,9 @@
 
 	<PropertyGroup Condition="'$(UseAudioCpp)' == 'true'">
 		<DefineConstants>$(DefineConstants);AUDIO_CPP</DefineConstants>
-		<AudioCppVersion>0.9.4</AudioCppVersion>
+		<AudioCppVersion>0.9.5</AudioCppVersion>
 		<AudioCppZipName>audio-v$(AudioCppVersion)-bin-windows-x64-vulkan</AudioCppZipName>
-		<AudioCppZipSha256>804f70cf47c7b8450ef37e76fc04ecee71728345061f6e749a412932dd7db7a7</AudioCppZipSha256>
+		<AudioCppZipSha256>dc103660e5fac85860677af2b39361154d863953777ab812d891721e6e163148</AudioCppZipSha256>
 		<AudioCppCacheDir>$(MSBuildProjectDirectory)\..\.native\audio.cpp\$(AudioCppVersion)\</AudioCppCacheDir>
 	</PropertyGroup>
 
@@ -362,7 +373,7 @@
 		<!-- Common/Text reads text that is read aloud as Markdown; the same version the Markdown control brings. -->
 		<PackageReference Include="Markdig" Version="1.6.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0" />
-		<PackageReference Include="Tomlyn" Version="2.10.2" />
+		<PackageReference Include="Tomlyn" Version="2.11.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">

@@ -1,7 +1,7 @@
 namespace Rambl.Components;
 
 /// <summary>
-/// Lucide icon font codepoints (Resources/Fonts/Lucide.ttf, lucide-static 1.70.0).
+/// Lucide icon font codepoints (Resources/Fonts/Lucide.ttf, lucide-static 1.73.0).
 /// Look up new ones in lucide-static's font/lucide.css, add the constant, and add it to <see cref="FromName"/>.
 /// </summary>
 public static class Icons

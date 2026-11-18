@@ -19,14 +19,15 @@ An offline Windows installer, shared local speech and language inference with LF
 
 ### Changed
 
-- Upgraded to .NET 11 and .NET MAUI 11.0.0, with SDK and workload versions pinned in `global.json` and matching Windows build, installer and CI targets.
+- Upgraded to .NET 11 and .NET MAUI 11.0.10, with SDK and workload versions pinned in `global.json` and matching Windows build, installer and CI targets.
 - GGUF language models now run inside Rambl through a private llama.cpp runtime instead of a separate llama-server process, with AVX2 acceleration on compatible CPUs and a fallback for older processors.
 - After recording stops, the dictation card shows a neutral Transcribing state with a frozen recording duration and stays visible through result insertion. Violet and Skip appear when post-processing starts. Esc or Cancel stops transcription while keeping the completed recording in History.
 - `rambl.ps1 build` now creates an experimental hybrid single-file Windows publish in `artifacts/rambl`, bundling the Microsoft runtimes while keeping native inference libraries and path-based assets beside the executable.
-- Updated .NET MAUI, Markdown parsing, logging, TOML, Windows audio and Lucide dependencies, plus transcribe.cpp 0.4.1, audio.cpp 0.9.4 and llama.cpp b12182. Building the private llama.cpp runtime now requires Visual Studio's Desktop development with C++ workload, including CMake.
+- Updated .NET MAUI, Markdown parsing, logging, TOML (Tomlyn 2.11.1), Windows audio and Lucide (1.73.0) dependencies, plus transcribe.cpp 0.4.2, audio.cpp 0.9.5 and stable llama.cpp v1.0.0. Building the private llama.cpp runtime now requires Visual Studio's Desktop development with C++ workload, including CMake.
 
 ### Fixed
 
+- Stale transcribe.cpp DLLs surviving a runtime upgrade when the new release has older file timestamps.
 - Overlapping dictations and late post-processing progress updates interfering with the dictation card.
 - Crashes during Sherpa initialization when native dependencies are unavailable or incompatible; availability and version checks now run before creating native-backed speech and silence detection objects.
 - Silence detection ranges extending past the end of a recording.

@@ -4,7 +4,7 @@ Rambl is a local-first push-to-talk dictation app (C# / .NET 11 MAUI). A shortcu
 
 ## Validate
 
-- `global.json` selects .NET SDK 11.0.100 (patch roll-forward) and workload set 11.100.1; `src/Rambl.csproj` pins MAUI 11.0.0. Run `dotnet workload install maui-windows` from the repository root after installing the SDK or upgrading the checkout (`sudo dotnet workload install maui-maccatalyst` on macOS).
+- `global.json` selects .NET SDK 11.0.100 (patch roll-forward) and workload set 11.100.1; `src/Rambl.csproj` pins MAUI 11.0.10. Run `dotnet workload install maui-windows` from the repository root after installing the SDK or upgrading the checkout (`sudo dotnet workload install maui-maccatalyst` on macOS).
 - Windows: `dotnet build src\Rambl.csproj -f net11.0-windows10.0.19041.0`. Install Visual Studio's Desktop development with C++ workload, including CMake. The first build needs internet: it downloads pinned native releases (parakeet.cpp, transcribe.cpp, audio.cpp, Kokoro's eSpeak phonemizer, the Silero VAD model) and llama.cpp source into `.native/`, verifies their SHA-256 pins in `Rambl.csproj`, and builds the private language runtime.
 - macOS: `dotnet build src/Rambl.csproj -f net11.0-maccatalyst -r maccatalyst-arm64` (`maccatalyst-x64` on Intel).
 - Shared-installation smoke checks: `dotnet run --project tools/OmniSmoke -- --storage-only`. Full native checks: `dotnet run --project tools/OmniSmoke`, after building the app and placing the pinned Omni backbone and projector in `.native/omni-tests/models/` (see `docs/native-inference.md`). The harness links production model/runtime code and uses files under `.native`, not app data. It also uses an existing installed Parakeet model for a read-only coexistence check when available. Check UI changes by running the app (`src\bin\Debug\net11.0-windows10.0.19041.0\win-x64\Rambl.exe`).
@@ -47,6 +47,7 @@ Rambl is a local-first push-to-talk dictation app (C# / .NET 11 MAUI). A shortcu
 - Keep sherpa-onnx on 1.13.8 until an external phonemizer is integrated: 2.x removes the built-in eSpeak frontend needed by Piper and Kokoro's out-of-lexicon words. Test both voice families when upgrading it.
 - `SherpaLibrary` loads native Sherpa and ONNX Runtime from beside the executable and checks Sherpa's version before creating any native-backed object. A failed Sherpa constructor can leave a finalizer that throws and terminates the process, so keep that availability check before VAD, STT and TTS construction. Clamp Silero's padded final ranges to the recording length. Publishing must always replace Sherpa's native DLLs: `PreserveNewest` can retain a newer-timestamped DLL after a package downgrade.
 - Updating a native runtime pin means changing its version, its SHA-256 and the version or ABI constant the code checks (`ParakeetNative.AbiVersion`, `TranscribeNative.Version`).
+- Always replace transcribe.cpp's native DLLs in build and publish output: release timestamps can predate the previous pin, so `PreserveNewest` can leave an older runtime installed.
 
 ## Model catalogs
 
@@ -67,7 +68,7 @@ Rambl is a local-first push-to-talk dictation app (C# / .NET 11 MAUI). A shortcu
 - The sidebar is grouped, with dividers: History | Post Processing, Read Aloud, Voice Commands | Language Models, STT Models, TTS Models | settings A–Z (Appearance, Audio, Controls); About sits at the bottom. The app opens on Controls.
 - History displays at most 10 recordings per page, newest first. Search covers the full history and resets to the first page; Previous/Next clamp after deletions. Keep only the page's cards plus an active playback card, rather than building the entire history on the UI thread.
 - History settings include `minimum_duration_seconds` under `[history]`, default 10 for new and earlier configurations. Capture it when dictation recording starts and keep only audio strictly longer than that threshold; 0 disables filtering for nonempty dictations. Exclude short audio at session completion before it can be listed or adopted, without changing transcription, post-processing, commands or insertion. Existing History and read-aloud profiles are unaffected; readings retain their separate half-second minimum. Reset restores 10; the duration input is disabled while Save recordings is off.
-- Icons are the Lucide font. Codepoints are pinned to lucide-static 1.70.0 in `Components/Icons.cs`; add new ones there and to its name map.
+- Icons are the Lucide font. Codepoints are pinned to lucide-static 1.73.0 in `Components/Icons.cs`; add new ones there and to its name map.
 - MAUI quirks that already cost time:
   - `Border` can't stroke single sides; use `BoxView` dividers.
   - A button's own icon and text layout is off-center. Lay out labels and put a transparent button on top, as the topmost child.

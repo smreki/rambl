@@ -20,7 +20,8 @@ finally { $stream.Dispose(); $hash.Dispose() }
 if ($actualHash -ne $SourceSha256) {
     throw "The llama.cpp source does not match its pinned SHA-256. Delete $archive and retry."
 }
-$source = Join-Path $cache "llama.cpp-$Version"
+# GitHub omits a leading v from the archive's top-level directory.
+$source = Join-Path $cache "llama.cpp-$($Version -replace '^v', '')"
 if (!(Test-Path -LiteralPath (Join-Path $source 'CMakeLists.txt'))) {
     & "$env:SystemRoot/System32/tar.exe" -xzf $archive -C $cache
     if ($LASTEXITCODE -ne 0) { throw 'Could not extract the llama.cpp source.' }
