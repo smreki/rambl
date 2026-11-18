@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.ProcessMenu"
+             IsVisible="False">
+    <ContentView.Resources>
+        <!-- The button over a row stays transparent in every state: the row's own fill, under its labels, shows hover and focus. -->
+        <Style x:Key="RowButton" TargetType="Button" BasedOn="{StaticResource GhostButton}">
+            <Setter Property="HeightRequest" Value="-1" />
+            <Setter Property="MinimumHeightRequest" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="PointerOver" />
+                        <VisualState x:Name="Pressed" />
+                        <VisualState x:Name="Disabled" />
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentView.Resources>
+
+    <!-- A menu layer: the nearly transparent backdrop closes the menu when anything else is clicked. -->
+    <Grid>
+        <Grid BackgroundColor="#01000000">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBackdropTapped" />
+            </Grid.GestureRecognizers>
+        </Grid>
+        <Border x:Name="Panel" WidthRequest="344" HorizontalOptions="Start" VerticalOptions="Start"
+                StrokeShape="RoundRectangle 8" StrokeThickness="1" Padding="8"
+                Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+            <Border.Shadow>
+                <Shadow Radius="16" Offset="0,4" Opacity="1"
+                        Brush="{AppThemeBinding Light={StaticResource OverlayShadowLightBrush}, Dark={StaticResource OverlayShadowDarkBrush}}" />
+            </Border.Shadow>
+            <Grid RowDefinitions="Auto,*" RowSpacing="6">
+                <components:SearchField x:Name="Search" HeightRequest="34" Placeholder="Search post-processing…"
+                                        AccessibleName="Search post-processing" AutomationId="ProcessMenuSearch" />
+                <!-- Scrolls when the window is too short for every process. -->
+                <ScrollView Grid.Row="1">
+                    <VerticalStackLayout Spacing="6">
+                        <VerticalStackLayout x:Name="Rows" Spacing="6" />
+                        <Label x:Name="EmptyLabel" IsVisible="False" Style="{StaticResource SettingHelp}" Margin="10,8"
+                               LineBreakMode="WordWrap" AutomationId="ProcessMenuEmpty" />
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentView>

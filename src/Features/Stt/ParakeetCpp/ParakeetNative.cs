@@ -56,6 +56,42 @@ internal static class ParakeetNative
     [DllImport(Library, EntryPoint = "parakeet_capi_stream_free", CallingConvention = CallingConvention.Cdecl)]
     public static extern void StreamFree(nint stream);
 
+    /// <summary>The <see cref="ModelKind"/> of a context that holds a speaker diarization model.</summary>
+    public const int DiarizationKind = 2;
+
+    /// <summary>The diarization stream mode of the checkpoint's own configuration: about 21 s of audio per step.</summary>
+    public const int DiarizationLatencyModel = 0;
+
+    /// <summary>The diarization stream mode that follows live audio by about one second.</summary>
+    public const int DiarizationLatencyLow = 1;
+
+    [DllImport(Library, EntryPoint = "parakeet_capi_model_kind", CallingConvention = CallingConvention.Cdecl)]
+    public static extern int ModelKind(nint context);
+
+    [DllImport(Library, EntryPoint = "parakeet_capi_diarize_stream_begin_latency", CallingConvention = CallingConvention.Cdecl)]
+    public static extern nint DiarizeStreamBegin(nint context, int latency);
+
+    [DllImport(Library, EntryPoint = "parakeet_capi_diarize_stream_feed", CallingConvention = CallingConvention.Cdecl)]
+    public static extern int DiarizeStreamFeed(nint stream, float[] samples, int sampleCount, int isLast, out nint segments, out int count);
+
+    [DllImport(Library, EntryPoint = "parakeet_capi_diarize_stream_active", CallingConvention = CallingConvention.Cdecl)]
+    public static extern int DiarizeStreamActive(nint stream, out nint segments, out int count);
+
+    [DllImport(Library, EntryPoint = "parakeet_capi_free_diar_segments", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void FreeDiarSegments(nint segments);
+
+    [DllImport(Library, EntryPoint = "parakeet_capi_diarize_stream_free", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void DiarizeStreamFree(nint stream);
+
+    /// <summary>One <c>parakeet_diar_segment</c>: a speaker and when they talk, in seconds from the start of the stream.</summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct DiarSegment
+    {
+        public int Speaker;
+        public float Start;
+        public float End;
+    }
+
     /// <summary>Reads a string the library returned and releases it.</summary>
     /// <param name="text">The pointer; may be null.</param>
     /// <returns>The text, or null for a null pointer (which the API uses for failure).</returns>

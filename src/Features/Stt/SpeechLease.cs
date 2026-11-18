@@ -18,6 +18,13 @@ public sealed class SpeechLease : IDisposable
     /// <exception cref="InvalidOperationException">The model could not be loaded.</exception>
     public Task<ISpeechRecognizer> GetRecognizerAsync() => entry.Load;
 
+    /// <summary>Gets the lock every user of this loaded model takes around a call into one of its sessions.</summary>
+    /// <remarks>
+    /// A dictation and a meeting can use the same loaded model at once, each with its own session; the native runtimes do
+    /// not promise that two sessions of one model can run at the same moment.
+    /// </remarks>
+    public object Gate => entry.Gate;
+
     /// <summary>Lets the engine unload the model once nothing else is using it.</summary>
     public void Dispose()
     {

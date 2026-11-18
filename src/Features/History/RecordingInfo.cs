@@ -18,6 +18,7 @@ namespace Rambl.Features.History;
 /// <param name="ProcessIds">The ids of the processes that ran, in order, or null when none did.</param>
 /// <param name="ProcessingError">Why post-processing stopped, or null; the original text was inserted then.</param>
 /// <param name="Reading">The profile and voice that read the text, for a reading; null for a dictation.</param>
+/// <param name="Meeting">The title, source and timed transcript of a meeting recording; null otherwise.</param>
 public sealed record RecordingInfo(
     string Id,
     DateTimeOffset CreatedAt,
@@ -29,9 +30,13 @@ public sealed record RecordingInfo(
     ProcessAction? Action = null,
     IReadOnlyList<string>? ProcessIds = null,
     string? ProcessingError = null,
-    ReadingInfo? Reading = null
+    ReadingInfo? Reading = null,
+    Meetings.MeetingInfo? Meeting = null
 )
 {
+    /// <summary>Gets whether this is a meeting recording; <see cref="Transcript"/> is then its turns as plain text.</summary>
+    public bool IsMeeting => Meeting is not null;
+
     /// <summary>Gets whether this is a reading by a read-aloud profile rather than a dictation.</summary>
     public bool IsReading => Reading is not null;
 

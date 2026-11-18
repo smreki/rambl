@@ -148,6 +148,10 @@ public sealed class DictationCoordinator : IDisposable
     /// <summary>Gets whether transcription, post-processing or result insertion is running after recording.</summary>
     public bool IsProcessing => processing;
 
+    /// <summary>Gets or sets a check that keeps other apps audible while dictating, for example while a meeting is recorded.</summary>
+    /// <remarks>Muting other apps would silence the meeting being recorded.</remarks>
+    public Func<bool>? KeepsOtherAppsAudible { get; set; }
+
     /// <summary>Reacts to a shortcut the hook matched. Call it on the UI thread.</summary>
     /// <param name="action">What the user did.</param>
     /// <param name="binding">For a press or release of a shortcut that starts dictation, which one: the dictation shortcut or a process's.</param>
@@ -206,6 +210,7 @@ public sealed class DictationCoordinator : IDisposable
     {
         Tracker.Dictation = current.DictationShortcut;
         Tracker.Cancel = current.CancelShortcut;
+        Tracker.Meeting = current.MeetingsEnabled ? current.MeetingShortcut : null;
         Tracker.ProcessShortcuts = ProcessShortcuts();
         Tracker.CommandShortcuts = CommandShortcuts();
         Tracker.Reset();
@@ -665,7 +670,7 @@ public sealed class DictationCoordinator : IDisposable
             if (current.PlayFeedbackSounds)
                 await audio.PlayFeedbackAsync(FeedbackSound.Start, current.OutputDeviceId, current.FeedbackVolume);
 
-            if (current.MuteSystemAudio && active && startedSession == session)
+            if (current.MuteSystemAudio && active && startedSession == session && KeepsOtherAppsAudible?.Invoke() != true)
                 mute = audio.MuteOtherApps();
         }
         catch (Exception ex)

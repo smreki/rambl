@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.MeetingSettings"
+             Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged">
+    <Grid RowDefinitions="*,Auto">
+    <ScrollView x:Name="Scroll" Padding="0,0,16,24">
+        <VerticalStackLayout x:Name="Form" Spacing="24" HorizontalOptions="Start">
+            <!-- Recording -->
+            <VerticalStackLayout Spacing="16">
+                <Label Text="Recording" FontFamily="InterSemiBold" FontSize="15"
+                       SemanticProperties.HeadingLevel="Level2" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Enable meeting recording" FontFamily="InterMedium" FontSize="13" />
+                        <Label Style="{StaticResource SettingHelp}"
+                               Text="When off, the recording shortcut does nothing. Your other meeting settings are kept." />
+                    </VerticalStackLayout>
+                    <Switch x:Name="EnabledToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                            AutomationId="MeetingsEnabled"
+                            SemanticProperties.Description="Enable meeting recording"
+                            Toggled="OnEnabledToggled" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Recording shortcut" FontFamily="InterMedium" FontSize="13" />
+                        <Label Style="{StaticResource SettingHelp}" Text="Start a meeting from any app." />
+                    </VerticalStackLayout>
+                    <components:ShortcutInput x:Name="ShortcutField" Grid.Column="1" WidthRequest="360"
+                                              SettingName="meeting recording shortcut"
+                                              DefaultShortcut="{x:Null}" Shortcut="{x:Null}"
+                                              AutomationId="MeetingShortcut"
+                                              ShortcutChanged="OnShortcutChanged" />
+                </Grid>
+            </VerticalStackLayout>
+
+            <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+            <!-- Audio sources -->
+            <VerticalStackLayout Spacing="16">
+                <Label Text="Audio sources" FontFamily="InterSemiBold" FontSize="15"
+                       SemanticProperties.HeadingLevel="Level2" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Call audio source" FontFamily="InterMedium" FontSize="13" />
+                        <Label x:Name="SourceHelp" Style="{StaticResource SettingHelp}"
+                               Text="Choose an app from the list or click its window." />
+                    </VerticalStackLayout>
+                    <Grid Grid.Column="1" ColumnDefinitions="220,132" ColumnSpacing="8" VerticalOptions="Center">
+                        <components:SelectInput x:Name="SourceSelect" AccessibleName="Call audio source"
+                                                AutomationId="MeetingSource"
+                                                SelectedIndexChanged="OnSourceChanged" />
+                        <components:IconButton x:Name="PickWindowButton" Grid.Column="1" HeightRequest="36"
+                                               Glyph="{x:Static components:Icons.MousePointer2}" GlyphSize="14"
+                                               Text="Pick a window" IsOutlined="True"
+                                               AccessibleName="Pick the call app by clicking its window"
+                                               AutomationId="MeetingPickWindow" Clicked="OnPickWindowClicked" />
+                    </Grid>
+                </Grid>
+                <!-- The tests monitor only while this layer is shown, and never save audio. -->
+                <Grid ColumnDefinitions="*,360" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Call audio test" FontFamily="InterMedium" FontSize="13" />
+                        <Label x:Name="SourceTestHelp" Style="{StaticResource SettingHelp}" />
+                    </VerticalStackLayout>
+                    <components:LevelMeter x:Name="CallMeter" Grid.Column="1" VerticalOptions="Center"
+                                           AutomationId="MeetingSourceMeter" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Include microphone" FontFamily="InterMedium" FontSize="13" />
+                        <Label Style="{StaticResource SettingHelp}" Text="Record your voice alongside the selected app." />
+                    </VerticalStackLayout>
+                    <Switch x:Name="IncludeMicrophoneToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                            AutomationId="MeetingIncludeMicrophone"
+                            SemanticProperties.Description="Include microphone"
+                            Toggled="OnIncludeMicrophoneToggled" />
+                </Grid>
+                <Grid x:Name="MicrophoneRow" ColumnDefinitions="*,360" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Microphone" FontFamily="InterMedium" FontSize="13" />
+                        <Label x:Name="MicrophoneHelp" Style="{StaticResource SettingHelp}"
+                               Text="Input device used when the microphone is included." />
+                    </VerticalStackLayout>
+                    <components:SelectInput x:Name="MicrophoneSelect" Grid.Column="1" AccessibleName="Meeting microphone"
+                                            AutomationId="MeetingMicrophone"
+                                            SelectedIndexChanged="OnMicrophoneChanged" />
+                </Grid>
+                <Grid x:Name="MicrophoneTestRow" ColumnDefinitions="*,360" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Microphone test" FontFamily="InterMedium" FontSize="13" />
+                        <Label Style="{StaticResource SettingHelp}" Text="Speak normally to check your input level." />
+                    </VerticalStackLayout>
+                    <components:LevelMeter x:Name="MicrophoneMeter" Grid.Column="1" VerticalOptions="Center"
+                                           AutomationId="MeetingMicrophoneMeter" />
+                </Grid>
+            </VerticalStackLayout>
+
+            <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+
+            <!-- Transcription -->
+            <VerticalStackLayout Spacing="16">
+                <Label Text="Transcription" FontFamily="InterSemiBold" FontSize="15"
+                       SemanticProperties.HeadingLevel="Level2" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Record audio only" FontFamily="InterMedium" FontSize="13" />
+                        <Label Style="{StaticResource SettingHelp}"
+                               Text="Save the audio to History. You can transcribe it later." />
+                    </VerticalStackLayout>
+                    <Switch x:Name="AudioOnlyToggle" Grid.Column="1" Style="{StaticResource SettingToggle}"
+                            AutomationId="MeetingAudioOnly"
+                            SemanticProperties.Description="Record audio only"
+                            Toggled="OnAudioOnlyToggled" />
+                </Grid>
+                <Grid x:Name="ModelRow" ColumnDefinitions="*,360" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Transcription model" FontFamily="InterMedium" FontSize="13" />
+                        <Label Style="{StaticResource SettingHelp}"
+                               Text="A streaming model can show captions in the recording card." />
+                    </VerticalStackLayout>
+                    <components:SelectInput x:Name="ModelSelect" Grid.Column="1" AccessibleName="Transcription model"
+                                            AutomationId="MeetingModel"
+                                            SelectedIndexChanged="OnModelChanged" />
+                </Grid>
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Speaker labels" FontFamily="InterMedium" FontSize="13" />
+                        <Label Style="{StaticResource SettingHelp}" Text="Identify individual speakers in the call audio." />
+                    </VerticalStackLayout>
+                    <!-- The speaker-label model: downloaded here, on its own, whatever Save and Revert do. -->
+                    <HorizontalStackLayout Grid.Column="1" Spacing="10" HorizontalOptions="End" VerticalOptions="Center">
+                        <Label x:Name="SpeakerGlyph" IsVisible="False" Style="{StaticResource Icon}" FontSize="16"
+                               Text="{x:Static components:Icons.CircleCheck}"
+                               TextColor="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                        <Label x:Name="SpeakerStatus" FontSize="13" VerticalOptions="Center" MaximumWidthRequest="360"
+                               LineBreakMode="WordWrap" AutomationId="MeetingSpeakerStatus"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                        <components:IconButton x:Name="SpeakerDownloadButton" IsVisible="False" HeightRequest="36"
+                                               Glyph="{x:Static components:Icons.Download}" GlyphSize="14"
+                                               Text="Download" IsOutlined="True"
+                                               AutomationId="MeetingSpeakerDownload" Clicked="OnSpeakerDownloadClicked" />
+                        <components:IconButton x:Name="SpeakerCancelButton" IsVisible="False" HeightRequest="36"
+                                               Text="Cancel" IsOutlined="True"
+                                               AccessibleName="Cancel the speaker label model download"
+                                               AutomationId="MeetingSpeakerCancel" Clicked="OnSpeakerCancelClicked" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+    <!-- Pinned action bar: outside the scroll view, so it stays in view. Its right margin is the scroll view's padding and scrollbar room, so it lines up with the form. -->
+    <Grid Grid.Row="1" RowDefinitions="Auto,Auto">
+            <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+            <HorizontalStackLayout Grid.Row="1" Margin="0,12,28,0" Spacing="8" HorizontalOptions="End">
+                <!-- Revert has the placeholder fill and stroke, drawn under a borderless button. -->
+                <Grid x:Name="RevertHost" HeightRequest="36" WidthRequest="88">
+                    <Border StrokeShape="RoundRectangle 6" StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource PlaceholderStrokeLight}, Dark={StaticResource PlaceholderStrokeDark}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}" />
+                    <components:IconButton x:Name="RevertButton" HeightRequest="36" Text="Revert"
+                                           AccessibleName="Revert changes to the meeting settings"
+                                           AutomationId="MeetingSettingsRevert" Clicked="OnRevertClicked" />
+                </Grid>
+                <components:IconButton x:Name="SaveButton" HeightRequest="36" WidthRequest="88"
+                                       Text="Save" IsPrimary="True" AccessibleName="Save meeting settings"
+                                       AutomationId="MeetingSettingsSave" Clicked="OnSaveClicked" />
+            </HorizontalStackLayout>
+    </Grid>
+    </Grid>
+</ContentView>

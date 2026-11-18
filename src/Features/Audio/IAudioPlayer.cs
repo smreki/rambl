@@ -13,6 +13,10 @@ public interface IAudioPlayer : IDisposable
     /// <summary>Gets whether the audio is playing now.</summary>
     bool IsPlaying { get; }
 
+    /// <summary>Gets or sets how fast the audio plays, where 1 is its own pace; the pitch stays the same.</summary>
+    /// <remarks>A value outside 0.5 to 2 is clamped. <see cref="Position"/> and <see cref="Duration"/> stay times in the file.</remarks>
+    double Speed { get; set; }
+
     /// <summary>Plays from the current position, or from the start when playback had finished.</summary>
     void Play();
 

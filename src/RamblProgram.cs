@@ -10,6 +10,7 @@ using Rambl.Features.PostProcessing;
 using Rambl.Features.ReadAloud;
 using Rambl.Features.Dictation;
 using Rambl.Features.LanguageModels;
+using Rambl.Features.Meetings;
 using Rambl.Features.Settings;
 using Rambl.Features.Stt;
 using Rambl.Features.Tts;
@@ -321,6 +322,57 @@ public static class RamblProgram
         );
         builder.Services.AddSingleton<CommandMatcher>();
         builder.Services.AddSingleton<VoiceCommandRunner>();
+        // Meeting recording: the speaker-label model has its own catalog and folder, like the other kinds of model.
+        builder.Services.AddKeyedSingleton(
+            ModelLibraryKeys.Speakers,
+            static (_, _) =>
+                new ModelRuntimeRegistry(
+                    [
+#if PARAKEET_CPP
+                        new Features.Stt.ParakeetCpp.ParakeetSpeakerRuntime(),
+#endif
+                    ]
+                )
+        );
+        builder.Services.AddKeyedSingleton(
+            ModelLibraryKeys.Speakers,
+            static (services, _) =>
+                new ModelLibrary(
+                    new ModelCatalogProvider(services.GetRequiredService<ILogger<ModelCatalogProvider>>(), "speaker-models.json"),
+                    new ModelStore(Path.Combine(AppDirectory(), "speaker-models"), services.GetRequiredService<ILogger<ModelStore>>()),
+                    services.GetRequiredService<ModelDownloader>(),
+                    services.GetRequiredKeyedService<ModelRuntimeRegistry>(ModelLibraryKeys.Speakers),
+                    services.GetRequiredService<ILogger<ModelLibrary>>()
+                )
+        );
+        builder.Services.AddSingleton(static services =>
+            new SpeakerModels(
+                services.GetRequiredKeyedService<ModelLibrary>(ModelLibraryKeys.Speakers),
+                services.GetRequiredKeyedService<ModelRuntimeRegistry>(ModelLibraryKeys.Speakers)
+            )
+        );
+        builder.Services.AddSingleton(static services =>
+            new MeetingLibrary(
+                services.GetRequiredService<RecordingHistory>(),
+                (ISettingsSource)Application.Current!,
+                services.GetRequiredService<SpeechEngine>(),
+                services.GetRequiredService<ModelLibrary>(),
+                services.GetRequiredService<SpeakerModels>(),
+                services.GetRequiredService<PostProcessLibrary>(),
+                services.GetRequiredService<PostProcessChain>(),
+                services.GetRequiredService<ILogger<MeetingLibrary>>()
+            )
+        );
+#if WINDOWS
+        builder.Services.AddSingleton<ICallAudioService, Platforms.Windows.Meetings.WindowsCallAudioService>();
+        builder.Services.AddSingleton<IMeetingTranscriptWindow, Platforms.Windows.Meetings.MeetingTranscriptWindow>();
+#else
+        builder.Services.AddSingleton<ICallAudioService, NullCallAudioService>();
+        builder.Services.AddSingleton<IMeetingTranscriptWindow, NullMeetingTranscriptWindow>();
+#endif
+        builder.Services.AddSingleton<MeetingSettings>();
+        builder.Services.AddSingleton<MeetingHistory>();
+        builder.Services.AddSingleton<Views.Meetings>();
         builder.Services.AddSingleton<CommandSetEditor>();
         builder.Services.AddSingleton<Views.VoiceCommands>();
         builder.Services.AddSingleton<ProfileEditor>();

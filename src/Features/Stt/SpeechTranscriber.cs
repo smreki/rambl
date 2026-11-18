@@ -69,8 +69,13 @@ public sealed class SpeechTranscriber : IDisposable
             var lastPartial = string.Empty;
             await foreach (var chunk in chunks.Reader.ReadAllAsync(token).ConfigureAwait(false))
             {
-                session.AcceptAudio(chunk.SampleRate, chunk.Samples);
-                var partial = session.PartialText;
+                string partial;
+                lock (lease.Gate)
+                {
+                    session.AcceptAudio(chunk.SampleRate, chunk.Samples);
+                    partial = session.PartialText;
+                }
+
                 if (partial != lastPartial)
                 {
                     lastPartial = partial;
@@ -79,7 +84,8 @@ public sealed class SpeechTranscriber : IDisposable
             }
 
             token.ThrowIfCancellationRequested();
-            return session is ICancellableSpeechSession cancellable ? cancellable.Finish(token) : session.Finish();
+            lock (lease.Gate)
+                return session is ICancellableSpeechSession cancellable ? cancellable.Finish(token) : session.Finish();
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
         {

@@ -200,7 +200,7 @@ public partial class CommandSetEditor : ContentView
 
     // The same room for the scrollbar as the process editor (see ProcessEditor.OnSizeChanged).
     private void OnSizeChanged(object? sender, EventArgs e) =>
-        Column.WidthRequest = Math.Min(960, Math.Max(0, Width - Scroll.Padding.HorizontalThickness - ScrollBarRoom));
+        Column.WidthRequest = Actions.WidthRequest = Math.Min(960, Math.Max(0, Width - Scroll.Padding.HorizontalThickness - ScrollBarRoom));
 
     private void OnModelChanged(object? sender, string id) => Dispatcher.Dispatch(async () => await RefreshModelAsync());
 
@@ -335,7 +335,7 @@ public partial class CommandSetEditor : ContentView
         if (proposed is not null)
         {
             _ = await library.GetAllAsync();
-            if ((library.FindConflict(proposed, setId, CurrentApp.Settings) ?? await shortcuts.FindDictationConflictAsync(proposed)) is { } conflict)
+            if ((library.FindConflict(proposed, setId, CurrentApp.Settings) ?? await shortcuts.FindExclusiveConflictAsync(proposed, CurrentApp.Settings)) is { } conflict)
             {
                 await ShowAlertAsync("Shortcut already in use", $"{proposed} {conflict}. Choose a different shortcut.");
                 return;

@@ -74,6 +74,29 @@ public sealed class RecordingStore
         }, saveLongerThan);
     }
 
+    /// <summary>Reserves the files of a recording whose audio the caller writes itself, such as a meeting with several channels.</summary>
+    /// <param name="startedAt">When it starts, which names its files and month folder.</param>
+    /// <returns>The recording's id, the partial file to write, the file it becomes, and what to call when writing has ended.</returns>
+    /// <exception cref="IOException">The folder cannot be created.</exception>
+    /// <exception cref="UnauthorizedAccessException">Access to the folder is denied.</exception>
+    public (string Id, string PartPath, string AudioPath, Action Release) Reserve(DateTimeOffset startedAt)
+    {
+        var local = startedAt.ToLocalTime();
+        var id = $"{local.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}-{Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(3))}";
+        var folder = Path.Combine(Root, local.ToString("yyyy-MM", CultureInfo.InvariantCulture));
+        _ = Directory.CreateDirectory(folder);
+
+        var partPath = Path.Combine(folder, id + PartExtension);
+        lock (activeGate)
+            _ = activeParts.Add(partPath);
+
+        return (id, partPath, Path.Combine(folder, id + AudioExtension), () =>
+        {
+            lock (activeGate)
+                _ = activeParts.Remove(partPath);
+        });
+    }
+
     /// <summary>Lists every recording, newest first, after repairing what an interrupted run left behind.</summary>
     /// <returns>The recordings. A file that cannot be read is skipped and logged.</returns>
     public Task<IReadOnlyList<RecordingInfo>> ListAsync() => Task.Run(List);
@@ -217,7 +240,8 @@ public sealed class RecordingStore
             metadata.Action,
             metadata.Processes,
             metadata.ProcessingError,
-            metadata.Reading
+            metadata.Reading,
+            metadata.Meeting
         );
     }
 
@@ -257,7 +281,8 @@ public sealed class RecordingStore
             recording.Action,
             recording.ProcessIds is { Count: > 0 } ids ? [.. ids] : null,
             recording.ProcessingError,
-            recording.Reading
+            recording.Reading,
+            recording.Meeting
         );
         var temporary = $"{recording.MetadataPath}.{Guid.NewGuid():N}.tmp";
         try

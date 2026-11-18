@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-18",
+  "runtimes": [
+    {
+      "id": "parakeet.cpp",
+      "name": "parakeet.cpp",
+      "formats": [
+        "gguf"
+      ],
+      "platforms": [
+        "windows-x64",
+        "macos-arm64",
+        "macos-x64"
+      ],
+      "automaticOrder": 1,
+      "license": "MIT",
+      "project": "https://github.com/mudler/parakeet.cpp"
+    }
+  ],
+  "models": [
+    {
+      "id": "nemotron-3-diarization",
+      "name": "Nemotron 3 Diarization",
+      "family": "sortformer",
+      "purpose": {
+        "label": "Speaker labels",
+        "icon": "users"
+      },
+      "cpuFit": "good",
+      "languages": {
+        "label": "Any language",
+        "codes": []
+      },
+      "license": {
+        "id": "OpenMDW-1.1"
+      },
+      "source": "https://huggingface.co/nvidia/Nemotron-3-Diarization",
+      "ramMbEstimate": [
+        300,
+        600
+      ],
+      "notes": [
+        "Streaming Sortformer for up to eight speakers. Meeting transcription uses it to label the voices in the call audio."
+      ],
+      "artifacts": [
+        {
+          "id": "parakeet-cpp-q8_0",
+          "format": "gguf",
+          "quantization": "q8_0",
+          "runtimes": [
+            {
+              "name": "parakeet.cpp"
+            }
+          ],
+          "host": {
+            "type": "huggingface",
+            "repo": "mudler/parakeet-cpp-gguf",
+            "revision": "07a08a3a405d20c5434b9a1442f6e6cf571f57ad"
+          },
+          "files": [
+            {
+              "path": "nemotron-3-diarization-q8_0.gguf",
+              "bytes": 108674624,
+              "sha256": "76c5bb1fb20d82706142ad32769b7ab496d2458489473a000fd7074c52ceec22"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -27,6 +27,15 @@ public sealed class ShortcutTracker
     private IReadOnlyCollection<Shortcut> readShortcuts = [];
     private bool readCancelEnabled;
     private Shortcut dictation = Shortcut.DefaultDictation;
+    private Shortcut? meeting;
+
+    /// <summary>Gets or sets the shortcut that starts and stops a meeting recording, or null for none.</summary>
+    /// <remarks>It wins over a process shortcut it equals: the processes then run on the meeting's transcript.</remarks>
+    public Shortcut? Meeting
+    {
+        get { lock (gate) return meeting; }
+        set { lock (gate) meeting = value; }
+    }
 
     /// <summary>Gets or sets the shortcut that starts dictation.</summary>
     public Shortcut Dictation
@@ -87,6 +96,12 @@ public sealed class ShortcutTracker
         {
             if (swallowed.Contains(key))
                 return new(ShortcutAction.None, true);
+
+            if (meeting is { } record && key == record.Key && held == record.Modifiers && record != dictation)
+            {
+                swallowed.Add(key);
+                return new(ShortcutAction.MeetingPressed, true, record);
+            }
 
             if (FindReadBinding(key, held) is { } read)
             {

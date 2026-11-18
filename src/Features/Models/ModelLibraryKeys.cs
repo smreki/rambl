@@ -11,4 +11,7 @@ public static class ModelLibraryKeys
 
     /// <summary>The key of the library for the text-to-speech models catalog.</summary>
     public const string Tts = "tts-models";
+
+    /// <summary>The key of the library for the speaker-label (diarization) model of meeting transcription.</summary>
+    public const string Speakers = "speaker-models";
 }

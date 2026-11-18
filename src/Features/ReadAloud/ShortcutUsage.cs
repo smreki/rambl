@@ -28,6 +28,8 @@ public sealed class ShortcutUsage(ReadAloudLibrary profiles, PostProcessLibrary 
             return "already cancels recording";
         if (settings.DictationShortcut == shortcut)
             return "already starts dictation";
+        if (settings.MeetingShortcut == shortcut)
+            return "already records meetings";
 
         if ((await processes.GetAllAsync()).FirstOrDefault(process => process.Shortcut == shortcut) is { } process)
             return $"already starts the process “{process.Name}”";
@@ -45,5 +47,36 @@ public sealed class ShortcutUsage(ReadAloudLibrary profiles, PostProcessLibrary 
         ArgumentNullException.ThrowIfNull(shortcut);
         _ = await profiles.GetAllAsync();
         return profiles.FindUsing(shortcut) is { } profile ? $"already reads aloud with the profile “{profile.Name}”" : null;
+    }
+
+    /// <summary>Says why a shortcut cannot dictate, cancel or run a command set because a profile or meeting recording uses it.</summary>
+    /// <param name="shortcut">The proposed shortcut for dictation, cancel or a command set.</param>
+    /// <param name="settings">The settings in effect, for the meeting shortcut.</param>
+    /// <returns>The reason, as text that completes "{shortcut} ...", or null when it can be used.</returns>
+    /// <remarks>A post-processing process may share the meeting shortcut, so it only asks <see cref="FindDictationConflictAsync"/>.</remarks>
+    public async Task<string?> FindExclusiveConflictAsync(Shortcut shortcut, AppSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        return settings.MeetingShortcut == shortcut ? "already records meetings" : await FindDictationConflictAsync(shortcut);
+    }
+
+    /// <summary>Says why a shortcut cannot start meeting recordings.</summary>
+    /// <param name="shortcut">The proposed meeting shortcut.</param>
+    /// <param name="settings">The settings in effect, for the dictation and cancel shortcuts.</param>
+    /// <returns>The reason, as text that completes "{shortcut} ...", or null when it can be used.</returns>
+    /// <remarks>It may match the shortcut of post-processing processes: they then run on the meeting transcript when the recording ends.</remarks>
+    public async Task<string?> FindMeetingConflictAsync(Shortcut shortcut, AppSettings settings)
+    {
+        ArgumentNullException.ThrowIfNull(shortcut);
+        ArgumentNullException.ThrowIfNull(settings);
+
+        if (settings.CancelShortcut == shortcut)
+            return "already cancels recording";
+        if (settings.DictationShortcut == shortcut)
+            return "already starts dictation";
+        if ((await commands.GetAllAsync()).FirstOrDefault(set => set.Shortcut == shortcut) is { } set)
+            return $"already starts the command set “{set.Name}”";
+
+        return await FindDictationConflictAsync(shortcut);
     }
 }

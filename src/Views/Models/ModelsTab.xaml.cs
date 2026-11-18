@@ -176,6 +176,7 @@ public partial class ModelsTab : ContentView
         {
             Title = listing.Name,
             Purpose = listing.PurposeLabel,
+            IsMeetingModel = kind == ModelsTabKind.Speech && listing.MeetingTranscription,
             SharedNotice = listing.SharedNotice,
             PurposeGlyph = Icons.FromName(listing.PurposeIcon),
             Languages = kind == ModelsTabKind.Language ? listing.ParametersText : listing.LanguagesLabel,
@@ -214,7 +215,7 @@ public partial class ModelsTab : ContentView
                 ModelsTabKind.Tts =>
                     $"{listing.Name}. {listing.PurposeLabel}. {listing.VoicesText}. {listing.LanguagesLabel}. {listing.CpuFit.Label}. {listing.SizeText}. {listing.License?.Name}.",
                 _ =>
-                    $"{listing.Name}. {listing.PurposeLabel}. {listing.LanguagesLabel}. {(listing.IsStreaming ? "Streaming. " : string.Empty)}{listing.CpuFit.Label}. {listing.SizeText}.",
+                    $"{listing.Name}. {listing.PurposeLabel}. {(listing.MeetingTranscription ? "Meeting transcription. " : string.Empty)}{listing.LanguagesLabel}. {(listing.IsStreaming ? "Streaming. " : string.Empty)}{listing.CpuFit.Label}. {listing.SizeText}.",
             }) + " " + listing.SharedNotice
         );
         card.ActionClicked += (_, _) => OnPrimaryAction(listing);

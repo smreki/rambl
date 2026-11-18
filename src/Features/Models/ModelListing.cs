@@ -44,6 +44,9 @@ public sealed record ModelListing(
     IReadOnlyList<string>? Capabilities = null
 )
 {
+    /// <summary>Gets whether a speech model is recommended for meeting transcription, which its card says.</summary>
+    public bool MeetingTranscription { get; init; }
+
     /// <summary>Gets whether multiple task screens use the same installation.</summary>
     public bool IsShared => Capabilities is { Count: > 1 };
 
@@ -114,6 +117,9 @@ public sealed record ModelListing(
                     model.DefaultVoice,
                     model.Capabilities
                 )
+                {
+                    MeetingTranscription = model.MeetingTranscription,
+                }
             );
         }
 

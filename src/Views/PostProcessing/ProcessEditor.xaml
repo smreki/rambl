@@ -4,8 +4,8 @@
              xmlns:components="clr-namespace:Rambl.Components"
              x:Class="Rambl.Views.ProcessEditor"
              SizeChanged="OnSizeChanged">
-    <Grid x:Name="Root">
-        <ScrollView x:Name="Scroll" Padding="0,0,16,0">
+    <Grid x:Name="Root" RowDefinitions="*,Auto">
+        <ScrollView x:Name="Scroll" Padding="0,0,16,24">
             <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
                 <!-- Back to the list, then the title. -->
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
@@ -190,28 +190,30 @@
                             </Border>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
-
-                    <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
-
-                    <!-- Actions -->
-                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
-                        <components:IconButton x:Name="DeleteButton" HeightRequest="36" Glyph="{x:Static components:Icons.Trash2}"
-                                               GlyphSize="14" Text="Delete process" IsOutlined="True" IsDestructive="True"
-                                               AccessibleName="Delete process" AutomationId="DeleteProcess"
-                                               Clicked="OnDeleteClicked" />
-                        <components:IconButton x:Name="RevertButton" Grid.Column="2" HeightRequest="36" WidthRequest="88"
-                                               Text="Revert" IsOutlined="True" AccessibleName="Revert changes"
-                                               AutomationId="RevertProcess" Clicked="OnRevertClicked" />
-                        <components:IconButton x:Name="SaveButton" Grid.Column="3" HeightRequest="36" WidthRequest="88"
-                                               Text="Save" IsPrimary="True" AccessibleName="Save process"
-                                               AutomationId="SaveProcess" Clicked="OnSaveClicked" />
-                    </Grid>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
+        <!-- Pinned action bar: outside the scroll view, so it stays in view. Its right margin is the scroll view's padding, so it lines up with the column. -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto">
+            <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+            <Grid x:Name="Actions" Grid.Row="1" Margin="0,12,16,0" HorizontalOptions="Center"
+                  ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+                <components:IconButton x:Name="DeleteButton" HeightRequest="36" Glyph="{x:Static components:Icons.Trash2}"
+                                       GlyphSize="14" Text="Delete process" IsOutlined="True" IsDestructive="True"
+                                       AccessibleName="Delete process" AutomationId="DeleteProcess"
+                                       Clicked="OnDeleteClicked" />
+                <components:IconButton x:Name="RevertButton" Grid.Column="2" HeightRequest="36" WidthRequest="88"
+                                       Text="Revert" IsOutlined="True" AccessibleName="Revert changes"
+                                       AutomationId="RevertProcess" Clicked="OnRevertClicked" />
+                <components:IconButton x:Name="SaveButton" Grid.Column="3" HeightRequest="36" WidthRequest="88"
+                                       Text="Save" IsPrimary="True" AccessibleName="Save process"
+                                       AutomationId="SaveProcess" Clicked="OnSaveClicked" />
+            </Grid>
+        </Grid>
+
         <!-- Model menu layer: a nearly transparent backdrop closes the menu when anything else is clicked. -->
-        <Grid x:Name="MenuLayer" IsVisible="False">
+        <Grid x:Name="MenuLayer" Grid.RowSpan="2" IsVisible="False">
             <Grid BackgroundColor="#01000000">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnMenuBackdropTapped" />

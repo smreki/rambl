@@ -149,7 +149,7 @@ public partial class ProcessEditor : ContentView
     // than they were measured, and the switches at their right edge were clipped (on Windows, at 125% scaling). A margin
     // on the column instead of the padding did the same.
     private void OnSizeChanged(object? sender, EventArgs e) =>
-        Column.WidthRequest = Math.Min(960, Math.Max(0, Width - Scroll.Padding.HorizontalThickness - ScrollBarRoom));
+        Column.WidthRequest = Actions.WidthRequest = Math.Min(960, Math.Max(0, Width - Scroll.Padding.HorizontalThickness - ScrollBarRoom));
 
     private void OnModelChanged(object? sender, string id) => Dispatcher.Dispatch(async () => await RefreshModelAsync());
 

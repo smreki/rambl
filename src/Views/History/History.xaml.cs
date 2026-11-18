@@ -5,7 +5,9 @@ using Rambl.Components;
 using Rambl.Features.Audio;
 using Rambl.Features.Dialogs;
 using Rambl.Features.History;
+using Rambl.Features.Meetings;
 using Rambl.Features.Models;
+using Rambl.Features.PostProcessing;
 
 namespace Rambl.Views;
 
@@ -13,7 +15,8 @@ namespace Rambl.Views;
 /// <remarks>
 /// The cog at the top right replaces the list with the <see cref="HistorySettings"/> layer, and its Back button
 /// returns; the sidebar keeps History selected throughout. Only one recording plays at a time, and playback stops when
-/// the screen or the list is left.
+/// the screen or the list is left. A meeting recording has a <see cref="MeetingRecordingCard"/>, which
+/// <see cref="MeetingCards"/> runs as on Meetings → History; this screen still owns its place in the list and its playback.
 /// </remarks>
 public partial class History : ContentView
 {
@@ -24,6 +27,7 @@ public partial class History : ContentView
     private readonly IConfirmService confirmations;
     private readonly ILogger<History> logger;
     private readonly Dictionary<string, Entry> entries = [];
+    private readonly MeetingCards meetingCards;
     private IReadOnlyList<RecordingInfo> recordings = [];
     private IAudioPlayer? player;
     private string? playerId;
@@ -39,6 +43,9 @@ public partial class History : ContentView
     /// <param name="folders">Opens folders.</param>
     /// <param name="confirmations">Asks before a recording is deleted.</param>
     /// <param name="settings">The settings layer shown in place of the list.</param>
+    /// <param name="meetings">Transcribes meeting recordings and runs processes on their transcripts.</param>
+    /// <param name="transcripts">Opens a meeting's transcript window.</param>
+    /// <param name="processes">The post-processing processes a meeting card's Run command offers.</param>
     /// <param name="logger">The logger for failures.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
     public History(
@@ -47,6 +54,9 @@ public partial class History : ContentView
         IFolderService folders,
         IConfirmService confirmations,
         HistorySettings settings,
+        MeetingLibrary meetings,
+        IMeetingTranscriptWindow transcripts,
+        PostProcessLibrary processes,
         ILogger<History> logger
     )
     {
@@ -55,6 +65,9 @@ public partial class History : ContentView
         ArgumentNullException.ThrowIfNull(folders);
         ArgumentNullException.ThrowIfNull(confirmations);
         ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(meetings);
+        ArgumentNullException.ThrowIfNull(transcripts);
+        ArgumentNullException.ThrowIfNull(processes);
         ArgumentNullException.ThrowIfNull(logger);
         this.history = history;
         this.audio = audio;
@@ -67,6 +80,14 @@ public partial class History : ContentView
         SettingsHost.Content = settings;
         this.settings = settings;
         settings.BackRequested += (_, _) => ShowList();
+        meetingCards = new MeetingCards(this, CommandMenu, history, meetings, transcripts, processes, confirmations, logger);
+        meetingCards.PlayPauseRequested += (_, id) => OnPlayPause(id);
+        meetingCards.SeekRequested += (_, seek) => OnSeek(seek.Id, seek.Fraction);
+        meetingCards.Deleting += (_, id) =>
+        {
+            if (playerId == id)
+                StopPlayback();
+        };
         Search.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(SearchField.Text))
@@ -103,6 +124,7 @@ public partial class History : ContentView
         }
 
         StopPlayback();
+        meetingCards.CloseMenu();
         ShowList();
     }
 
@@ -137,9 +159,7 @@ public partial class History : ContentView
         var query = Search.Text?.Trim() ?? string.Empty;
         var matches = recordings
             .Where(recording =>
-                query.Length == 0
-                || (recording.Transcript?.Contains(query, StringComparison.CurrentCultureIgnoreCase) ?? false)
-                || (recording.Result?.Contains(query, StringComparison.CurrentCultureIgnoreCase) ?? false)
+                MeetingCards.Matches(recording, query)
                 || (recording.Action?.Title.Contains(query, StringComparison.CurrentCultureIgnoreCase) ?? false)
             )
             .OrderByDescending(recording => recording.CreatedAt)
@@ -165,6 +185,11 @@ public partial class History : ContentView
             _ = entries.Remove(gone);
         }
 
+        // A meeting's card is kept the same way; one that was playing and is gone stops first.
+        if (playerId is { } playing && !known.Contains(playing))
+            StopPlayback();
+        meetingCards.Retain(id => known.Contains(id) && (onPage.Contains(id) || playerId == id));
+
         List.Clear();
         foreach (var day in visible.GroupBy(recording => recording.CreatedAt.LocalDateTime.Date))
         {
@@ -182,6 +207,13 @@ public partial class History : ContentView
 
             foreach (var recording in day)
             {
+                if (recording.IsMeeting)
+                {
+                    var current = playerId == recording.Id && player is not null;
+                    List.Add(meetingCards.Show(recording, current, current && player!.IsPlaying));
+                    continue;
+                }
+
                 var entry = GetEntry(recording);
                 entry.Info = recording;
                 ApplyInfo(entry);
@@ -246,6 +278,7 @@ public partial class History : ContentView
         var recording = entry.Info;
         var card = entry.Card;
         var busy = history.IsRetranscribing(recording.Id);
+        var stopping = busy && history.IsStoppingTranscription(recording.Id);
         var canRetranscribe = history.CanRetranscribe;
 
         card.IsReading = recording.IsReading;
@@ -265,7 +298,8 @@ public partial class History : ContentView
 
         // While a transcription runs the card says so, under the old transcript when there is one (it is dimmed until the
         // new one arrives) and instead of the last failure's message when there is none.
-        card.NoteText = busy ? "Transcribing…"
+        card.NoteText = stopping ? "Stopping…"
+            : busy ? "Transcribing…"
             : recording.HasTranscript ? string.Empty
             : recording.Error is not null ? "This recording could not be transcribed."
             : recording.Transcript is null ? "No transcript yet. Choose a speech model, then retranscribe it."
@@ -273,8 +307,11 @@ public partial class History : ContentView
         card.ErrorText = busy || recording.HasTranscript ? string.Empty : recording.Error ?? string.Empty;
         card.IsBusy = busy;
         card.CanCopy = recording.HasTranscript;
-        card.CanRetranscribe = !busy && canRetranscribe;
-        card.RetranscribeToolTip = busy ? "Transcribing…"
+
+        // While a transcription runs the same button stops it.
+        card.CanRetranscribe = busy ? !stopping : canRetranscribe;
+        card.RetranscribeToolTip = stopping ? "Stopping…"
+            : busy ? "Stop transcribing"
             : canRetranscribe ? "Transcribe again with the current model"
             : "Choose a speech model that can be used in STT Models first.";
 
@@ -377,6 +414,8 @@ public partial class History : ContentView
 
         if (oldId is not null && entries.TryGetValue(oldId, out var entry))
             ApplyInfo(entry);
+        else if (oldId is not null)
+            meetingCards.ClearPlayback(oldId);
     }
 
     // Raised on the playback thread.
@@ -397,10 +436,16 @@ public partial class History : ContentView
 
     private void UpdatePlayback()
     {
-        if (player is not { } current || playerId is null || !entries.TryGetValue(playerId, out var entry))
+        if (player is not { } current || playerId is null)
             return;
 
         var position = current.Position;
+        if (!entries.TryGetValue(playerId, out var entry))
+        {
+            _ = meetingCards.ShowPlayback(playerId, current.IsPlaying, current.Duration > TimeSpan.Zero ? position / current.Duration : 0, position);
+            return;
+        }
+
         entry.Card.IsActive = true;
         entry.Card.IsPlaying = current.IsPlaying;
         entry.Card.Progress = current.Duration > TimeSpan.Zero ? position / current.Duration : 0;
@@ -439,6 +484,12 @@ public partial class History : ContentView
     {
         try
         {
+            if (history.IsRetranscribing(id))
+            {
+                _ = history.StopTranscribing(id);
+                return;
+            }
+
             await history.RetranscribeAsync(id);
         }
         catch (Exception ex) when (ex is InvalidOperationException or IOException or KeyNotFoundException or UnauthorizedAccessException)
@@ -524,6 +575,7 @@ public partial class History : ContentView
     {
         // The list is out of sight, so nothing keeps playing behind the settings.
         StopPlayback();
+        meetingCards.CloseMenu();
         Column.IsVisible = false;
         SettingsHost.IsVisible = true;
         _ = settings.RefreshAsync();

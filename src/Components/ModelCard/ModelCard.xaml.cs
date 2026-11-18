@@ -52,6 +52,17 @@ public partial class ModelCard : ContentView
         propertyChanged: static (bindable, _, value) => ((ModelCard)bindable).PurposeLabel.Text = (string)value
     );
 
+    /// <summary>Gets or sets whether the card says the model is recommended for meeting transcription, beside its purpose.</summary>
+    public bool IsMeetingModel
+    {
+        get => MeetingItem.IsVisible;
+        set
+        {
+            if (MeetingItem.IsVisible != value)
+                MeetingItem.IsVisible = value;
+        }
+    }
+
     /// <summary>Identifies the Lucide glyph before the purpose.</summary>
     public static readonly BindableProperty PurposeGlyphProperty = BindableProperty.Create(
         nameof(PurposeGlyph),

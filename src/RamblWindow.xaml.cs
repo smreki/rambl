@@ -90,7 +90,11 @@ public partial class RamblWindow : Window
                     services.GetRequiredService<Features.ReadAloud.ReadAloudService>(),
                     services.GetRequiredService<Features.ReadAloud.ISelectionReader>(),
                     services.GetRequiredService<Features.Tts.TtsEngine>(),
-                    services.GetRequiredService<ILogger<Platforms.Windows.Dictation.DictationController>>()
+                    services.GetRequiredService<ILogger<Platforms.Windows.Dictation.DictationController>>(),
+                    services.GetRequiredService<Features.Meetings.ICallAudioService>(),
+                    services.GetRequiredService<Features.History.RecordingHistory>(),
+                    services.GetRequiredService<Features.Meetings.MeetingLibrary>(),
+                    services.GetRequiredService<Features.Meetings.SpeakerModels>()
                 );
             }
             catch (Exception ex)

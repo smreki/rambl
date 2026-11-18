@@ -181,7 +181,7 @@ public partial class ProfileEditor : ContentView
     }
 
     private void OnSizeChanged(object? sender, EventArgs e) =>
-        Column.WidthRequest = Math.Min(960, Math.Max(0, Width - Scroll.Padding.HorizontalThickness - ScrollBarRoom));
+        Column.WidthRequest = Actions.WidthRequest = Math.Min(960, Math.Max(0, Width - Scroll.Padding.HorizontalThickness - ScrollBarRoom));
 
     private void OnModelChanged(object? sender, string id) => Dispatcher.Dispatch(async () => await RefreshAsync(isNew: false));
 

@@ -162,6 +162,8 @@ public sealed class SpeechEngine(ModelLibrary library, ModelRuntimeRegistry runt
 
         public Task<ISpeechRecognizer> Load { get; } = load;
 
+        public object Gate { get; } = new();
+
         public int Leases { get; set; }
 
         public bool Retired { get; set; }

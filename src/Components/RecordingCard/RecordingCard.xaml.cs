@@ -20,6 +20,7 @@ public partial class RecordingCard : ContentView
     private bool isActive;
     private bool originalExpanded;
     private bool isReading;
+    private bool isBusy;
     private string namesSuffix = string.Empty;
     private string playName = string.Empty;
 
@@ -38,7 +39,7 @@ public partial class RecordingCard : ContentView
     /// <summary>Occurs when Copy is pressed.</summary>
     public event EventHandler? CopyClicked;
 
-    /// <summary>Occurs when Retranscribe is pressed.</summary>
+    /// <summary>Occurs when Retranscribe is pressed, or Stop, which the same button is while <see cref="IsBusy"/>.</summary>
     public event EventHandler? RetranscribeClicked;
 
     /// <summary>Occurs when Delete is pressed.</summary>
@@ -237,11 +238,23 @@ public partial class RecordingCard : ContentView
         }
     }
 
-    /// <summary>Gets or sets whether the transcript is being made again, which dims the old one until the new one arrives. The screen also sets <see cref="NoteText"/> to say so.</summary>
+    /// <summary>
+    /// Gets or sets whether the transcript is being made again, which dims the old one until the new one arrives and turns
+    /// Retranscribe into Stop: <see cref="RetranscribeClicked"/> then asks to stop. The screen also sets <see cref="NoteText"/> to say so.
+    /// </summary>
     public bool IsBusy
     {
-        get => TranscriptLabel.Opacity < 1;
-        set => TranscriptLabel.Opacity = value ? 0.5 : 1;
+        get => isBusy;
+        set
+        {
+            if (isBusy == value)
+                return;
+
+            isBusy = value;
+            TranscriptLabel.Opacity = value ? 0.5 : 1;
+            RetranscribeButton.Glyph = value ? Icons.Square : Icons.RefreshCw;
+            UpdateNames();
+        }
     }
 
     /// <summary>Gets or sets whether this is a reading by a read-aloud profile rather than a dictation.</summary>
@@ -363,12 +376,12 @@ public partial class RecordingCard : ContentView
     {
         var suffix = string.IsNullOrEmpty(timeText) ? string.Empty : $" of {timeText}";
         // The names also depend on whether it is a reading.
-        var names = $"{isReading}{suffix}";
+        var names = $"{isReading}{isBusy}{suffix}";
         if (names != namesSuffix)
         {
             namesSuffix = names;
             CopyButton.AccessibleName = isReading ? $"Copy text read{suffix}" : $"Copy transcript{suffix}";
-            RetranscribeButton.AccessibleName = $"Retranscribe recording{suffix}";
+            RetranscribeButton.AccessibleName = isBusy ? $"Stop transcribing recording{suffix}" : $"Retranscribe recording{suffix}";
             DeleteButton.AccessibleName = isReading ? $"Delete reading{suffix}" : $"Delete recording{suffix}";
             SemanticProperties.SetDescription(PositionSlider, $"Playback position{suffix}");
         }

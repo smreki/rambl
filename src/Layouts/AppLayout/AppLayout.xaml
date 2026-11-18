@@ -35,6 +35,11 @@
                                   Text="Voice Commands"
                                   Screen="{x:Type views:VoiceCommands}"
                                   Tapped="OnNavItemTapped" />
+                <components:NavItem x:Name="MeetingsNav"
+                                  Glyph="{x:Static components:Icons.Users}"
+                                  Text="Meetings"
+                                  Screen="{x:Type views:Meetings}"
+                                  Tapped="OnNavItemTapped" />
                 <BoxView Style="{StaticResource Divider}" HeightRequest="1" Margin="10,6" />
                 <components:NavItem x:Name="LanguageModelsNav"
                                   Glyph="{x:Static components:Icons.Brain}"

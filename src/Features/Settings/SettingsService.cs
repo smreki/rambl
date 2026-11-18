@@ -79,6 +79,7 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
                 || settings.InputChannel is < 1
                 || settings.HistoryRetentionDays < 0
                 || settings.HistoryMinimumDurationSeconds < 0
+                || (settings.MeetingShortcut is { } meeting && (meeting == settings.DictationShortcut || meeting == settings.CancelShortcut))
             )
                 throw new InvalidOperationException("The settings update returned undefined settings.");
 
@@ -157,9 +158,19 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
         var languageModels = FindTable(document, "language_models");
         var history = FindTable(document, "history");
         var readAloud = FindTable(document, "read_aloud");
+        var meetings = FindTable(document, "meetings");
 
         return new()
         {
+            MeetingsEnabled = ReadBool(meetings, "meetings", "enabled") ?? defaults.MeetingsEnabled,
+            MeetingShortcut = Shortcut.TryParse(ReadString(meetings, "meetings", "shortcut"), out var meeting) ? meeting : null,
+            MeetingSourceProcess = NullIfEmpty(ReadString(meetings, "meetings", "source_process")),
+            MeetingSourceName = NullIfEmpty(ReadString(meetings, "meetings", "source_name")),
+            MeetingSystemAudio = ReadBool(meetings, "meetings", "system_audio") ?? defaults.MeetingSystemAudio,
+            MeetingIncludeMicrophone = ReadBool(meetings, "meetings", "include_microphone") ?? defaults.MeetingIncludeMicrophone,
+            MeetingInputDeviceId = NullIfEmpty(ReadString(meetings, "meetings", "input_device")),
+            MeetingAudioOnly = ReadBool(meetings, "meetings", "audio_only") ?? defaults.MeetingAudioOnly,
+            MeetingModelId = NullIfEmpty(ReadString(meetings, "meetings", "model")),
             StartWithWindows = ReadBool(startup, "startup", "start_with_windows") ?? defaults.StartWithWindows,
             StartMinimized = ReadBool(startup, "startup", "start_minimized") ?? defaults.StartMinimized,
             CloseReaderWhenFinished = ReadBool(readAloud, "read_aloud", "close_when_finished") ?? defaults.CloseReaderWhenFinished,
@@ -274,6 +285,17 @@ public sealed class SettingsService(string configPath, ILogger<SettingsService> 
 
         var readAloud = GetOrAddTable(document, "read_aloud");
         readAloud["close_when_finished"] = settings.CloseReaderWhenFinished;
+
+        var meetings = GetOrAddTable(document, "meetings");
+        meetings["enabled"] = settings.MeetingsEnabled;
+        SetOrRemove(meetings, "shortcut", settings.MeetingShortcut?.ToString());
+        SetOrRemove(meetings, "source_process", settings.MeetingSourceProcess);
+        SetOrRemove(meetings, "source_name", settings.MeetingSourceName);
+        meetings["system_audio"] = settings.MeetingSystemAudio;
+        meetings["include_microphone"] = settings.MeetingIncludeMicrophone;
+        SetOrRemove(meetings, "input_device", settings.MeetingInputDeviceId);
+        meetings["audio_only"] = settings.MeetingAudioOnly;
+        SetOrRemove(meetings, "model", settings.MeetingModelId);
 
         // The tables only exist while there is something in them, so a config that never used them stays free of them.
         var languageModels = FindTable(document, "language_models");

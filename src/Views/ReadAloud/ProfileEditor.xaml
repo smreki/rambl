@@ -10,8 +10,8 @@
             <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource SpeakingLight}, Dark={StaticResource SpeakingDark}}" />
         </Style>
     </ContentView.Resources>
-    <Grid x:Name="Root">
-        <ScrollView x:Name="Scroll" Padding="0,0,16,0">
+    <Grid x:Name="Root" RowDefinitions="*,Auto">
+        <ScrollView x:Name="Scroll" Padding="0,0,16,24">
             <VerticalStackLayout x:Name="Column" Spacing="24" HorizontalOptions="Center">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
                     <components:IconButton Glyph="{x:Static components:Icons.ArrowLeft}" GlyphSize="14" WidthRequest="32"
@@ -383,25 +383,28 @@
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
-
-                <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
-
-                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
-                    <components:IconButton x:Name="DeleteButton" HeightRequest="36" Glyph="{x:Static components:Icons.Trash2}"
-                                           GlyphSize="14" Text="Delete profile" IsOutlined="True" IsDestructive="True"
-                                           AccessibleName="Delete profile" AutomationId="DeleteProfile" Clicked="OnDeleteClicked" />
-                    <components:IconButton x:Name="RevertButton" Grid.Column="2" HeightRequest="36" WidthRequest="88" Text="Revert"
-                                           IsOutlined="True" AccessibleName="Revert changes" AutomationId="RevertProfile"
-                                           Clicked="OnRevertClicked" />
-                    <components:IconButton x:Name="SaveButton" Grid.Column="3" HeightRequest="36" WidthRequest="88" Text="Save"
-                                           IsPrimary="True" AccessibleName="Save profile" AutomationId="SaveProfile"
-                                           Clicked="OnSaveClicked" />
-                </Grid>
             </VerticalStackLayout>
         </ScrollView>
 
+        <!-- Pinned action bar: outside the scroll view, so it stays in view. Its right margin is the scroll view's padding, so it lines up with the column. -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto">
+            <BoxView Style="{StaticResource Divider}" HeightRequest="1" />
+            <Grid x:Name="Actions" Grid.Row="1" Margin="0,12,16,0" HorizontalOptions="Center"
+                  ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+                <components:IconButton x:Name="DeleteButton" HeightRequest="36" Glyph="{x:Static components:Icons.Trash2}"
+                                       GlyphSize="14" Text="Delete profile" IsOutlined="True" IsDestructive="True"
+                                       AccessibleName="Delete profile" AutomationId="DeleteProfile" Clicked="OnDeleteClicked" />
+                <components:IconButton x:Name="RevertButton" Grid.Column="2" HeightRequest="36" WidthRequest="88" Text="Revert"
+                                       IsOutlined="True" AccessibleName="Revert changes" AutomationId="RevertProfile"
+                                       Clicked="OnRevertClicked" />
+                <components:IconButton x:Name="SaveButton" Grid.Column="3" HeightRequest="36" WidthRequest="88" Text="Save"
+                                       IsPrimary="True" AccessibleName="Save profile" AutomationId="SaveProfile"
+                                       Clicked="OnSaveClicked" />
+            </Grid>
+        </Grid>
+
         <!-- Model menu layer for the steps: a nearly transparent backdrop closes the menu when anything else is clicked. -->
-        <Grid x:Name="MenuLayer" IsVisible="False">
+        <Grid x:Name="MenuLayer" Grid.RowSpan="2" IsVisible="False">
             <Grid BackgroundColor="#01000000">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnMenuBackdropTapped" />

@@ -25,6 +25,7 @@ internal sealed class DictationController : IDisposable
     private readonly DictationCoordinator coordinator;
     private readonly GlobalInputHook hook;
     private readonly ReadAloud.ReadAloudController readAloud;
+    private readonly Meetings.MeetingController meetings;
     private bool disposed;
 
     /// <summary>Opens the hidden overlay window and starts listening for the shortcuts.</summary>
@@ -44,6 +45,10 @@ internal sealed class DictationController : IDisposable
     /// <param name="selection">Gets the selected text.</param>
     /// <param name="tts">Lists the voices the reader panel offers.</param>
     /// <param name="logger">The logger for audio and transcription failures, which never stop dictation.</param>
+    /// <param name="callAudio">Captures the call audio of a meeting recording.</param>
+    /// <param name="history">Keeps meeting recordings.</param>
+    /// <param name="meetingLibrary">Transcribes a finished meeting and runs processes on its transcript.</param>
+    /// <param name="speakers">The speaker-label model of meeting transcription.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
     /// <exception cref="System.ComponentModel.Win32Exception">Windows refused the input hooks.</exception>
     public DictationController(
@@ -62,13 +67,21 @@ internal sealed class DictationController : IDisposable
         ReadAloudService readAloudService,
         ISelectionReader selection,
         TtsEngine tts,
-        ILogger<DictationController> logger
+        ILogger<DictationController> logger,
+        Features.Meetings.ICallAudioService callAudio,
+        RecordingHistory history,
+        Features.Meetings.MeetingLibrary meetingLibrary,
+        Features.Meetings.SpeakerModels speakers
     )
     {
         ArgumentNullException.ThrowIfNull(dispatcher);
 
         surface = new(mauiContext);
         coordinator = new(settings, audio, speech, executors, surface, new DispatcherQueueDispatcher(dispatcher), logger, recorder, library, chain, commands, runner);
+        meetings = new(settings, mauiContext, dispatcher, audio, callAudio, history, meetingLibrary, speech, speakers, library, logger);
+
+        // Muting other apps while dictating would silence the meeting being recorded.
+        coordinator.KeepsOtherAppsAudible = () => meetings.IsRecording;
         readAloud = new(profiles, readAloudService, selection, tts, coordinator.Tracker, mauiContext, logger);
         hook = new(coordinator.Tracker, result => HandleTracked(result), static () => ShortcutInput.IsCapturing || KeyPressInput.IsCapturing, dispatcher);
         try
@@ -91,6 +104,10 @@ internal sealed class DictationController : IDisposable
             // and the cancel shortcut stops it when no dictation needs it.
             switch (result.Action)
             {
+                // The meeting shortcut starts a meeting recording and stops it again; dictation stays available meanwhile.
+                case ShortcutAction.MeetingPressed:
+                    meetings.Toggle(result.Binding);
+                    return;
                 case ShortcutAction.ReadPressed when result.Binding is { } shortcut:
                     readAloud.Toggle(shortcut);
                     return;
@@ -120,6 +137,7 @@ internal sealed class DictationController : IDisposable
         disposed = true;
         hook.Dispose();
         readAloud.Dispose();
+        meetings?.Dispose();
         coordinator.Dispose();
         surface.Dispose();
     }

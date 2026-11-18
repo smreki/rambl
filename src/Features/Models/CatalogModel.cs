@@ -20,6 +20,7 @@ namespace Rambl.Features.Models;
 /// <param name="DefaultVoice">Text-to-speech models only: the <see cref="CatalogVoice.Id"/> chosen until the user picks another.</param>
 /// <param name="Voices">Text-to-speech models only: the voices the model speaks with.</param>
 /// <param name="Capabilities">The tasks sharing one installation, such as stt, text and tts.</param>
+/// <param name="MeetingTranscription">Speech models only: whether the model is recommended for meeting transcription, which its card says.</param>
 /// <param name="AudioLanguages">The supported speech languages when they differ from text languages.</param>
 public sealed record CatalogModel(
     string Id,
@@ -41,5 +42,6 @@ public sealed record CatalogModel(
     string? DefaultVoice = null,
     IReadOnlyList<CatalogVoice>? Voices = null,
     IReadOnlyList<string>? Capabilities = null,
-    ModelLanguages? AudioLanguages = null
+    ModelLanguages? AudioLanguages = null,
+    bool MeetingTranscription = false
 );

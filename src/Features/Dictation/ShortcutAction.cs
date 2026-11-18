@@ -17,4 +17,7 @@ public enum ShortcutAction
 
     /// <summary>A read-aloud profile's shortcut was pressed; the binding says which.</summary>
     ReadPressed,
+
+    /// <summary>The meeting recording shortcut was pressed; it starts a meeting, or stops the one being recorded.</summary>
+    MeetingPressed,
 }

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Components.MeetingCard">
+    <ContentView.Resources>
+        <Style x:Key="WaveBar" TargetType="BoxView">
+            <Setter Property="WidthRequest" Value="3" />
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+        </Style>
+        <Style x:Key="CardTitle" TargetType="Label">
+            <Setter Property="FontFamily" Value="InterSemiBold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="MinimumHeightRequest" Value="16" />
+            <Setter Property="MaxLines" Value="1" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+        </Style>
+        <Style x:Key="CardDetail" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="MinimumHeightRequest" Value="18" />
+            <Setter Property="MaxLines" Value="1" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+        </Style>
+        <!-- Three lines of 18. -->
+        <Style x:Key="CaptionText" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="LineHeight" Value="1.15" />
+            <Setter Property="HeightRequest" Value="54" />
+            <Setter Property="MaxLines" Value="3" />
+            <Setter Property="LineBreakMode" Value="WordWrap" />
+            <Setter Property="VerticalTextAlignment" Value="Start" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+        </Style>
+        <!-- The outline of a small button. Its icon and label are laid out inside it and a transparent button on top
+             takes the clicks, because a button's own icon and text layout is off-center. -->
+        <Style x:Key="OutlinedAction" TargetType="Border">
+            <Setter Property="HeightRequest" Value="29" />
+            <Setter Property="Padding" Value="9,0" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 5" />
+            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}" />
+        </Style>
+        <Style x:Key="ActionLabel" TargetType="Label">
+            <Setter Property="FontFamily" Value="InterSemiBold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="MaxLines" Value="1" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+        </Style>
+        <Style x:Key="ActionButton" TargetType="Button" BasedOn="{StaticResource GhostButton}">
+            <Setter Property="HeightRequest" Value="29" />
+            <Setter Property="MinimumHeightRequest" Value="29" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+    </ContentView.Resources>
+
+    <!-- The margin leaves room inside the transparent window for the drop shadow. -->
+    <Border x:Name="Card" Margin="24" WidthRequest="380" HorizontalOptions="Center" VerticalOptions="Start"
+            Padding="16,12" StrokeShape="RoundRectangle 10" StrokeThickness="1"
+            Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+        <Border.Shadow>
+            <Shadow Radius="20" Offset="0,6" Opacity="1"
+                    Brush="{AppThemeBinding Light={StaticResource OverlayShadowLightBrush}, Dark={StaticResource OverlayShadowDarkBrush}}" />
+        </Border.Shadow>
+        <VerticalStackLayout x:Name="Body" Spacing="6">
+            <!-- As on the dictation card, the waveform is centered in the room between the indicator and the right group. -->
+            <Grid x:Name="ControlsRow" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" HeightRequest="28">
+                <Border WidthRequest="20" HeightRequest="20" VerticalOptions="Center" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 10" SemanticProperties.Description="Recording"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource AccentSoftLight}, Dark={StaticResource AccentSoftDark}}">
+                    <Ellipse WidthRequest="8" HeightRequest="8" HorizontalOptions="Center" VerticalOptions="Center"
+                             Fill="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                </Border>
+
+                <HorizontalStackLayout x:Name="Waveform" Grid.Column="1" Spacing="3" HeightRequest="24"
+                                       HorizontalOptions="Center" VerticalOptions="Center"
+                                       AutomationId="MeetingWaveform" />
+
+                <HorizontalStackLayout Grid.Column="2" Spacing="10" HorizontalOptions="End" VerticalOptions="Center">
+                    <!-- A minimum width keeps the waveform from shifting as the digits change. -->
+                    <Label x:Name="ElapsedLabel" FontSize="12" Text="00:00" MinimumWidthRequest="34"
+                           HorizontalTextAlignment="End" VerticalOptions="Center" SemanticProperties.Description="Elapsed time"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                    <BoxView Style="{StaticResource Divider}" WidthRequest="1" HeightRequest="14" VerticalOptions="Center" />
+                    <Grid WidthRequest="28" HeightRequest="28" VerticalOptions="Center">
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 14"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PlaceholderLight}, Dark={StaticResource PlaceholderDark}}" />
+                        <Label Style="{StaticResource Icon}" FontSize="13" Text="{x:Static components:Icons.Square}"
+                               HorizontalOptions="Center" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                        <Button Style="{StaticResource GhostButton}" WidthRequest="28" HeightRequest="28"
+                                MinimumWidthRequest="28" MinimumHeightRequest="28" Padding="0" CornerRadius="14"
+                                AutomationId="StopMeetingRecording" SemanticProperties.Description="Stop meeting recording"
+                                ToolTipProperties.Text="Stop" Clicked="OnStopClicked" />
+                    </Grid>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- Recording: who is speaking or the source, and one line of what is said or happening. -->
+            <Label x:Name="RecordingTitleLabel" Style="{StaticResource CardTitle}" AutomationId="MeetingTitle" />
+            <Label x:Name="RecordingDetailLabel" Style="{StaticResource CardDetail}" AutomationId="MeetingDetail" />
+
+            <!-- Live transcript: a block per speaker, the name and three lines of what they are saying. The earlier
+                 speaker's block, dimmed, is above the current one. The three lines are always kept, so the card does
+                 not change height with every word. -->
+            <VerticalStackLayout x:Name="Captions" Spacing="10" IsVisible="False">
+                <VerticalStackLayout x:Name="EarlierBlock" Spacing="6" Opacity="0.6" IsVisible="False">
+                    <Label x:Name="EarlierTitleLabel" Style="{StaticResource CardTitle}" AutomationId="MeetingEarlierSpeaker" />
+                    <Label x:Name="EarlierDetailLabel" Style="{StaticResource CaptionText}" AutomationId="MeetingEarlierCaption" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Spacing="6">
+                    <Label x:Name="CaptionTitleLabel" Style="{StaticResource CardTitle}" AutomationId="MeetingSpeaker" />
+                    <Label x:Name="CaptionDetailLabel" Style="{StaticResource CaptionText}" AutomationId="MeetingCaption" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- Disconnected and choosing a source: the same two lines, closer together, beside one button. -->
+            <Grid x:Name="StatusRow" ColumnDefinitions="*,Auto" ColumnSpacing="12" IsVisible="False">
+                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                    <Label x:Name="StatusTitleLabel" Style="{StaticResource CardTitle}" AutomationId="MeetingStatusTitle" />
+                    <Label x:Name="StatusDetailLabel" Style="{StaticResource CardDetail}" AutomationId="MeetingStatusDetail" />
+                </VerticalStackLayout>
+                <Grid x:Name="ChooseSourceHost" Grid.Column="1" VerticalOptions="Center">
+                    <Border Style="{StaticResource OutlinedAction}" HeightRequest="26" Padding="8,0" StrokeShape="RoundRectangle 4">
+                        <Label Style="{StaticResource ActionLabel}" Text="Choose source" />
+                    </Border>
+                    <Button Style="{StaticResource ActionButton}" HeightRequest="26" MinimumHeightRequest="26" CornerRadius="4"
+                            AutomationId="MeetingChooseSource" SemanticProperties.Description="Choose source"
+                            Clicked="OnChooseSourceClicked" />
+                </Grid>
+                <Grid x:Name="BrowseAppsHost" Grid.Column="1" VerticalOptions="Center" IsVisible="False">
+                    <Border Style="{StaticResource OutlinedAction}">
+                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                            <Label Style="{StaticResource Icon}" FontSize="15" Text="{x:Static components:Icons.List}" />
+                            <Label Style="{StaticResource ActionLabel}" Text="Browse apps" />
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Button Style="{StaticResource ActionButton}" AutomationId="MeetingBrowseApps"
+                            SemanticProperties.Description="Browse apps" Clicked="OnBrowseAppsClicked" />
+                </Grid>
+            </Grid>
+
+            <!-- Browsing apps: the list is part of the card, which grows to fit, as the reader panel's lists do. -->
+            <VerticalStackLayout x:Name="Picker" Spacing="8" Margin="0,4,0,0" IsVisible="False">
+                <Label Text="Choose call audio" FontFamily="InterSemiBold" FontSize="16" SemanticProperties.HeadingLevel="Level1" />
+                <Border x:Name="SearchOutline" HeightRequest="31" Padding="9,0" StrokeThickness="1" StrokeShape="RoundRectangle 5"
+                        Stroke="{AppThemeBinding Light={StaticResource BorderLight}, Dark={StaticResource BorderDark}}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Label Style="{StaticResource Icon}" FontSize="15" Text="{x:Static components:Icons.Search}" />
+                        <Entry x:Name="SearchInput" Grid.Column="1" FontFamily="Inter" FontSize="13" MinimumHeightRequest="0"
+                               VerticalOptions="Center" BackgroundColor="Transparent" ReturnType="Search" Placeholder="Search apps"
+                               AutomationId="MeetingAppSearch" SemanticProperties.Description="Search apps"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                               PlaceholderColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                               TextChanged="OnSearchTextChanged" Completed="OnSearchCompleted"
+                               Focused="OnSearchFocusChanged" Unfocused="OnSearchFocusChanged" />
+                    </Grid>
+                </Border>
+                <!-- Six rows of 34 with 2 between them; more scroll inside the card. -->
+                <ScrollView x:Name="AppScroll" MaximumHeightRequest="214">
+                    <VerticalStackLayout x:Name="AppRows" Spacing="2" />
+                </ScrollView>
+                <Label x:Name="EmptyLabel" Style="{StaticResource CardDetail}" Margin="8,4" IsVisible="False"
+                       AutomationId="MeetingAppEmpty" />
+                <HorizontalStackLayout Spacing="8" HeightRequest="29" HorizontalOptions="End">
+                    <Grid VerticalOptions="Center">
+                        <Border Style="{StaticResource OutlinedAction}">
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Label Style="{StaticResource Icon}" FontSize="15" Text="{x:Static components:Icons.X}" />
+                                <Label Style="{StaticResource ActionLabel}" Text="Cancel" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Button Style="{StaticResource ActionButton}" AutomationId="MeetingAppCancel"
+                                SemanticProperties.Description="Cancel" Clicked="OnCancelClicked" />
+                    </Grid>
+                    <Grid x:Name="UseHost" VerticalOptions="Center" Opacity="0.5">
+                        <Border Style="{StaticResource OutlinedAction}">
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Label Style="{StaticResource Icon}" FontSize="15" Text="{x:Static components:Icons.Check}" />
+                                <Label x:Name="UseLabel" Style="{StaticResource ActionLabel}" Text="Use app" MaximumWidthRequest="200" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Button x:Name="UseButton" Style="{StaticResource ActionButton}" IsEnabled="False"
+                                AutomationId="MeetingAppUse" SemanticProperties.Description="Use app" Clicked="OnUseClicked" />
+                    </Grid>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

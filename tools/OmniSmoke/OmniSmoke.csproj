@@ -30,8 +30,9 @@
     <Compile Include="../../src/Features/Settings/SettingsService.cs;../../src/Features/Settings/SettingsTomlContext.cs" />
     <Compile Include="../../src/Features/Audio/*.cs" />
     <Compile Include="../../src/Features/History/IDictationRecorder.cs;../../src/Features/History/RecordingSession.cs;../../src/Features/History/RecordingInfo.cs;../../src/Features/History/ReadingInfo.cs" />
-    <Compile Include="../../src/Features/History/RecordingHistory.cs;../../src/Features/History/RecordingStore.cs;../../src/Features/History/RecordingMetadata.cs;../../src/Features/History/RecordingMetadataJsonContext.cs" />
+    <Compile Include="../../src/Features/History/RecordingHistory.cs;../../src/Features/History/TranscribingMark.cs;../../src/Features/History/RecordingStore.cs;../../src/Features/History/RecordingMetadata.cs;../../src/Features/History/RecordingMetadataJsonContext.cs" />
     <Compile Include="../../src/Features/PostProcessing/*.cs" />
+    <Compile Include="../../src/Features/Meetings/*.cs" Exclude="../../src/Features/Meetings/ITranscriptFilePicker.cs" />
     <Compile Include="../../src/Features/LanguageModels/ILanguageGenerator.cs" />
     <Compile Include="../../src/Features/VoiceCommands/*.cs" Exclude="../../src/Features/VoiceCommands/VoiceCommandRunner.cs;../../src/Features/VoiceCommands/CommandMatcher.cs;../../src/Features/VoiceCommands/CommandModels.cs" />
     <Compile Include="../../src/Features/Tts/TtsVoiceSettings.cs;../../src/Features/Tts/TtsVoiceFile.cs" />

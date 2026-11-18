@@ -30,6 +30,12 @@ switch ($Command) {
         $output = Join-Path $PSScriptRoot 'artifacts\rambl'
         Remove-Item (Join-Path $output 'Rambl.pdb') -ErrorAction SilentlyContinue
 
+        # A running copy locks Rambl.exe, and the bundler then fails with an unrelated "Manifest state" error.
+        $target = Join-Path $output 'Rambl.exe'
+        if (Get-Process Rambl -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $target }) {
+            throw "Rambl is running from $target (check the system tray). Close it, then build again."
+        }
+
         dotnet publish $projectPath -f $Framework -c Release `
             -p:RuntimeIdentifierOverride=win-x64 -p:WindowsPackageType=None `
             -p:WindowsAppSDKSelfContained=true -p:SelfContained=true `

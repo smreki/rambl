@@ -45,6 +45,11 @@ internal static class Program
                 await SettingsChecks.RunAsync(root);
                 return;
             }
+            if (args.Contains("--meetings-only"))
+            {
+                await MeetingChecks.RunAsync(root);
+                return;
+            }
             if (args.Contains("--dictation-only"))
             {
                 await DictationChecks.RunAsync(root);

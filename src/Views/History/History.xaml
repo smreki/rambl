@@ -54,5 +54,8 @@
 
         <!-- The History settings layer takes the place of the list; History stays selected in the sidebar. -->
         <ContentView x:Name="SettingsHost" IsVisible="False" />
+
+        <!-- The Run command menu of a meeting card: a menu layer over the whole screen. -->
+        <components:ProcessMenu x:Name="CommandMenu" />
     </Grid>
 </ContentView>

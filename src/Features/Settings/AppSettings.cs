@@ -84,6 +84,35 @@ public sealed record AppSettings
     /// <summary>Gets whether a finished dictation is pasted into the focused app; when off it is only copied to the clipboard.</summary>
     public bool AutoPaste { get; init; } = true;
 
+    /// <summary>Gets whether meeting recording is on; when off the meeting shortcut does nothing and its keys reach other apps.</summary>
+    /// <remarks>The other meeting settings are kept while it is off, and the shortcut stays reserved.</remarks>
+    public bool MeetingsEnabled { get; init; } = true;
+
+    /// <summary>Gets the shortcut that starts and stops a meeting recording, or null when none is assigned.</summary>
+    /// <remarks>It never equals the dictation or cancel shortcut; it may equal the shortcut of post-processing processes, which then run on the meeting's transcript.</remarks>
+    public Shortcut? MeetingShortcut { get; init; }
+
+    /// <summary>Gets the process name of the app meetings record as call audio, or null when none is chosen.</summary>
+    public string? MeetingSourceProcess { get; init; }
+
+    /// <summary>Gets the name shown for <see cref="MeetingSourceProcess"/>.</summary>
+    public string? MeetingSourceName { get; init; }
+
+    /// <summary>Gets whether meetings record everything the computer plays instead of one app.</summary>
+    public bool MeetingSystemAudio { get; init; }
+
+    /// <summary>Gets whether meetings also record the microphone, as its own track.</summary>
+    public bool MeetingIncludeMicrophone { get; init; } = true;
+
+    /// <summary>Gets the id of the microphone meetings record, or null to use the microphone chosen in Audio.</summary>
+    public string? MeetingInputDeviceId { get; init; }
+
+    /// <summary>Gets whether meetings are recorded without transcription; the audio can be transcribed later from the History.</summary>
+    public bool MeetingAudioOnly { get; init; }
+
+    /// <summary>Gets the catalog id of the speech model meetings are transcribed with, or null to use the active dictation model.</summary>
+    public string? MeetingModelId { get; init; }
+
     /// <summary>Gets whether the reader panel closes by itself when reading finishes, instead of staying open to read again.</summary>
     /// <remarks>The reader window, when it is open, always stays open.</remarks>
     public bool CloseReaderWhenFinished { get; init; }

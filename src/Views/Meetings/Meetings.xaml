@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.Meetings"
+             SizeChanged="OnSizeChanged">
+
+    <Grid x:Name="Column" RowDefinitions="Auto,Auto,*" HorizontalOptions="Center">
+        <VerticalStackLayout Spacing="4">
+            <Label Style="{StaticResource PageTitle}"
+                   Text="Meetings"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Style="{StaticResource PageSubtitle}"
+                   Text="Set up meeting recording and revisit past meetings." />
+        </VerticalStackLayout>
+
+        <components:TabStrip x:Name="MeetingTabs" Grid.Row="1" Margin="0,24,0,18" Labels="Settings,History"
+                             SelectedIndexChanged="OnTabChanged" />
+
+        <!-- Only the layer of the selected tab is in the tree, so the other one is unloaded: its meters or playback stop. -->
+        <ContentView x:Name="TabContent" Grid.Row="2" />
+    </Grid>
+
+</ContentView>

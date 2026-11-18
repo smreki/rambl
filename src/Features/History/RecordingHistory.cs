@@ -36,7 +36,7 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
     private readonly PostProcessChain? chain;
     private readonly SemaphoreSlim gate = new(1, 1);
     private readonly object storeGate = new();
-    private readonly HashSet<string> retranscribing = [];
+    private readonly Dictionary<string, TranscribingMark> retranscribing = [];
     private readonly Timer pruneTimer;
     private RecordingStore? store;
     private List<RecordingInfo>? recordings;
@@ -111,7 +111,33 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
     public bool IsRetranscribing(string id)
     {
         lock (retranscribing)
-            return retranscribing.Contains(id);
+            return retranscribing.ContainsKey(id);
+    }
+
+    /// <summary>Says whether a recording's transcription was asked to stop and has not ended yet.</summary>
+    /// <param name="id">The recording's id.</param>
+    /// <returns>True between <see cref="StopTranscribing"/> and the end of the work.</returns>
+    public bool IsStoppingTranscription(string id)
+    {
+        lock (retranscribing)
+            return retranscribing.TryGetValue(id, out var mark) && mark.IsStopping;
+    }
+
+    /// <summary>Stops the transcription of a recording; its transcript stays as it was.</summary>
+    /// <param name="id">The recording's id.</param>
+    /// <returns>True when a transcription was running and was asked to stop.</returns>
+    public bool StopTranscribing(string id)
+    {
+        TranscribingMark? mark;
+        lock (retranscribing)
+            _ = retranscribing.TryGetValue(id, out mark);
+
+        if (mark is null || mark.IsStopping)
+            return false;
+
+        mark.Stop();
+        Changed?.Invoke(this, id);
+        return true;
     }
 
     /// <inheritdoc/>
@@ -160,6 +186,69 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
         StartPrune();
     }
 
+    /// <summary>Reserves the files of a meeting recording, whose audio the meeting recorder writes itself.</summary>
+    /// <param name="startedAt">When recording started.</param>
+    /// <returns>The recording's id, the partial file to write, the file it becomes and what to call when writing has ended; null when it cannot be stored.</returns>
+    /// <remarks>Meetings are kept whatever <see cref="AppSettings.HistoryEnabled"/> is: starting one is asking for it to be recorded.</remarks>
+    public (string Id, string PartPath, string AudioPath, Action Release)? ReserveMeeting(DateTimeOffset startedAt)
+    {
+        try
+        {
+            return CurrentStore().Reserve(startedAt);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            logger.LogWarning(ex, "Unable to start a meeting recording in {Folder}", Directory);
+            return null;
+        }
+    }
+
+    /// <summary>Saves a meeting recording, or what changed about it: its transcript, a speaker's name, a process's result.</summary>
+    /// <param name="recording">The recording, with its audio file in place and <see cref="RecordingInfo.Meeting"/> set.</param>
+    /// <returns>A task that completes when it is saved.</returns>
+    /// <exception cref="IOException">The metadata cannot be written.</exception>
+    public async Task SaveMeetingAsync(RecordingInfo recording)
+    {
+        ArgumentNullException.ThrowIfNull(recording);
+        await UpdateAsync(recording).ConfigureAwait(false);
+        StartPrune();
+    }
+
+    /// <summary>Finds a recording.</summary>
+    /// <param name="id">The recording's id.</param>
+    /// <returns>The recording, or null when there is none.</returns>
+    public async Task<RecordingInfo?> FindAsync(string id) =>
+        (await GetRecordingsAsync().ConfigureAwait(false)).FirstOrDefault(candidate => candidate.Id == id);
+
+    /// <summary>Marks a recording as being transcribed, so its card says so, until the result is disposed.</summary>
+    /// <param name="id">The recording's id.</param>
+    /// <returns>
+    /// The mark to dispose when the work ends, or null when the recording is already being transcribed. The work follows
+    /// the mark's token, which <see cref="StopTranscribing"/> cancels.
+    /// </returns>
+    public TranscribingMark? BeginTranscribing(string id)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        TranscribingMark mark;
+        lock (retranscribing)
+        {
+            if (retranscribing.ContainsKey(id))
+                return null;
+
+            mark = new(() =>
+            {
+                lock (retranscribing)
+                    _ = retranscribing.Remove(id);
+
+                Changed?.Invoke(this, id);
+            });
+            retranscribing[id] = mark;
+        }
+
+        Changed?.Invoke(this, id);
+        return mark;
+    }
+
     /// <inheritdoc/>
     public async Task SaveAsync(RecordingInfo recording, string? transcript, string? error)
     {
@@ -189,12 +278,12 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
 
     // A transcribed-again recording runs the processes it ran before; ones deleted since are left out, and with none left
     // the earlier result is dropped, as it no longer matches the new transcript.
-    private async Task<RecordingInfo> ReprocessAsync(RecordingInfo recording, string text, SynchronizationContext? context)
+    private async Task<RecordingInfo> ReprocessAsync(RecordingInfo recording, string text, SynchronizationContext? context, CancellationToken token)
     {
         if (chain is null || recording.ProcessIds is not { Count: > 0 } ids || string.IsNullOrWhiteSpace(text))
             return recording.WithProcessing(ChainResult.Unchanged(text));
 
-        var outcome = await chain.RunByIdsAsync(text, ids, context).ConfigureAwait(false);
+        var outcome = await chain.RunByIdsAsync(text, ids, context, token).ConfigureAwait(false);
         return recording.WithProcessing(outcome);
     }
 
@@ -219,7 +308,10 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
 
     /// <summary>Runs a recording's audio through the model that is active now and replaces its transcript.</summary>
     /// <param name="id">The recording's id.</param>
-    /// <returns>A task that completes when the new transcript is saved. The old transcript stays until then, and if this fails.</returns>
+    /// <returns>
+    /// A task that completes when the new transcript is saved, or when <see cref="StopTranscribing"/> stopped it. The old
+    /// transcript stays until then, and if this fails or is stopped.
+    /// </returns>
     /// <exception cref="KeyNotFoundException">There is no such recording.</exception>
     /// <exception cref="InvalidOperationException">It is a reading, no model that can be used is active, or the model failed.</exception>
     /// <exception cref="IOException">The audio cannot be read or the transcript cannot be saved.</exception>
@@ -234,37 +326,41 @@ public sealed class RecordingHistory : IDictationRecorder, IDisposable
             ?? throw new KeyNotFoundException($"There is no recording {id}.");
         if (recording.IsReading)
             throw new InvalidOperationException("A reading is not transcribed.");
+        if (recording.IsMeeting)
+            throw new InvalidOperationException("A meeting is transcribed with its own model, from the meeting's card.");
 
         var model =
             speech.ResolveActive(settings.Settings)
             ?? throw new InvalidOperationException("Choose a speech model that can be used in STT Models first.");
 
-        lock (retranscribing)
-        {
-            if (!retranscribing.Add(id))
-                return;
-        }
+        using var mark = BeginTranscribing(id);
+        if (mark is null)
+            return;
 
-        Changed?.Invoke(this, id);
+        var token = mark.Token;
         try
         {
             var samples = await Task.Run(() => WavFile.ReadSamples(recording.AudioPath, out _)).ConfigureAwait(false);
             using var transcriber = new SpeechTranscriber(speech, model);
+            using var registration = token.Register(transcriber.Cancel);
             var chunk = RecordingSession.SampleRate * ChunkMilliseconds / 1000;
             for (var position = 0; position < samples.Length; position += chunk)
                 transcriber.Post(samples.AsSpan(position, Math.Min(chunk, samples.Length - position)), RecordingSession.SampleRate);
 
             transcriber.Complete();
-            var text = await transcriber.Result.ConfigureAwait(false) ?? string.Empty;
-            var updated = await ReprocessAsync(recording with { Transcript = text, Error = null }, text, context).ConfigureAwait(false);
+
+            // A stop does not wait for a model that cannot be interrupted: its result is dropped when it arrives.
+            var text = await transcriber.Result.WaitAsync(token).ConfigureAwait(false);
+            if (text is null)
+                return;
+
+            var updated = await ReprocessAsync(recording with { Transcript = text, Error = null }, text, context, token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
             await UpdateAsync(updated).ConfigureAwait(false);
         }
-        finally
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
-            lock (retranscribing)
-                _ = retranscribing.Remove(id);
-
-            Changed?.Invoke(this, id);
+            // Stopped by the user: the recording keeps the transcript it had.
         }
     }
 

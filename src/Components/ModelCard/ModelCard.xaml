@@ -27,11 +27,20 @@
                     </HorizontalStackLayout>
 
                     <!-- What the model is for, on its own line under the name. -->
-                    <HorizontalStackLayout Spacing="6">
-                        <Label x:Name="PurposeGlyphLabel" Style="{StaticResource Icon}" FontSize="14"
-                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
-                        <Label x:Name="PurposeLabel" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                    <HorizontalStackLayout Spacing="14">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label x:Name="PurposeGlyphLabel" Style="{StaticResource Icon}" FontSize="14"
+                                   TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                            <Label x:Name="PurposeLabel" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        </HorizontalStackLayout>
+                        <!-- A speech model recommended for meetings says so beside its purpose. -->
+                        <HorizontalStackLayout x:Name="MeetingItem" Spacing="6" IsVisible="False">
+                            <Label Style="{StaticResource Icon}" FontSize="14" Text="{x:Static components:Icons.Users}"
+                                   TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                            <Label Text="Meeting transcription" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                        </HorizontalStackLayout>
                     </HorizontalStackLayout>
 
                     <!-- The tags, in one row that wraps when the window is narrow: the model type (language models) or voice count

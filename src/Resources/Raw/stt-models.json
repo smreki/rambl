@@ -386,6 +386,7 @@
       "id": "nemotron-3.5-asr-streaming-0.6b",
       "name": "Nemotron 3.5 ASR Streaming 0.6B",
       "family": "nemotron",
+      "meetingTranscription": true,
       "purpose": {
         "label": "Multilingual streaming",
         "icon": "globe"
@@ -587,6 +588,7 @@
       "id": "parakeet-tdt-0.6b-v3",
       "name": "Parakeet TDT 0.6B v3",
       "family": "parakeet",
+      "meetingTranscription": true,
       "purpose": {
         "label": "Balanced choice",
         "icon": "scale"

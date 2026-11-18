@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.MeetingTranscript"
+             BackgroundColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- Play, stop, how far playback has got, Follow, speed and export. -->
+        <Grid Padding="20,10" ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto" ColumnSpacing="8">
+            <Grid WidthRequest="32" HeightRequest="32" VerticalOptions="Center">
+                <Border StrokeThickness="0" StrokeShape="RoundRectangle 16"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}" />
+                <Label x:Name="PlayGlyph" Style="{StaticResource Icon}" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"
+                       Text="{x:Static components:Icons.Play}"
+                       TextColor="{AppThemeBinding Light={StaticResource ContentBgLight}, Dark={StaticResource ContentBgDark}}" />
+                <Button x:Name="PlayButton" Style="{StaticResource PrimaryButton}" WidthRequest="32" HeightRequest="32"
+                        MinimumWidthRequest="32" MinimumHeightRequest="32" Padding="0" CornerRadius="16"
+                        AutomationId="TranscriptPlayPause" SemanticProperties.Description="Play" Clicked="OnPlayClicked" />
+            </Grid>
+            <components:IconButton Grid.Column="1" Glyph="{x:Static components:Icons.Square}" GlyphSize="14" WidthRequest="32"
+                                   AutomationId="TranscriptStop"
+                                   AccessibleName="Stop and go back to the start" VerticalOptions="Center" Clicked="OnStopClicked" />
+            <!-- The native slider is as tall as the toolbar's buttons, so the times sit beside it rather than above. -->
+            <Grid Grid.Column="2" ColumnDefinitions="*,Auto" ColumnSpacing="10" Padding="8,0" VerticalOptions="Center">
+                <Slider x:Name="PositionSlider" Style="{StaticResource SettingSlider}" Minimum="0" Maximum="1"
+                        SemanticProperties.Description="Playback position"
+                        DragStarted="OnDragStarted" DragCompleted="OnDragCompleted" ValueChanged="OnSliderValueChanged" />
+                <Label x:Name="PositionLabel" Grid.Column="1" FontSize="12" VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+            </Grid>
+            <!-- On: the turn being played stays in view. Scrolling away turns it off. -->
+            <Grid Grid.Column="3" VerticalOptions="Center">
+                <Border x:Name="FollowBox" HeightRequest="30" Padding="10,0" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Label x:Name="FollowGlyph" Style="{StaticResource Icon}" FontSize="14" VerticalOptions="Center"
+                               Text="{x:Static components:Icons.LocateFixed}" />
+                        <Label x:Name="FollowLabel" Text="Follow" FontFamily="InterMedium" FontSize="12" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+                <Button x:Name="FollowButton" Style="{StaticResource GhostButton}" HeightRequest="30" MinimumHeightRequest="30"
+                        Padding="0" CornerRadius="6" AutomationId="TranscriptFollow" Clicked="OnFollowClicked" />
+            </Grid>
+            <components:SelectInput x:Name="SpeedSelect" Grid.Column="4" IsCompact="True" WidthRequest="96"
+                                    AccessibleName="Playback speed" AutomationId="TranscriptSpeed" VerticalOptions="Center"
+                                    SelectedIndexChanged="OnSpeedChanged" />
+            <components:IconButton x:Name="ExportButton" Grid.Column="5" Glyph="{x:Static components:Icons.Download}" Text="Export transcript"
+                                   IsOutlined="True" AutomationId="TranscriptExport" VerticalOptions="Center"
+                                   Clicked="OnExportClicked" />
+        </Grid>
+        <BoxView Grid.Row="1" Style="{StaticResource Divider}" HeightRequest="1" />
+
+        <ScrollView x:Name="Scroller" Grid.Row="2" Scrolled="OnScrolled">
+            <VerticalStackLayout x:Name="Document" Padding="56,28" Spacing="12" MaximumWidthRequest="860" SizeChanged="OnDocumentSizeChanged">
+                <!-- The meeting's name, and a pencil that swaps it for a field. -->
+                <HorizontalStackLayout x:Name="TitleRow" Spacing="6">
+                    <Label x:Name="TitleLabel" FontFamily="InterSemiBold" FontSize="26" LineBreakMode="TailTruncation" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                    <components:IconButton x:Name="RenameButton" Glyph="{x:Static components:Icons.Pencil}" GlyphSize="14" WidthRequest="32"
+                                           AccessibleName="Rename meeting" AutomationId="TranscriptRename" VerticalOptions="Center"
+                                           Clicked="OnRenameClicked" />
+                </HorizontalStackLayout>
+                <Label x:Name="MetaLabel" FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                <components:SearchField x:Name="Search" Placeholder="Search transcript" AccessibleName="Search transcript"
+                                        HeightRequest="32" AutomationId="TranscriptSearch" IsVisible="False" />
+                <Label x:Name="EmptyLabel" FontSize="14" LineBreakMode="WordWrap" IsVisible="False"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                <!-- The turns are added in batches, so a long meeting does not freeze the window. -->
+                <VerticalStackLayout x:Name="Turns" Spacing="12" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

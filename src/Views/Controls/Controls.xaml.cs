@@ -183,7 +183,7 @@ public partial class Controls : ContentView
     // A read-aloud profile's shortcut never dictates.
     private async Task<bool> RejectReadAloudShortcutAsync(Shortcut shortcut)
     {
-        if (await shortcuts.FindDictationConflictAsync(shortcut) is not { } conflict)
+        if (await shortcuts.FindExclusiveConflictAsync(shortcut, ((App)Application.Current!).Settings) is not { } conflict)
             return false;
 
         Sync();

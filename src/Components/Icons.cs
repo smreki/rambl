@@ -10,6 +10,11 @@ public static class Icons
     public const string ArrowLeft = "\ue048";
     public const string ArrowRight = "";
     public const string ArrowUp = "\ue04a";
+    public const string AppWindow = "\ue426";
+    public const string ExternalLink = "\ue0b9";
+    public const string MousePointer2 = "\ue1c3";
+    public const string Terminal = "\ue181";
+    public const string Video = "\ue1a5";
     public const string AudioLines = "";
     public const string Braces = "\ue36a";
     public const string Brain = "\ue3c6";
@@ -96,6 +101,11 @@ public static class Icons
         ["arrow-left"] = ArrowLeft,
         ["arrow-right"] = ArrowRight,
         ["arrow-up"] = ArrowUp,
+        ["app-window"] = AppWindow,
+        ["external-link"] = ExternalLink,
+        ["mouse-pointer-2"] = MousePointer2,
+        ["terminal"] = Terminal,
+        ["video"] = Video,
         ["audio-lines"] = AudioLines,
         ["braces"] = Braces,
         ["brain"] = Brain,

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:Rambl.Components"
+             x:Class="Rambl.Views.MeetingHistory"
+             Loaded="OnLoaded" Unloaded="OnUnloaded">
+    <Grid>
+        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="18">
+            <components:SearchField x:Name="Search" Placeholder="Search meetings…"
+                                    AccessibleName="Search meetings" AutomationId="MeetingSearch" />
+
+            <Grid Grid.Row="1">
+                <ScrollView x:Name="ListScroll">
+                    <VerticalStackLayout x:Name="List" Spacing="12" />
+                </ScrollView>
+                <Label x:Name="MessageLabel" IsVisible="False" Style="{StaticResource PageSubtitle}" VerticalOptions="Start"
+                       AutomationId="MeetingHistoryMessage" />
+            </Grid>
+            <Grid x:Name="Pagination" Grid.Row="2" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" IsVisible="False">
+                <Label x:Name="PageLabel" Style="{StaticResource SettingHelp}" VerticalOptions="Center"
+                       AutomationId="MeetingHistoryPage" />
+                <components:IconButton x:Name="PreviousPageButton" Grid.Column="1" Text="Previous"
+                                       AccessibleName="Previous page of meetings" IsOutlined="True"
+                                       AutomationId="MeetingHistoryPreviousPage" Clicked="OnPreviousPageClicked" />
+                <components:IconButton x:Name="NextPageButton" Grid.Column="2" Text="Next"
+                                       AccessibleName="Next page of meetings" IsOutlined="True"
+                                       AutomationId="MeetingHistoryNextPage" Clicked="OnNextPageClicked" />
+            </Grid>
+        </Grid>
+
+        <!-- The Run command menu of a card: a menu layer over the list. -->
+        <components:ProcessMenu x:Name="CommandMenu" />
+    </Grid>
+</ContentView>
